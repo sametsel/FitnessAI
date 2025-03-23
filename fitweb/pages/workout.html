@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antrenmanlar - FitWeb</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link rel="stylesheet" href="../assets/css/workout.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar aynı kalacak -->
+        <aside class="sidebar">
+            <!-- ... mevcut sidebar içeriği ... -->
+        </aside>
+
+        <main class="main-content">
+            <header class="dashboard-header">
+                <!-- ... mevcut header içeriği ... -->
+            </header>
+
+            <div class="dashboard-content">
+                <div class="workout-header">
+                    <h1>Antrenman Programları</h1>
+                    <button class="btn btn-primary"><i class="fas fa-plus"></i> Yeni Program</button>
+                </div>
+
+                <!-- Antrenman Filtreleri -->
+                <div class="workout-filters">
+                    <div class="filter-group">
+                        <label>Zorluk Seviyesi:</label>
+                        <select>
+                            <option value="all">Tümü</option>
+                            <option value="beginner">Başlangıç</option>
+                            <option value="intermediate">Orta</option>
+                            <option value="advanced">İleri</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Kategori:</label>
+                        <select>
+                            <option value="all">Tümü</option>
+                            <option value="cardio">Kardio</option>
+                            <option value="strength">Güç</option>
+                            <option value="flexibility">Esneklik</option>
+                        </select>
+                    </div>
+                    <div class="search-group">
+                        <input type="text" placeholder="Program ara...">
+                        <button><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+
+                <!-- Antrenman Programları Grid -->
+                <div class="workout-grid">
+                    <!-- Program Kartı 1 -->
+                    <div class="workout-card">
+                        <div class="workout-image">
+                            <img src="../assets/images/workout1.jpg" alt="Tam Vücut Antrenmanı">
+                            <span class="difficulty beginner">Başlangıç</span>
+                        </div>
+                        <div class="workout-info">
+                            <h3>Tam Vücut Antrenmanı</h3>
+                            <p>45 dakika | Güç Antrenmanı</p>
+                            <div class="workout-stats">
+                                <span><i class="fas fa-fire"></i> 400 kcal</span>
+                                <span><i class="fas fa-dumbbell"></i> 12 egzersiz</span>
+                            </div>
+                        </div>
+                        <div class="workout-actions">
+                            <button class="btn btn-outline"><i class="fas fa-play"></i> Başla</button>
+                            <button class="btn btn-icon"><i class="fas fa-heart"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Program Kartı 2 -->
+                    <div class="workout-card">
+                        <div class="workout-image">
+                            <img src="../assets/images/workout2.jpg" alt="HIIT Kardio">
+                            <span class="difficulty intermediate">Orta</span>
+                        </div>
+                        <div class="workout-info">
+                            <h3>HIIT Kardio</h3>
+                            <p>30 dakika | Kardio</p>
+                            <div class="workout-stats">
+                                <span><i class="fas fa-fire"></i> 300 kcal</span>
+                                <span><i class="fas fa-dumbbell"></i> 8 egzersiz</span>
+                            </div>
+                        </div>
+                        <div class="workout-actions">
+                            <button class="btn btn-outline"><i class="fas fa-play"></i> Başla</button>
+                            <button class="btn btn-icon"><i class="fas fa-heart"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Program Kartı 3 -->
+                    <div class="workout-card">
+                        <div class="workout-image">
+                            <img src="../assets/images/workout3.jpg" alt="Yoga Flow">
+                            <span class="difficulty beginner">Başlangıç</span>
+                        </div>
+                        <div class="workout-info">
+                            <h3>Yoga Flow</h3>
+                            <p>60 dakika | Esneklik</p>
+                            <div class="workout-stats">
+                                <span><i class="fas fa-fire"></i> 200 kcal</span>
+                                <span><i class="fas fa-dumbbell"></i> 15 hareket</span>
+                            </div>
+                        </div>
+                        <div class="workout-actions">
+                            <button class="btn btn-outline"><i class="fas fa-play"></i> Başla</button>
+                            <button class="btn btn-icon"><i class="fas fa-heart"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="../assets/js/dashboard.js"></script>
+    <script src="../assets/js/workout.js"></script>
+</body>
+</html> 

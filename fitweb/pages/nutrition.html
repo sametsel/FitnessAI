@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beslenme - FitWeb</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link rel="stylesheet" href="../assets/css/nutrition.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <!-- ... mevcut sidebar içeriği ... -->
+        </aside>
+
+        <main class="main-content">
+            <header class="dashboard-header">
+                <!-- ... mevcut header içeriği ... -->
+            </header>
+
+            <div class="dashboard-content">
+                <!-- Beslenme Özeti -->
+                <div class="nutrition-summary">
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="summary-details">
+                            <h3>1850 / 2200</h3>
+                            <p>Günlük Kalori</p>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 84%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="macro-cards">
+                        <div class="macro-card protein">
+                            <h4>Protein</h4>
+                            <p>120g / 150g</p>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 80%"></div>
+                            </div>
+                        </div>
+                        <div class="macro-card carbs">
+                            <h4>Karbonhidrat</h4>
+                            <p>200g / 250g</p>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 80%"></div>
+                            </div>
+                        </div>
+                        <div class="macro-card fat">
+                            <h4>Yağ</h4>
+                            <p>65g / 80g</p>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 81%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Günlük Öğünler -->
+                <div class="meals-section">
+                    <div class="section-header">
+                        <h2>Günlük Öğünler</h2>
+                        <button class="btn btn-primary"><i class="fas fa-plus"></i> Öğün Ekle</button>
+                    </div>
+
+                    <div class="meals-container">
+                        <div class="meal-card">
+                            <div class="meal-header">
+                                <h3><i class="fas fa-sun"></i> Kahvaltı</h3>
+                                <span>08:00</span>
+                            </div>
+                            <div class="meal-items">
+                                <div class="meal-item">
+                                    <span>Yulaf Ezmesi</span>
+                                    <span>250 kcal</span>
+                                </div>
+                                <div class="meal-item">
+                                    <span>Muz</span>
+                                    <span>105 kcal</span>
+                                </div>
+                                <div class="meal-item">
+                                    <span>Badem</span>
+                                    <span>80 kcal</span>
+                                </div>
+                            </div>
+                            <div class="meal-footer">
+                                <span>Toplam: 435 kcal</span>
+                                <button class="btn btn-outline-small">Düzenle</button>
+                            </div>
+                        </div>
+
+                        <div class="meal-card">
+                            <div class="meal-header">
+                                <h3><i class="fas fa-cloud-sun"></i> Öğle Yemeği</h3>
+                                <span>13:00</span>
+                            </div>
+                            <div class="meal-items">
+                                <div class="meal-item">
+                                    <span>Tavuk Göğsü</span>
+                                    <span>165 kcal</span>
+                                </div>
+                                <div class="meal-item">
+                                    <span>Bulgur Pilavı</span>
+                                    <span>220 kcal</span>
+                                </div>
+                                <div class="meal-item">
+                                    <span>Mevsim Salata</span>
+                                    <span>85 kcal</span>
+                                </div>
+                            </div>
+                            <div class="meal-footer">
+                                <span>Toplam: 470 kcal</span>
+                                <button class="btn btn-outline-small">Düzenle</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Önerilen Tarifler -->
+                <div class="recipes-section">
+                    <h2>Önerilen Sağlıklı Tarifler</h2>
+                    <div class="recipes-grid">
+                        <div class="recipe-card">
+                            <img src="../assets/images/recipe1.jpg" alt="Sağlıklı Kahvaltı">
+                            <div class="recipe-content">
+                                <h4>Protein Smoothie Bowl</h4>
+                                <p>350 kcal | 15dk</p>
+                                <button class="btn btn-outline-small">Tarifi Gör</button>
+                            </div>
+                        </div>
+                        <!-- Diğer tarifler buraya eklenecek -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="../assets/js/dashboard.js"></script>
+    <script src="../assets/js/nutrition.js"></script>
+</body>
+</html> 
