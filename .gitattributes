@@ -1,1 +1,2 @@
 FitApp/* filter=lfs diff=lfs merge=lfs -text
+FitApp filter=lfs diff=lfs merge=lfs -text
