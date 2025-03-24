@@ -1,4 +1,6 @@
-# Dependencies
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# dependencies
 node_modules/
 .expo/
 dist/
@@ -11,23 +13,50 @@ npm-debug.*
 *.orig.*
 web-build/
 
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-venv/
-.env
+# macOS
+.DS_Store
 
-# MongoDB
-data/
+# Temporary files
 *.log
+*.tmp
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Build files
+build/
+ios/build/
+android/build/
+android/app/build/
+
+# Cache
+.cache/
+.expo-shared/
+
+# Expo
+expo-env.d.ts
+
+# Metro
+.metro-health-check*
+
+# debug
+yarn-debug.*
+yarn-error.*
+
+# local env files
+.env*.local
+
+# typescript
+*.tsbuildinfo
+
+app-example
 
 # IDE
 .idea/
 .vscode/
 *.swp
 *.swo
-
-# OS
-.DS_Store
-Thumbs.db 
