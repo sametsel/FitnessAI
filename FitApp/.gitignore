@@ -1,0 +1,17 @@
+# Ignore everything except the specified folders
+/*
+!app/
+!assets/
+!scripts/
+!src/
+
+# Ignore specific files within these folders (if needed)
+# e.g. ignore node_modules
+node_modules/
+
+# Other common files to ignore
+*.log
+*.env
+*.DS_Store
+*.idea/
+*.vscode/

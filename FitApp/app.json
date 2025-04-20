@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "FitApp",
+    "slug": "fitapp",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "fitapp",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.fitapp"
+    },
+    "android": {
+      "package": "com.yourcompany.fitapp"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font"
+    ],
+    "newArchEnabled": true
+  }
+}

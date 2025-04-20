@@ -1,1 +1,0 @@
-from database.mongodb import users_collection, ai_recommendations_collection 
