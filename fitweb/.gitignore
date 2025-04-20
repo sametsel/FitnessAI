@@ -1,7 +1,4 @@
-# Dependencies
-node_modules/
-dist/
-build/
+
 
 # Environment variables
 .env
