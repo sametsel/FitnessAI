@@ -1,83 +1,114 @@
 const mongoose = require('mongoose');
 
-const mealSchema = new mongoose.Schema({
+const nutritionSchema = new mongoose.Schema({
+  userId: {
+    type: String,
+    required: [true, 'Kullanıcı ID alanı zorunludur'],
+    ref: 'User'
+  },
+  date: {
+    type: Date,
+    required: [true, 'Tarih alanı zorunludur']
+  },
+  meals: [{
     name: {
-        type: String,
-        required: [true, 'Öğün adı zorunludur']
-    },
-    foods: [{
-        name: {
-            type: String,
-            required: [true, 'Yiyecek adı zorunludur']
-        },
-        portion: {
-            type: Number,
-            required: [true, 'Porsiyon miktarı zorunludur']
-        },
-        unit: {
-            type: String,
-            required: [true, 'Birim zorunludur']
-        },
-        calories: {
-            type: Number,
-            required: [true, 'Kalori miktarı zorunludur']
-        },
-        protein: Number,
-        carbs: Number,
-        fat: Number
-    }],
-    totalCalories: {
-        type: Number,
-        default: 0
-    },
-    time: {
-        type: String,
-        required: [true, 'Öğün zamanı zorunludur']
-    }
-});
-
-const nutritionPlanSchema = new mongoose.Schema({
-    user: {
-        type: mongoose.Schema.ObjectId,
-        ref: 'User',
-        required: [true, 'Beslenme planı bir kullanıcıya ait olmalıdır']
-    },
-    name: {
-        type: String,
-        required: [true, 'Plan adı zorunludur']
+      type: String,
+      required: [true, 'Öğün adı zorunludur']
     },
     type: {
-        type: String,
-        enum: ['günlük', 'haftalık', 'aylık'],
-        required: [true, 'Plan tipi zorunludur']
+      type: String,
+      enum: ['breakfast', 'lunch', 'dinner', 'snack'],
+      default: 'other'
     },
-    targetCalories: {
+    description: {
+      type: String
+    },
+    calories: {
+      type: Number,
+      required: [true, 'Kalori alanı zorunludur'],
+      min: [0, 'Kalori negatif olamaz']
+    },
+    protein: {
+      type: Number,
+      required: [true, 'Protein alanı zorunludur'],
+      min: [0, 'Protein negatif olamaz']
+    },
+    carbs: {
+      type: Number,
+      required: [true, 'Karbonhidrat alanı zorunludur'],
+      min: [0, 'Karbonhidrat negatif olamaz']
+    },
+    fat: {
+      type: Number,
+      required: [true, 'Yağ alanı zorunludur'],
+      min: [0, 'Yağ negatif olamaz']
+    },
+    time: {
+      type: String,
+      required: [true, 'Öğün zamanı zorunludur']
+    },
+    ingredients: [{
+      name: {
+        type: String,
+        required: [true, 'Malzeme adı zorunludur']
+      },
+      amount: {
+        type: String,
+        required: [true, 'Miktar zorunludur']
+      },
+      calories: {
         type: Number,
-        required: [true, 'Hedef kalori miktarı zorunludur']
-    },
-    meals: [mealSchema],
-    startDate: {
-        type: Date,
-        required: [true, 'Başlangıç tarihi zorunludur']
-    },
-    endDate: {
-        type: Date,
-        required: [true, 'Bitiş tarihi zorunludur']
-    },
-    notes: String,
-    macroTargets: {
-        protein: Number,
-        carbs: Number,
-        fat: Number
-    },
-    restrictions: [{
-        type: String,
-        enum: ['vejeteryan', 'vegan', 'glütensiz', 'laktozsuz', 'diğer']
+        required: [true, 'Kalori değeri zorunludur']
+      }
     }],
-    createdAt: {
-        type: Date,
-        default: Date.now
+    recipe: {
+      type: String
+    },
+    image: {
+      type: String
     }
+  }],
+  totalCalories: {
+    type: Number,
+    required: [true, 'Toplam kalori alanı zorunludur'],
+    min: [0, 'Toplam kalori negatif olamaz']
+  },
+  totalProtein: {
+    type: Number,
+    required: [true, 'Toplam protein alanı zorunludur'],
+    min: [0, 'Toplam protein negatif olamaz']
+  },
+  totalCarbs: {
+    type: Number,
+    required: [true, 'Toplam karbonhidrat alanı zorunludur'],
+    min: [0, 'Toplam karbonhidrat negatif olamaz']
+  },
+  totalFat: {
+    type: Number,
+    required: [true, 'Toplam yağ alanı zorunludur'],
+    min: [0, 'Toplam yağ negatif olamaz']
+  },
+  createdBy: {
+    type: String,
+    enum: ['user', 'ai', 'coach'],
+    default: 'user'
+  },
+  recommendations: [{
+    type: String
+  }],
+  notes: {
+    type: String
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
+}, {
+  timestamps: true
 });
 
-module.exports = mongoose.model('NutritionPlan', nutritionPlanSchema); 
+module.exports = mongoose.model('Nutrition', nutritionSchema); 

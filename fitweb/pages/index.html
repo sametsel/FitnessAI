@@ -2,10 +2,13 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>FitWeb - Akıllı Fitness Asistanı</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar">
@@ -22,6 +25,9 @@
             <a href="login.html" class="btn btn-login">Giriş Yap</a>
             <a href="register.html" class="btn btn-register">Kayıt Ol</a>
         </div>
+        <button class="mobile-menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
     </nav>
 
     <header class="hero">
@@ -51,6 +57,31 @@
                     <h3>İlerleme Takibi</h3>
                     <p>Detaylı raporlar ve analizler</p>
                 </div>
+                <div class="feature-card">
+                    <i class="fas fa-brain"></i>
+                    <h3>Yapay Zeka Desteği</h3>
+                    <p>Kişiselleştirilmiş öneriler ve analizler</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="download-app">
+            <div class="download-content">
+                <h2>Mobil Uygulamamızı İndirin</h2>
+                <p>Fitness yolculuğunuzu her yerde sürdürmek için mobil uygulamamızı hemen indirin.</p>
+                <div class="app-buttons">
+                    <a href="#" class="app-button">
+                        <i class="fab fa-google-play"></i>
+                        <span>Google Play</span>
+                    </a>
+                    <a href="#" class="app-button">
+                        <i class="fab fa-apple"></i>
+                        <span>App Store</span>
+                    </a>
+                </div>
+            </div>
+            <div class="app-preview">
+                <img src="../assets/images/app-preview.png" alt="FitApp Önizleme">
             </div>
         </section>
     </main>
@@ -75,6 +106,9 @@
                     <a href="#"><i class="fab fa-twitter"></i></a>
                 </div>
             </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 FitWeb. Tüm hakları saklıdır.</p>
         </div>
     </footer>
 

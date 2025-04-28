@@ -1,5 +1,9 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+require('dotenv').config();
+
+// JWT Secret Key from environment variables
+const JWT_SECRET = process.env.JWT_SECRET || 'gizli_anahtariniz';
 
 exports.protect = async (req, res, next) => {
     try {
@@ -12,31 +16,63 @@ exports.protect = async (req, res, next) => {
 
         if (!token) {
             return res.status(401).json({
-                status: 'fail',
-                message: 'Lütfen giriş yapın'
+                success: false,
+                message: 'Bu işlem için giriş yapmalısınız',
+                error: 'Token bulunamadı'
             });
         }
 
-        // Token'ı doğrula
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        try {
+            // Token'ı doğrula
+            const decoded = jwt.verify(token, JWT_SECRET);
 
-        // Kullanıcıyı bul
-        const user = await User.findById(decoded.id);
+            // Kullanıcıyı bul
+            const user = await User.findById(decoded.id);
 
-        if (!user) {
+            if (!user) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Bu token\'a ait kullanıcı artık mevcut değil',
+                    error: 'Kullanıcı bulunamadı'
+                });
+            }
+
+            // Kullanıcıyı request nesnesine ekle
+            req.user = user;
+            next();
+        } catch (jwtError) {
+            console.error('JWT doğrulama hatası:', jwtError);
+            
+            // JWT hatalarını kontrol et
+            if (jwtError.name === 'TokenExpiredError') {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Oturum süreniz doldu, lütfen tekrar giriş yapın',
+                    error: 'Token süresi doldu'
+                });
+            }
+            
+            if (jwtError.name === 'JsonWebTokenError') {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Geçersiz token, lütfen tekrar giriş yapın',
+                    error: 'Geçersiz token'
+                });
+            }
+            
+            // Diğer JWT hataları
             return res.status(401).json({
-                status: 'fail',
-                message: 'Bu token\'a ait kullanıcı artık mevcut değil'
+                success: false,
+                message: 'Yetkilendirme hatası, lütfen tekrar giriş yapın',
+                error: jwtError.message
             });
         }
-
-        // Kullanıcıyı request nesnesine ekle
-        req.user = user;
-        next();
     } catch (error) {
-        res.status(401).json({
-            status: 'fail',
-            message: 'Yetkisiz erişim'
+        console.error('Auth middleware hatası:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Sunucu hatası',
+            error: 'Yetkilendirme işlemi sırasında bir hata oluştu'
         });
     }
 }; 

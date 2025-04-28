@@ -1,5 +1,6 @@
-import { api } from './api';
+import axios from 'axios';
 import { UserWithoutPassword } from '../types';
+import { API_URL } from '../config';
 
 export interface UserProfile extends UserWithoutPassword {
   fitnessLevel: 'beginner' | 'intermediate' | 'advanced';
@@ -87,40 +88,64 @@ interface DietPlan {
 }
 
 class UserService {
+  private api = axios.create({
+    baseURL: API_URL,
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  });
+
+  setAuthToken(token: string) {
+    if (token) {
+      this.api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    } else {
+      delete this.api.defaults.headers.common['Authorization'];
+    }
+  }
+
   async getProfile(): Promise<UserProfile> {
-    return api.get<UserProfile>('/users/profile');
+    const response = await this.api.get<UserProfile>('/users/profile');
+    return response.data;
   }
 
   async updateProfile(data: Partial<UserProfile>): Promise<UserProfile> {
-    return api.put<UserProfile>('/users/profile', data);
+    const response = await this.api.put<UserProfile>('/users/profile', data);
+    return response.data;
   }
 
   async getUserStats(): Promise<UserStats> {
-    return api.get<UserStats>('/users/stats');
+    const response = await this.api.get<UserStats>('/users/stats');
+    return response.data;
   }
 
   async getUserWorkoutHistory(): Promise<WorkoutHistory[]> {
-    return api.get<WorkoutHistory[]>('/users/workouts/history');
+    const response = await this.api.get<WorkoutHistory[]>('/users/workouts/history');
+    return response.data;
   }
 
   async getUserNutritionHistory(): Promise<NutritionHistory[]> {
-    return api.get<NutritionHistory[]>('/users/nutrition/history');
+    const response = await this.api.get<NutritionHistory[]>('/users/nutrition/history');
+    return response.data;
   }
 
   async getUserProgress(): Promise<UserProgress> {
-    return api.get<UserProgress>('/users/progress');
+    const response = await this.api.get<UserProgress>('/users/progress');
+    return response.data;
   }
 
   async updateUserSettings(settings: UserSettings): Promise<UserSettings> {
-    return api.put<UserSettings>('/users/settings', settings);
+    const response = await this.api.put<UserSettings>('/users/settings', settings);
+    return response.data;
   }
 
   async getFitnessProgram(): Promise<FitnessProgram> {
-    return api.get<FitnessProgram>('/users/fitness-program');
+    const response = await this.api.get<FitnessProgram>('/users/fitness-program');
+    return response.data;
   }
 
   async getDietPlan(): Promise<DietPlan> {
-    return api.get<DietPlan>('/users/diet-plan');
+    const response = await this.api.get<DietPlan>('/users/diet-plan');
+    return response.data;
   }
 }
 

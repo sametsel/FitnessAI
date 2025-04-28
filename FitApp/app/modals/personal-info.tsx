@@ -4,7 +4,7 @@ import { useAuth } from '../../src/context/AuthContext';
 import { Card } from '../../src/components/Card';
 import { Input } from '../../src/components/Input';
 import { Button } from '../../src/components/Button';
-import { theme } from '../../src/theme';
+import { theme } from '../../src/theme/theme';
 import { StyleGuide } from '../../src/styles/StyleGuide';
 
 export default function PersonalInfoScreen() {
@@ -12,7 +12,7 @@ export default function PersonalInfoScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      <Card variant="elevated" style={styles.card}>
+      <Card style={styles.card}>
         <Input
           label="Ad Soyad"
           value={user?.name || ''}
@@ -46,10 +46,10 @@ export default function PersonalInfoScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background.primary,
+    backgroundColor: theme.colors.background.default,
     padding: StyleGuide.layout.screenPadding,
   },
   card: {
-    marginBottom: StyleGuide.layout.containerSpacing,
+    marginBottom: StyleGuide.layout.spacing,
   },
 }); 

@@ -8,19 +8,63 @@
     <link rel="stylesheet" href="../assets/css/dashboard.css">
     <link rel="stylesheet" href="../assets/css/nutrition.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Takvim için flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
     <div class="dashboard-container">
         <aside class="sidebar">
-            <!-- ... mevcut sidebar içeriği ... -->
+            <div class="sidebar-header">
+                <img src="../assets/images/logo.png" alt="FitWeb Logo">
+                <span class="sidebar-close"><i class="fas fa-times"></i></span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html"><i class="fas fa-home"></i> Ana Sayfa</a>
+                <a href="workout.html"><i class="fas fa-dumbbell"></i> Antrenmanlar</a>
+                <a href="nutrition.html" class="active"><i class="fas fa-apple-alt"></i> Beslenme</a>
+                <a href="profile.html"><i class="fas fa-user"></i> Profil</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+            </div>
         </aside>
 
         <main class="main-content">
             <header class="dashboard-header">
-                <!-- ... mevcut header içeriği ... -->
+                <button class="menu-toggle"><i class="fas fa-bars"></i></button>
+                <div class="user-menu">
+                    <span class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count">3</span>
+                    </span>
+                    <div class="user-profile">
+                        <img src="../assets/images/avatar.png" alt="Kullanıcı">
+                        <span id="userGreeting">Hoşgeldin, Kullanıcı</span>
+                    </div>
+                </div>
             </header>
 
             <div class="dashboard-content">
+                <!-- Tarih Seçici -->
+                <div class="date-picker-container">
+                    <button class="date-nav-btn prev-date">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="date-display">
+                        <input type="text" id="date-picker" class="date-picker" placeholder="Tarih Seçin">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <button class="date-nav-btn next-date">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <!-- Yükleniyor Göstergesi -->
+                <div id="loading-indicator" class="loading-container" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Veriler yükleniyor...</p>
+                </div>
+
                 <!-- Beslenme Özeti -->
                 <div class="nutrition-summary">
                     <div class="summary-card">
@@ -28,10 +72,10 @@
                             <i class="fas fa-fire"></i>
                         </div>
                         <div class="summary-details">
-                            <h3>1850 / 2200</h3>
+                            <h3><span id="current-calories">0</span> / <span id="target-calories">0</span></h3>
                             <p>Günlük Kalori</p>
                             <div class="progress-bar">
-                                <div class="progress" style="width: 84%"></div>
+                                <div id="calories-progress" class="progress" style="width: 0%"></div>
                             </div>
                         </div>
                     </div>
@@ -39,23 +83,23 @@
                     <div class="macro-cards">
                         <div class="macro-card protein">
                             <h4>Protein</h4>
-                            <p>120g / 150g</p>
+                            <p><span id="current-protein">0</span>g / <span id="target-protein">0</span>g</p>
                             <div class="progress-bar">
-                                <div class="progress" style="width: 80%"></div>
+                                <div id="protein-progress" class="progress" style="width: 0%"></div>
                             </div>
                         </div>
                         <div class="macro-card carbs">
                             <h4>Karbonhidrat</h4>
-                            <p>200g / 250g</p>
+                            <p><span id="current-carbs">0</span>g / <span id="target-carbs">0</span>g</p>
                             <div class="progress-bar">
-                                <div class="progress" style="width: 80%"></div>
+                                <div id="carbs-progress" class="progress" style="width: 0%"></div>
                             </div>
                         </div>
                         <div class="macro-card fat">
                             <h4>Yağ</h4>
-                            <p>65g / 80g</p>
+                            <p><span id="current-fat">0</span>g / <span id="target-fat">0</span>g</p>
                             <div class="progress-bar">
-                                <div class="progress" style="width: 81%"></div>
+                                <div id="fat-progress" class="progress" style="width: 0%"></div>
                             </div>
                         </div>
                     </div>
@@ -65,80 +109,104 @@
                 <div class="meals-section">
                     <div class="section-header">
                         <h2>Günlük Öğünler</h2>
-                        <button class="btn btn-primary"><i class="fas fa-plus"></i> Öğün Ekle</button>
+                        <button id="add-meal-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Öğün Ekle</button>
                     </div>
 
-                    <div class="meals-container">
-                        <div class="meal-card">
-                            <div class="meal-header">
-                                <h3><i class="fas fa-sun"></i> Kahvaltı</h3>
-                                <span>08:00</span>
-                            </div>
-                            <div class="meal-items">
-                                <div class="meal-item">
-                                    <span>Yulaf Ezmesi</span>
-                                    <span>250 kcal</span>
-                                </div>
-                                <div class="meal-item">
-                                    <span>Muz</span>
-                                    <span>105 kcal</span>
-                                </div>
-                                <div class="meal-item">
-                                    <span>Badem</span>
-                                    <span>80 kcal</span>
-                                </div>
-                            </div>
-                            <div class="meal-footer">
-                                <span>Toplam: 435 kcal</span>
-                                <button class="btn btn-outline-small">Düzenle</button>
-                            </div>
-                        </div>
+                    <div id="meals-container" class="meals-container">
+                        <!-- Öğünler JavaScript ile doldurulacak -->
+                    </div>
+                </div>
 
-                        <div class="meal-card">
-                            <div class="meal-header">
-                                <h3><i class="fas fa-cloud-sun"></i> Öğle Yemeği</h3>
-                                <span>13:00</span>
-                            </div>
-                            <div class="meal-items">
-                                <div class="meal-item">
-                                    <span>Tavuk Göğsü</span>
-                                    <span>165 kcal</span>
-                                </div>
-                                <div class="meal-item">
-                                    <span>Bulgur Pilavı</span>
-                                    <span>220 kcal</span>
-                                </div>
-                                <div class="meal-item">
-                                    <span>Mevsim Salata</span>
-                                    <span>85 kcal</span>
-                                </div>
-                            </div>
-                            <div class="meal-footer">
-                                <span>Toplam: 470 kcal</span>
-                                <button class="btn btn-outline-small">Düzenle</button>
-                            </div>
-                        </div>
+                <!-- Yapay Zeka Önerileri -->
+                <div class="ai-recommendations-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-robot"></i> Yapay Zeka Önerileri</h2>
+                        <button id="toggle-recommendations-btn" class="btn btn-outline">Önerileri Göster</button>
+                    </div>
+                    
+                    <div id="recommendations-container" class="recommendations-container" style="display: none;">
+                        <!-- Yapay zeka önerileri burada gösterilecek -->
                     </div>
                 </div>
 
                 <!-- Önerilen Tarifler -->
                 <div class="recipes-section">
                     <h2>Önerilen Sağlıklı Tarifler</h2>
-                    <div class="recipes-grid">
-                        <div class="recipe-card">
-                            <img src="../assets/images/recipe1.jpg" alt="Sağlıklı Kahvaltı">
-                            <div class="recipe-content">
-                                <h4>Protein Smoothie Bowl</h4>
-                                <p>350 kcal | 15dk</p>
-                                <button class="btn btn-outline-small">Tarifi Gör</button>
-                            </div>
-                        </div>
-                        <!-- Diğer tarifler buraya eklenecek -->
+                    <div id="recipes-grid" class="recipes-grid">
+                        <!-- Tarifler JavaScript ile doldurulacak -->
                     </div>
                 </div>
             </div>
         </main>
     </div>
+
+    <!-- Öğün Ekleme Modal -->
+    <div id="add-meal-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Öğün Ekle</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="add-meal-form">
+                    <div class="form-group">
+                        <label for="meal-type">Öğün Tipi</label>
+                        <select id="meal-type" required>
+                            <option value="breakfast">Kahvaltı</option>
+                            <option value="lunch">Öğle Yemeği</option>
+                            <option value="dinner">Akşam Yemeği</option>
+                            <option value="snack">Atıştırmalık</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="meal-time">Saat</label>
+                        <input type="time" id="meal-time" required>
+                    </div>
+                    <div class="food-items-container">
+                        <h3>Yiyecekler</h3>
+                        <div id="food-items">
+                            <div class="food-item">
+                                <div class="form-group">
+                                    <label>Yiyecek Adı</label>
+                                    <input type="text" class="food-name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Porsiyon</label>
+                                    <input type="text" class="food-portion" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Kalori</label>
+                                    <input type="number" class="food-calories" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Protein (g)</label>
+                                    <input type="number" class="food-protein" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Karbonhidrat (g)</label>
+                                    <input type="number" class="food-carbs" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Yağ (g)</label>
+                                    <input type="number" class="food-fat" required>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" id="add-food-btn" class="btn btn-outline-small">
+                            <i class="fas fa-plus"></i> Yiyecek Ekle
+                        </button>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="button" class="btn btn-outline" id="cancel-meal-btn">İptal</button>
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../assets/js/dashboard.js"></script>
     <script src="../assets/js/nutrition.js"></script>
 </body>

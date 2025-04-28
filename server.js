@@ -1,6 +1,9 @@
 const express = require('express');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
+const workoutRoutes = require('./routes/workoutRoutes');
+const nutritionRoutes = require('./routes/nutritionRoutes');
+const dailySummaryRoutes = require('./routes/dailySummary');
 const cors = require('cors');
 require('dotenv').config();
 
@@ -9,8 +12,18 @@ const app = express();
 // MongoDB bağlantısı
 connectDB();
 
+// CORS ayarları
+app.use(cors({
+  origin: '*', // Tüm kaynaklara izin ver (geliştirme sırasında)
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  exposedHeaders: ['Content-Length', 'Authorization'],
+  credentials: true,
+  preflightContinue: false,
+  optionsSuccessStatus: 204
+}));
+
 // Middleware
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -33,8 +46,12 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Routes
-app.use('/api/users', userRoutes);
+// API Routes
+app.use('/api/auth', userRoutes); // Auth rotaları
+app.use('/api/users', userRoutes); // Kullanıcı rotaları
+app.use('/api/workouts', workoutRoutes); // Workout rotaları
+app.use('/api/nutrition', nutritionRoutes);
+app.use('/api/daily-summary', dailySummaryRoutes); // Günlük özet rotaları
 
 // Ana route
 app.get('/', (req, res) => {

@@ -5,36 +5,37 @@ export const StyleGuide = {
   // Layout & Spacing
   layout: {
     screenPadding: 16,
-    containerSpacing: 24,
-    sectionSpacing: 20,
-    elementSpacing: 12,
     padding: 16,
-    spacing: 8
+    spacing: 16,
+    borderRadius: 8,
   },
 
   // Typography
   typography: {
     // Başlıklar
     h1: {
-      fontSize: 24,
-      fontWeight: '700' as const,
-      color: '#000',
-      marginBottom: 16
+      fontSize: 32,
+      fontWeight: 'bold' as TextStyle['fontWeight'],
     },
     h2: {
-      fontSize: 20,
-      fontWeight: '600' as const,
-      color: '#000',
-      marginBottom: 12
+      fontSize: 24,
+      fontWeight: 'bold' as TextStyle['fontWeight'],
     },
     h3: {
-      fontSize: 18,
-      fontWeight: '600' as const,
-      color: '#000',
-      marginBottom: 8
+      fontSize: 20,
+      fontWeight: 'bold' as TextStyle['fontWeight'],
     },
 
     // Metin stilleri
+    body1: {
+      fontSize: 16,
+    },
+    body2: {
+      fontSize: 14,
+    },
+    caption: {
+      fontSize: 12,
+    },
     body: {
       fontSize: 16,
       color: '#333'
@@ -44,14 +45,9 @@ export const StyleGuide = {
       fontWeight: '400' as TextStyle['fontWeight'],
       color: theme.colors.text.secondary,
     },
-    caption: {
-      fontSize: theme.typography.fontSize.xs,
-      fontWeight: '400' as TextStyle['fontWeight'],
-      color: theme.colors.text.secondary,
-    },
     label: {
       fontSize: 14,
-      fontWeight: '500' as const,
+      fontWeight: '500' as TextStyle['fontWeight'],
       color: '#666',
       marginBottom: 5
     }
@@ -118,5 +114,38 @@ export const StyleGuide = {
     small: 4,
     medium: 8,
     large: 12
-  }
+  },
+
+  shadows: {
+    small: {
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 2,
+    },
+    medium: {
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 4,
+      },
+      shadowOpacity: 0.30,
+      shadowRadius: 4.65,
+      elevation: 4,
+    },
+    large: {
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 6,
+      },
+      shadowOpacity: 0.37,
+      shadowRadius: 7.49,
+      elevation: 6,
+    },
+  },
 }; 

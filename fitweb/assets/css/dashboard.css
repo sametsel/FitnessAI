@@ -1,6 +1,29 @@
+/* Dashboard Stilleri */
+
+/* Ana Yapı */
 :root {
-    --sidebar-width: 250px;
-    --header-height: 70px;
+    --primary-color: #00adf5;
+    --primary-light: rgba(0, 173, 245, 0.1);
+    --secondary-color: #ff9500;
+    --success-color: #4caf50;
+    --warning-color: #ff9800;
+    --danger-color: #f44336;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --text-light: #999999;
+    --bg-light: #f8f9fa;
+    --bg-white: #ffffff;
+    --border-color: #eeeeee;
+    --border-radius: 10px;
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-light);
+    color: var(--text-primary);
 }
 
 .dashboard-container {
@@ -8,22 +31,27 @@
     min-height: 100vh;
 }
 
-/* Sidebar Styles */
+/* Sidebar */
 .sidebar {
-    width: var(--sidebar-width);
-    background: var(--dark-color);
-    color: white;
+    width: 260px;
+    background-color: var(--bg-white);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
     position: fixed;
-    height: 100vh;
+    left: 0;
+    top: 0;
+    height: 100%;
+    z-index: 100;
     transition: transform 0.3s ease;
 }
 
 .sidebar-header {
-    padding: 1rem;
+    padding: 20px;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .sidebar-header img {
@@ -33,229 +61,506 @@
 .sidebar-close {
     display: none;
     cursor: pointer;
+    font-size: 20px;
+    color: var(--text-secondary);
 }
 
 .sidebar-nav {
-    padding: 1rem 0;
+    flex: 1;
+    padding: 20px 0;
 }
 
 .sidebar-nav a {
     display: flex;
     align-items: center;
-    padding: 1rem;
-    color: white;
+    padding: 15px 20px;
+    color: var(--text-secondary);
     text-decoration: none;
-    transition: background 0.3s ease;
+    transition: background-color 0.2s;
+}
+
+.sidebar-nav a:hover {
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+}
+
+.sidebar-nav a.active {
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+    border-left: 4px solid var(--primary-color);
 }
 
 .sidebar-nav a i {
-    margin-right: 1rem;
+    margin-right: 10px;
     width: 20px;
-}
-
-.sidebar-nav a.active,
-.sidebar-nav a:hover {
-    background: rgba(255,255,255,0.1);
+    text-align: center;
 }
 
 .sidebar-footer {
-    padding: 1rem;
-    border-top: 1px solid rgba(255,255,255,0.1);
-    position: absolute;
-    bottom: 0;
-    width: 100%;
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
 }
 
-/* Main Content Styles */
+.sidebar-footer a {
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.sidebar-footer a:hover {
+    color: var(--danger-color);
+}
+
+.sidebar-footer a i {
+    margin-right: 10px;
+}
+
+/* Ana İçerik */
 .main-content {
     flex: 1;
-    margin-left: var(--sidebar-width);
-    background: #f5f6fa;
+    margin-left: 260px;
+    padding: 20px;
 }
 
 .dashboard-header {
-    height: var(--header-height);
-    background: white;
-    padding: 0 2rem;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 .menu-toggle {
     display: none;
     background: none;
     border: none;
-    font-size: 1.5rem;
+    font-size: 20px;
     cursor: pointer;
-    color: var(--dark-color);
+    color: var(--text-secondary);
 }
 
 .user-menu {
     display: flex;
     align-items: center;
-    gap: 2rem;
 }
 
 .notification-bell {
     position: relative;
+    margin-right: 20px;
     cursor: pointer;
+    color: var(--text-secondary);
 }
 
 .notification-count {
     position: absolute;
     top: -5px;
     right: -5px;
-    background: var(--danger-color);
+    width: 16px;
+    height: 16px;
+    background-color: var(--danger-color);
     color: white;
-    font-size: 0.7rem;
-    padding: 2px 5px;
-    border-radius: 10px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
 }
 
 .user-profile {
     display: flex;
     align-items: center;
-    gap: 1rem;
 }
 
 .user-profile img {
     width: 40px;
     height: 40px;
     border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
 }
 
-/* Dashboard Content Styles */
-.dashboard-content {
-    padding: 2rem;
+.user-profile span {
+    color: var(--text-secondary);
 }
 
+/* Yükleme Göstergesi */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Kart Stilleri */
+.card {
+    background-color: var(--bg-white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.card-title {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: var(--text-primary);
+}
+
+/* Takvim Kartı */
+.calendar-container {
+    width: 100%;
+}
+
+/* Özet Kartları */
 .summary-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
 }
 
-.card {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.summary-card {
+    background-color: var(--bg-white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
     display: flex;
     align-items: center;
-    gap: 1.5rem;
 }
 
 .card-icon {
     width: 50px;
     height: 50px;
-    background: var(--primary-color);
-    color: white;
-    border-radius: 10px;
+    border-radius: 50%;
+    background-color: var(--primary-light);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
+    margin-right: 15px;
+    color: var(--primary-color);
+    font-size: 20px;
+}
+
+.card-info {
+    flex: 1;
 }
 
 .card-info h3 {
-    margin: 0;
-    font-size: 1.5rem;
+    margin: 0 0 5px 0;
+    font-size: 24px;
 }
 
 .card-info p {
     margin: 0;
-    color: #666;
+    color: var(--text-secondary);
 }
 
-.program-card {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+/* Antrenman Kartı */
+.workout-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
-.program-items {
-    margin-top: 1.5rem;
+.workout-info {
+    flex: 1;
+    min-width: 220px;
 }
 
-.program-item {
+.workout-info h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+}
+
+.workout-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.workout-meta span {
     display: flex;
     align-items: center;
-    padding: 1rem;
-    border-bottom: 1px solid #eee;
+    color: var(--text-secondary);
+    font-size: 14px;
 }
 
-.program-item:last-child {
-    border-bottom: none;
+.workout-meta span i {
+    margin-right: 5px;
+    font-size: 16px;
 }
 
-.time {
-    width: 80px;
-    color: #666;
+.workout-exercises {
+    margin-bottom: 10px;
+    color: var(--text-secondary);
+    font-size: 14px;
 }
 
-.program-content {
+.workout-status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-pending {
+    background-color: rgba(255, 152, 0, 0.1);
+    color: var(--warning-color);
+}
+
+.status-ongoing {
+    background-color: rgba(0, 173, 245, 0.1);
+    color: var(--primary-color);
+}
+
+.status-completed {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.workout-actions {
+    margin-top: 15px;
+}
+
+/* Beslenme Özeti */
+.nutrition-overview {
+    margin-bottom: 20px;
+}
+
+.nutrition-calories {
+    margin-bottom: 15px;
+}
+
+.calories-counter {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.current-calories {
+    color: var(--primary-color);
+}
+
+.calories-divider {
+    color: var(--text-light);
+    margin: 0 5px;
+}
+
+.target-calories {
+    color: var(--text-secondary);
+}
+
+.calories-label {
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background-color: var(--primary-color);
+    border-radius: 5px;
+    transition: width 0.3s ease;
+}
+
+.nutrition-macros {
+    display: flex;
+    justify-content: space-between;
+}
+
+.macro-item {
+    text-align: center;
+}
+
+.macro-value {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.macro-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+/* Öğünler */
+.meals-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.meal-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background-color: var(--bg-light);
+    border-radius: var(--border-radius);
+}
+
+.meal-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    color: var(--primary-color);
+}
+
+.meal-info {
     flex: 1;
 }
 
-.program-content h4 {
-    margin: 0;
+.meal-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
 }
 
-.program-content p {
-    margin: 5px 0 0;
-    color: #666;
-    font-size: 0.9rem;
+.meal-time {
+    color: var(--text-secondary);
+    font-size: 14px;
 }
 
-.status {
-    padding: 5px 10px;
-    border-radius: 15px;
-    font-size: 0.8rem;
+.meal-calories {
+    font-weight: 600;
+    color: var(--primary-color);
 }
 
-.status.completed {
-    background: #e8f5e9;
-    color: #2e7d32;
+/* Boş durum */
+.empty-state {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-secondary);
 }
 
-.status.pending {
-    background: #fff3e0;
-    color: #f57c00;
+.empty-state p {
+    margin-bottom: 15px;
+    font-style: italic;
 }
 
-.status.upcoming {
-    background: #e3f2fd;
-    color: #1976d2;
+/* Buton Stilleri */
+.btn {
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
 }
 
-/* Responsive Styles */
+.btn i {
+    margin-right: 5px;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0095d9;
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-outline:hover {
+    background-color: var(--primary-light);
+}
+
+/* Flatpickr Özel Stilleri */
+.flatpickr-calendar {
+    box-shadow: var(--shadow) !important;
+    border-radius: var(--border-radius) !important;
+    border: none !important;
+    width: 100% !important;
+}
+
+.flatpickr-day.marked {
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+/* Duyarlı Tasarım */
 @media (max-width: 768px) {
     .sidebar {
         transform: translateX(-100%);
-        z-index: 1000;
     }
-
+    
     .sidebar.active {
         transform: translateX(0);
     }
-
+    
     .sidebar-close {
         display: block;
     }
-
+    
     .main-content {
         margin-left: 0;
     }
-
+    
     .menu-toggle {
         display: block;
     }
-
-    .dashboard-content {
-        padding: 1rem;
+    
+    .summary-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .workout-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .workout-actions {
+        margin-top: 15px;
+        width: 100%;
+    }
+    
+    .nutrition-macros {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .macro-item {
+        flex: 1;
+        min-width: 100px;
     }
 } 

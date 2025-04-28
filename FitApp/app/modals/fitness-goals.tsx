@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from 'react-native';
-import { theme } from '../../src/theme';
+import { theme } from '../../src/theme/theme';
 import { StyleGuide } from '../../src/styles/StyleGuide';
 
 export default function FitnessGoalsScreen() {
@@ -14,6 +14,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: StyleGuide.layout.screenPadding,
-    backgroundColor: theme.colors.background.primary,
+    backgroundColor: theme.colors.background.default,
   },
 }); 

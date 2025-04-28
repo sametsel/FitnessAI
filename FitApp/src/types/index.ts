@@ -15,12 +15,27 @@ export interface User {
   gender: Gender;
   goal: Goal;
   activityLevel: ActivityLevel;
+  profilePicture?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
 // Güvenlik için, password'ü hariç tutan bir tip de oluşturalım
-export type UserWithoutPassword = Omit<User, 'password'>;
+export interface UserWithoutPassword {
+  id: string;
+  _id?: string; // MongoDB'den gelen _id alanı için opsiyonel alan ekledik
+  name: string;
+  email: string;
+  profilePicture?: string;
+  age?: number;
+  weight?: number;
+  height?: number;
+  gender?: Gender;
+  goal?: Goal;
+  activityLevel?: ActivityLevel;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 // Form tipleri
 export interface RegisterFormData {
@@ -47,23 +62,61 @@ export interface AuthContextType {
   updateProfile: (data: Partial<UserWithoutPassword>) => Promise<void>;
 }
 
-export interface ApiResponse {
+export interface ApiResponse<T> {
   success: boolean;
-  message: string;
-  data?: any;
+  data: T;
+  message?: string;
   token?: string;
 }
 
 export interface Workout {
-  _id: string;
+  id: string;
   userId: string;
-  name: string;
-  description: string;
-  exercises: Exercise[];
+  date: Date;
+  type: string;
   duration: number;
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
-  createdAt: Date;
-  updatedAt: Date;
+  exercises: {
+    name: string;
+    sets: number;
+    reps: number;
+    weight?: number;
+  }[];
+  completed: boolean;
+}
+
+export interface Nutrition {
+  id: string;
+  userId: string;
+  date: Date;
+  meals: {
+    name: string;
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+    time: string;
+  }[];
+  totalCalories: number;
+  totalProtein: number;
+  totalCarbs: number;
+  totalFat: number;
+}
+
+export interface WorkoutListResponse {
+  workouts: Workout[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export interface WorkoutDetailResponse {
+  workout: Workout;
+  relatedWorkouts?: WorkoutWithoutUser[];
+  userStats?: {
+    completedWorkouts: number;
+    totalExercises: number;
+    averageWorkoutDuration: number;
+  };
 }
 
 export interface Exercise {
@@ -74,6 +127,7 @@ export interface Exercise {
   equipment: string;
   sets: number;
   reps: number;
+  weight: number;
   restTime: number;
   videoUrl?: string;
   imageUrl?: string;
@@ -164,8 +218,30 @@ export interface AuthResponse {
   token: string;
 }
 
+export interface UserResponse {
+  user: UserWithoutPassword;
+  stats?: {
+    totalWorkouts: number;
+    completedWorkouts: number;
+    totalExercises: number;
+    averageWorkoutDuration: number;
+  };
+}
+
+export interface LoginResponse {
+  user: UserWithoutPassword;
+  token: string;
+}
+
+export interface RegisterResponse {
+  user: UserWithoutPassword;
+  token: string;
+}
+
 export interface ApiError {
   message: string;
   code: string;
   status: number;
-} 
+}
+
+export type WorkoutWithoutUser = Omit<Workout, 'userId'>; 

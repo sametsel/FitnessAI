@@ -2,42 +2,45 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kayıt Ol - FitWeb</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/auth.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="auth-container">
         <div class="auth-card">
             <div class="auth-header">
                 <img src="../assets/images/logo.png" alt="FitWeb Logo" class="auth-logo">
-                <h2>Yeni Hesap Oluştur</h2>
+                <h2>Kayıt Ol</h2>
             </div>
+            <div id="error-message" class="error-message" style="display: none;"></div>
             <form id="registerForm" class="auth-form">
                 <div class="form-group">
                     <i class="fas fa-user"></i>
-                    <input type="text" placeholder="Ad Soyad" required>
+                    <input type="text" name="name" placeholder="Adınız" required>
                 </div>
                 <div class="form-group">
                     <i class="fas fa-envelope"></i>
-                    <input type="email" placeholder="E-posta" required>
+                    <input type="email" name="email" placeholder="E-posta" required>
                 </div>
                 <div class="form-group">
                     <i class="fas fa-lock"></i>
-                    <input type="password" placeholder="Şifre" required>
+                    <input type="password" name="password" placeholder="Şifre" required>
                     <i class="fas fa-eye-slash password-toggle"></i>
                 </div>
                 <div class="form-group">
                     <i class="fas fa-lock"></i>
-                    <input type="password" placeholder="Şifre Tekrar" required>
+                    <input type="password" name="confirmPassword" placeholder="Şifre Tekrar" required>
                     <i class="fas fa-eye-slash password-toggle"></i>
                 </div>
                 <div class="form-options">
                     <label>
-                        <input type="checkbox" required> 
-                        <span>Kullanım koşullarını kabul ediyorum</span>
+                        <input type="checkbox" name="terms" required> Kullanım koşullarını ve gizlilik politikasını kabul ediyorum
                     </label>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Kayıt Ol</button>
@@ -45,8 +48,11 @@
             <div class="auth-footer">
                 <p>Zaten hesabınız var mı? <a href="login.html">Giriş Yap</a></p>
             </div>
+            <div class="back-to-home">
+                <a href="index.html"><i class="fas fa-arrow-left"></i> Ana Sayfaya Dön</a>
+            </div>
         </div>
     </div>
-    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/auth.js" type="module"></script>
 </body>
 </html> 

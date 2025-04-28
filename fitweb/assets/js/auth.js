@@ -1,4 +1,5 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+// API Servisini import et
+import { apiService } from '../../src/services/api.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     // Şifre göster/gizle fonksiyonu
@@ -24,40 +25,57 @@ document.addEventListener('DOMContentLoaded', function() {
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const email = this.querySelector('input[type="email"]').value;
-            const password = this.querySelector('input[type="password"]').value;
-            const rememberMe = this.querySelector('input[type="checkbox"]').checked;
-
-            console.log('Giriş denemesi:', { email, password });
+            // Giriş butonunu devre dışı bırak ve yükleniyor göster
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.textContent;
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Giriş yapılıyor...';
+            
+            // Hata mesajı konteynerini temizle
+            const errorContainer = document.getElementById('error-message');
+            if (errorContainer) {
+                errorContainer.textContent = '';
+                errorContainer.style.display = 'none';
+            }
+            
+            const email = this.querySelector('input[name="email"]').value.trim();
+            const password = this.querySelector('input[name="password"]').value;
+            const rememberMe = this.querySelector('input[name="rememberMe"]').checked;
 
             try {
-                console.log('API isteği gönderiliyor...');
-                const response = await fetch(`${API_BASE_URL}/users/auth/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email, password })
-                });
-
-                console.log('API yanıtı:', response.status);
-                const data = await response.json();
-                console.log('API verisi:', data);
-
-                if (response.ok) {
-                    console.log('Giriş başarılı, token kaydediliyor...');
-                    localStorage.setItem('token', data.token);
-                    if (rememberMe) {
-                        localStorage.setItem('rememberMe', 'true');
-                    }
-
-                    window.location.href = '../pages/dashboard.html';
-                } else {
-                    throw new Error(data.message || 'Giriş başarısız');
+                // API servisi ile giriş yap
+                const result = await apiService.login(email, password);
+                
+                if (rememberMe) {
+                    localStorage.setItem('rememberMe', 'true');
                 }
+
+                // Başarılı mesajı göster
+                if (errorContainer) {
+                    errorContainer.textContent = 'Giriş başarılı, yönlendiriliyorsunuz...';
+                    errorContainer.style.display = 'block';
+                    errorContainer.className = 'success-message';
+                }
+                
+                // Dashboard'a yönlendir
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
             } catch (error) {
                 console.error('Giriş hatası:', error);
-                alert(error.message);
+                
+                // Hata mesajını göster
+                if (errorContainer) {
+                    errorContainer.textContent = error.message || 'Giriş yapılırken bir hata oluştu. Lütfen bilgilerinizi kontrol edin.';
+                    errorContainer.style.display = 'block';
+                    errorContainer.className = 'error-message';
+                } else {
+                    alert(error.message || 'Giriş yapılırken bir hata oluştu.');
+                }
+                
+                // Giriş butonunu tekrar aktif et
+                submitButton.disabled = false;
+                submitButton.textContent = originalButtonText;
             }
         });
     }
@@ -68,58 +86,84 @@ document.addEventListener('DOMContentLoaded', function() {
         registerForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            // Kayıt butonunu devre dışı bırak ve yükleniyor göster
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.textContent;
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Kayıt yapılıyor...';
+            
+            // Hata mesajı konteynerini temizle
+            const errorContainer = document.getElementById('error-message');
+            if (errorContainer) {
+                errorContainer.textContent = '';
+                errorContainer.style.display = 'none';
+            }
+            
             const formData = {
-                name: this.querySelector('input[name="name"]').value,
-                email: this.querySelector('input[type="email"]').value,
+                name: this.querySelector('input[name="name"]').value.trim(),
+                email: this.querySelector('input[name="email"]').value.trim(),
                 password: this.querySelector('input[type="password"]').value,
                 confirmPassword: this.querySelector('input[name="confirmPassword"]').value
             };
 
-            console.log('Kayıt denemesi:', formData);
-
             if (formData.password !== formData.confirmPassword) {
-                alert('Şifreler eşleşmiyor!');
+                if (errorContainer) {
+                    errorContainer.textContent = 'Şifreler eşleşmiyor!';
+                    errorContainer.style.display = 'block';
+                    errorContainer.className = 'error-message';
+                } else {
+                    alert('Şifreler eşleşmiyor!');
+                }
+                
+                submitButton.disabled = false;
+                submitButton.textContent = originalButtonText;
                 return;
             }
 
             try {
-                console.log('API isteği gönderiliyor...');
-                const response = await fetch(`${API_BASE_URL}/users/auth/register`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        name: formData.name,
-                        email: formData.email,
-                        password: formData.password
-                    })
+                // API servisi ile kayıt ol
+                const result = await apiService.register({
+                    name: formData.name,
+                    email: formData.email,
+                    password: formData.password
                 });
-
-                console.log('API yanıtı:', response.status);
-                const data = await response.json();
-                console.log('API verisi:', data);
-
-                if (response.ok) {
-                    console.log('Kayıt başarılı, token kaydediliyor...');
-                    localStorage.setItem('token', data.token);
-                    window.location.href = '../pages/dashboard.html';
-                } else {
-                    throw new Error(data.message || 'Kayıt başarısız');
+                
+                // Başarılı mesajı göster
+                if (errorContainer) {
+                    errorContainer.textContent = 'Kayıt başarılı, yönlendiriliyorsunuz...';
+                    errorContainer.style.display = 'block';
+                    errorContainer.className = 'success-message';
                 }
+                
+                // Dashboard'a yönlendir
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
             } catch (error) {
                 console.error('Kayıt hatası:', error);
-                alert(error.message);
+                
+                // Hata mesajını göster
+                if (errorContainer) {
+                    errorContainer.textContent = error.message || 'Kayıt olurken bir hata oluştu. Lütfen bilgilerinizi kontrol edin.';
+                    errorContainer.style.display = 'block';
+                    errorContainer.className = 'error-message';
+                } else {
+                    alert(error.message || 'Kayıt olurken bir hata oluştu.');
+                }
+                
+                // Kayıt butonunu tekrar aktif et
+                submitButton.disabled = false;
+                submitButton.textContent = originalButtonText;
             }
         });
     }
 
     // Token kontrolü
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('@fitapp_token');
     if (token) {
         if (window.location.pathname.includes('login.html') || 
             window.location.pathname.includes('register.html')) {
-            window.location.href = '../pages/dashboard.html';
+            window.location.href = 'dashboard.html';
         }
     }
 }); 

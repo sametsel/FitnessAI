@@ -8,117 +8,212 @@
     <link rel="stylesheet" href="../assets/css/dashboard.css">
     <link rel="stylesheet" href="../assets/css/workout.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Takvim için flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar aynı kalacak -->
         <aside class="sidebar">
-            <!-- ... mevcut sidebar içeriği ... -->
+            <div class="sidebar-header">
+                <img src="../assets/images/logo.png" alt="FitWeb Logo">
+                <span class="sidebar-close"><i class="fas fa-times"></i></span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html"><i class="fas fa-home"></i> Ana Sayfa</a>
+                <a href="workout.html" class="active"><i class="fas fa-dumbbell"></i> Antrenmanlar</a>
+                <a href="nutrition.html"><i class="fas fa-apple-alt"></i> Beslenme</a>
+                <a href="profile.html"><i class="fas fa-user"></i> Profil</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+            </div>
         </aside>
 
         <main class="main-content">
             <header class="dashboard-header">
-                <!-- ... mevcut header içeriği ... -->
+                <button class="menu-toggle"><i class="fas fa-bars"></i></button>
+                <div class="user-menu">
+                    <span class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count">3</span>
+                    </span>
+                    <div class="user-profile">
+                        <img src="../assets/images/avatar.png" alt="Kullanıcı">
+                        <span id="userGreeting">Hoşgeldin, Kullanıcı</span>
+                    </div>
+                </div>
             </header>
 
             <div class="dashboard-content">
-                <div class="workout-header">
-                    <h1>Antrenman Programları</h1>
-                    <button class="btn btn-primary"><i class="fas fa-plus"></i> Yeni Program</button>
+                <!-- Tarih Seçici -->
+                <div class="date-picker-container">
+                    <button class="date-nav-btn prev-date">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="date-display">
+                        <input type="text" id="date-picker" class="date-picker" placeholder="Tarih Seçin">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <button class="date-nav-btn next-date">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
                 </div>
 
-                <!-- Antrenman Filtreleri -->
-                <div class="workout-filters">
-                    <div class="filter-group">
-                        <label>Zorluk Seviyesi:</label>
-                        <select>
-                            <option value="all">Tümü</option>
-                            <option value="beginner">Başlangıç</option>
-                            <option value="intermediate">Orta</option>
-                            <option value="advanced">İleri</option>
-                        </select>
+                <!-- Yükleniyor Göstergesi -->
+                <div id="loading-indicator" class="loading-container" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Veriler yükleniyor...</p>
+                </div>
+
+                <!-- Antrenman Özeti -->
+                <div class="workout-summary">
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="summary-details">
+                            <h3 id="workout-status">Antrenman Durumu</h3>
+                            <p id="workout-type">Antrenman Tipi</p>
+                            <div class="workout-actions">
+                                <button id="start-workout-btn" class="btn btn-primary">Antrenmanı Başlat</button>
+                                <button id="complete-workout-btn" class="btn btn-success" style="display: none;">Tamamla</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="filter-group">
-                        <label>Kategori:</label>
-                        <select>
-                            <option value="all">Tümü</option>
-                            <option value="cardio">Kardio</option>
-                            <option value="strength">Güç</option>
-                            <option value="flexibility">Esneklik</option>
-                        </select>
-                    </div>
-                    <div class="search-group">
-                        <input type="text" placeholder="Program ara...">
-                        <button><i class="fas fa-search"></i></button>
+
+                    <!-- Antrenman İstatistikleri -->
+                    <div class="stats-cards">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span id="calories-burned">0</span>
+                                <p>Yakılan Kalori</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span id="workout-duration">0 dk</span>
+                                <p>Süre</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span id="completed-workouts">0</span>
+                                <p>Tamamlanan</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Antrenman Programları Grid -->
-                <div class="workout-grid">
-                    <!-- Program Kartı 1 -->
-                    <div class="workout-card">
-                        <div class="workout-image">
-                            <img src="../assets/images/workout1.jpg" alt="Tam Vücut Antrenmanı">
-                            <span class="difficulty beginner">Başlangıç</span>
-                        </div>
-                        <div class="workout-info">
-                            <h3>Tam Vücut Antrenmanı</h3>
-                            <p>45 dakika | Güç Antrenmanı</p>
-                            <div class="workout-stats">
-                                <span><i class="fas fa-fire"></i> 400 kcal</span>
-                                <span><i class="fas fa-dumbbell"></i> 12 egzersiz</span>
-                            </div>
-                        </div>
-                        <div class="workout-actions">
-                            <button class="btn btn-outline"><i class="fas fa-play"></i> Başla</button>
-                            <button class="btn btn-icon"><i class="fas fa-heart"></i></button>
-                        </div>
+                <!-- Egzersiz Listesi -->
+                <div class="exercises-section">
+                    <div class="section-header">
+                        <h2>Egzersizler</h2>
+                        <button id="add-exercise-btn" class="btn btn-primary" style="display: none;"><i class="fas fa-plus"></i> Egzersiz Ekle</button>
                     </div>
 
-                    <!-- Program Kartı 2 -->
-                    <div class="workout-card">
-                        <div class="workout-image">
-                            <img src="../assets/images/workout2.jpg" alt="HIIT Kardio">
-                            <span class="difficulty intermediate">Orta</span>
-                        </div>
-                        <div class="workout-info">
-                            <h3>HIIT Kardio</h3>
-                            <p>30 dakika | Kardio</p>
-                            <div class="workout-stats">
-                                <span><i class="fas fa-fire"></i> 300 kcal</span>
-                                <span><i class="fas fa-dumbbell"></i> 8 egzersiz</span>
-                            </div>
-                        </div>
-                        <div class="workout-actions">
-                            <button class="btn btn-outline"><i class="fas fa-play"></i> Başla</button>
-                            <button class="btn btn-icon"><i class="fas fa-heart"></i></button>
+                    <div id="exercises-container" class="exercises-container">
+                        <!-- Egzersizler JavaScript ile doldurulacak -->
+                    </div>
+                </div>
+
+                <!-- Yapay Zeka Önerileri -->
+                <div class="ai-recommendations-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-robot"></i> Yapay Zeka Antrenman Önerileri</h2>
+                        <button id="toggle-recommendations-btn" class="btn btn-outline">Önerileri Göster</button>
+                    </div>
+                    
+                    <div id="recommendations-container" class="recommendations-container" style="display: none;">
+                        <!-- Yapay zeka önerileri burada gösterilecek -->
+                    </div>
+                </div>
+
+                <!-- Antrenman Geçmişi -->
+                <div class="workout-history-section">
+                    <div class="section-header">
+                        <h2>Antrenman Geçmişi</h2>
+                        <div class="history-filter">
+                            <label for="history-filter-select">Filtrele:</label>
+                            <select id="history-filter-select">
+                                <option value="week">Bu Hafta</option>
+                                <option value="month">Bu Ay</option>
+                                <option value="all">Tümü</option>
+                            </select>
                         </div>
                     </div>
-
-                    <!-- Program Kartı 3 -->
-                    <div class="workout-card">
-                        <div class="workout-image">
-                            <img src="../assets/images/workout3.jpg" alt="Yoga Flow">
-                            <span class="difficulty beginner">Başlangıç</span>
-                        </div>
-                        <div class="workout-info">
-                            <h3>Yoga Flow</h3>
-                            <p>60 dakika | Esneklik</p>
-                            <div class="workout-stats">
-                                <span><i class="fas fa-fire"></i> 200 kcal</span>
-                                <span><i class="fas fa-dumbbell"></i> 15 hareket</span>
-                            </div>
-                        </div>
-                        <div class="workout-actions">
-                            <button class="btn btn-outline"><i class="fas fa-play"></i> Başla</button>
-                            <button class="btn btn-icon"><i class="fas fa-heart"></i></button>
-                        </div>
+                    
+                    <div id="workout-history-container" class="workout-history-container">
+                        <!-- Geçmiş antrenmanlar JavaScript ile doldurulacak -->
                     </div>
                 </div>
             </div>
         </main>
     </div>
+
+    <!-- Egzersiz Ekleme Modal -->
+    <div id="add-exercise-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Egzersiz Ekle</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="add-exercise-form">
+                    <div class="form-group">
+                        <label for="exercise-name">Egzersiz Adı</label>
+                        <input type="text" id="exercise-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="exercise-type">Egzersiz Tipi</label>
+                        <select id="exercise-type" required>
+                            <option value="strength">Kuvvet</option>
+                            <option value="cardio">Kardio</option>
+                            <option value="flexibility">Esneklik</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exercise-sets">Set Sayısı</label>
+                        <input type="number" id="exercise-sets" min="1" value="3" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="exercise-reps">Tekrar Sayısı</label>
+                        <input type="number" id="exercise-reps" min="1" value="10" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="exercise-weight">Ağırlık (kg)</label>
+                        <input type="number" id="exercise-weight" min="0" step="0.5" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="exercise-duration">Süre (dakika)</label>
+                        <input type="number" id="exercise-duration" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="exercise-notes">Notlar</label>
+                        <textarea id="exercise-notes" rows="3"></textarea>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="button" class="btn btn-outline" id="cancel-exercise-btn">İptal</button>
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../assets/js/dashboard.js"></script>
+    <script src="../assets/js/flatpickr.min.js"></script>
+    <script src="../src/services/api.js"></script>
     <script src="../assets/js/workout.js"></script>
 </body>
 </html> 

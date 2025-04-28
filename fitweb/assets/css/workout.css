@@ -199,4 +199,584 @@
     .workout-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* Tarih Seçici */
+.date-picker-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.date-nav-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #333;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.date-nav-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.date-display {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.date-picker {
+    font-size: 16px;
+    border: none;
+    padding: 10px 30px 10px 10px;
+    cursor: pointer;
+    text-align: center;
+    background: transparent;
+}
+
+.date-display i {
+    position: absolute;
+    right: 5px;
+    color: #666;
+    pointer-events: none;
+}
+
+/* Yükleme Göstergesi */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #00adf5;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Antrenman Özeti */
+.workout-summary {
+    margin-bottom: 30px;
+}
+
+.summary-card {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.summary-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgba(0, 173, 245, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    color: #00adf5;
+    font-size: 20px;
+}
+
+.summary-details {
+    flex: 1;
+}
+
+.summary-details h3 {
+    font-size: 20px;
+    margin: 0 0 5px 0;
+}
+
+.summary-details p {
+    margin: 0 0 15px 0;
+    color: #666;
+}
+
+.workout-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* İstatistik Kartları */
+.stats-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 15px;
+}
+
+.stat-card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+}
+
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(0, 173, 245, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    color: #00adf5;
+    font-size: 16px;
+}
+
+.stat-info {
+    flex: 1;
+}
+
+.stat-info span {
+    display: block;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.stat-info p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+}
+
+/* Buton Stilleri */
+.btn {
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.btn i {
+    margin-right: 5px;
+}
+
+.btn-primary {
+    background-color: #00adf5;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0095d9;
+}
+
+.btn-success {
+    background-color: #4caf50;
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #3d8b40;
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 1px solid #00adf5;
+    color: #00adf5;
+}
+
+.btn-outline:hover {
+    background-color: rgba(0, 173, 245, 0.1);
+}
+
+.btn-outline-small {
+    background-color: transparent;
+    border: 1px solid #ccc;
+    color: #666;
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+.btn-outline-small:hover {
+    background-color: #f5f5f5;
+}
+
+/* Egzersizler */
+.exercises-section, .ai-recommendations-section, .workout-history-section {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-header h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #333;
+}
+
+.history-filter {
+    display: flex;
+    align-items: center;
+}
+
+.history-filter label {
+    margin-right: 10px;
+}
+
+.history-filter select {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.exercises-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.exercise-card {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.exercise-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #eee;
+}
+
+.exercise-title {
+    display: flex;
+    align-items: center;
+}
+
+.exercise-title i {
+    margin-right: 10px;
+    color: #00adf5;
+}
+
+.exercise-title h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.exercise-details {
+    padding: 15px;
+}
+
+.exercise-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.exercise-stat {
+    text-align: center;
+}
+
+.exercise-stat .value {
+    font-size: 18px;
+    font-weight: 600;
+    display: block;
+}
+
+.exercise-stat .label {
+    font-size: 12px;
+    color: #666;
+}
+
+.exercise-progress {
+    margin-top: 15px;
+}
+
+.exercise-progress-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.exercise-progress-value {
+    height: 100%;
+    background-color: #00adf5;
+    border-radius: 5px;
+    transition: width 0.3s ease;
+}
+
+.exercise-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* Yapay Zeka Önerileri */
+.recommendations-container {
+    border: 1px solid #00adf5;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.recommendation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.recommendation-description {
+    margin: 0;
+    font-style: italic;
+    color: #666;
+}
+
+.recommendation-workout {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.recommendation-workout h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+}
+
+.recommended-exercises {
+    margin-top: 10px;
+}
+
+.recommended-exercise {
+    padding: 10px;
+    border-bottom: 1px dashed #eee;
+}
+
+.recommended-exercise:last-child {
+    border-bottom: none;
+}
+
+.recommended-exercise-name {
+    font-weight: 500;
+}
+
+.recommended-exercise-details {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Antrenman Geçmişi */
+.workout-history-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+}
+
+.history-date {
+    font-size: 14px;
+    color: #666;
+}
+
+.history-workout-type {
+    font-weight: 500;
+}
+
+.history-details {
+    display: flex;
+    align-items: center;
+}
+
+.history-stat {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.history-stat i {
+    margin-right: 5px;
+    color: #00adf5;
+}
+
+.history-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.badge-completed {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #4caf50;
+}
+
+.badge-pending {
+    background-color: rgba(255, 152, 0, 0.1);
+    color: #ff9800;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 50px auto;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.close-modal {
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Boş durum */
+.empty-state {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+    font-style: italic;
+}
+
+/* Duyarlı Tasarım */
+@media (max-width: 768px) {
+    .stat-card {
+        min-width: auto;
+    }
+    
+    .exercise-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .history-item {
+        flex-direction: column;
+    }
+    
+    .history-details {
+        margin-top: 10px;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 20px auto;
+    }
 } 

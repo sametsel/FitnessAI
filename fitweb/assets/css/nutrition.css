@@ -204,4 +204,525 @@
     .meals-container {
         grid-template-columns: 1fr;
     }
+}
+
+/* Beslenme Sayfası Stilleri */
+
+/* Tarih Seçici */
+.date-picker-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.date-nav-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #333;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.date-nav-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.date-display {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.date-picker {
+    font-size: 16px;
+    border: none;
+    padding: 10px 30px 10px 10px;
+    cursor: pointer;
+    text-align: center;
+    background: transparent;
+}
+
+.date-display i {
+    position: absolute;
+    right: 5px;
+    color: #666;
+    pointer-events: none;
+}
+
+/* Yükleme Göstergesi */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #00adf5;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Beslenme Özeti */
+.nutrition-summary {
+    margin-bottom: 30px;
+}
+
+.summary-card {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.summary-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgba(255, 69, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    color: #ff4500;
+    font-size: 20px;
+}
+
+.summary-details {
+    flex: 1;
+}
+
+.summary-details h3 {
+    font-size: 24px;
+    margin: 0 0 5px 0;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.progress {
+    height: 100%;
+    background-color: #00adf5;
+    border-radius: 5px;
+    transition: width 0.3s ease;
+}
+
+.macro-cards {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 0 -10px;
+}
+
+.macro-card {
+    flex: 1;
+    min-width: 180px;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 0 10px 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.macro-card h4 {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.macro-card p {
+    margin: 0 0 10px 0;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.macro-card.protein .progress {
+    background-color: #4caf50;
+}
+
+.macro-card.carbs .progress {
+    background-color: #ff9800;
+}
+
+.macro-card.fat .progress {
+    background-color: #f44336;
+}
+
+/* Öğünler */
+.meals-section, .ai-recommendations-section, .recipes-section {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-header h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #333;
+}
+
+.btn {
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.btn i {
+    margin-right: 5px;
+}
+
+.btn-primary {
+    background-color: #00adf5;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0095d9;
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 1px solid #00adf5;
+    color: #00adf5;
+}
+
+.btn-outline:hover {
+    background-color: rgba(0, 173, 245, 0.1);
+}
+
+.btn-outline-small {
+    background-color: transparent;
+    border: 1px solid #ccc;
+    color: #666;
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+.btn-outline-small:hover {
+    background-color: #f5f5f5;
+}
+
+.meals-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.meal-card {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.meal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #f9f9f9;
+}
+
+.meal-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+    display: flex;
+    align-items: center;
+}
+
+.meal-header h3 i {
+    margin-right: 10px;
+    color: #00adf5;
+}
+
+.meal-items {
+    padding: 15px;
+}
+
+.meal-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.meal-item:last-child {
+    border-bottom: none;
+}
+
+.meal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-top: 1px solid #eee;
+}
+
+.meal-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Yapay Zeka Önerileri */
+.recommendations-container {
+    border: 1px solid #00adf5;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.recommendation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.recommendation-description {
+    margin: 0;
+    font-style: italic;
+    color: #666;
+}
+
+.recommendation-meals {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.recommendation-meal {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.meal-macros {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #eee;
+    font-size: 14px;
+    color: #666;
+}
+
+/* Tarifler */
+.recipes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.recipe-card {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.recipe-card:hover {
+    transform: translateY(-5px);
+}
+
+.recipe-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.recipe-content {
+    padding: 15px;
+}
+
+.recipe-content h4 {
+    margin: 0 0 10px 0;
+}
+
+.recipe-content p {
+    margin: 0 0 15px 0;
+    color: #666;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 50px auto;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.close-modal {
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.food-items-container {
+    margin-top: 20px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.food-items-container h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.food-item {
+    border: 1px dashed #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.food-item .remove-food {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Boş durum */
+.empty-state {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+    font-style: italic;
+}
+
+/* Duyarlı Tasarım */
+@media (max-width: 768px) {
+    .macro-cards {
+        flex-direction: column;
+    }
+    
+    .macro-card {
+        min-width: auto;
+        margin-bottom: 15px;
+    }
+    
+    .recipes-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 20px auto;
+    }
 } 

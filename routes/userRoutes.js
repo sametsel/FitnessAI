@@ -4,8 +4,8 @@ const userController = require('../controllers/userController');
 const { protect } = require('../middleware/authMiddleware');
 
 // Auth routes
-router.post('/auth/register', userController.register);
-router.post('/auth/login', userController.login);
+router.post('/register', userController.register);
+router.post('/login', userController.login);
 
 // Protected routes
 router.use(protect);
