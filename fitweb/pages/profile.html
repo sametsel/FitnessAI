@@ -8,151 +8,216 @@
     <link rel="stylesheet" href="../assets/css/dashboard.css">
     <link rel="stylesheet" href="../assets/css/profile.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.css">
 </head>
 <body>
     <div class="dashboard-container">
+        <!-- Sidebar -->
         <aside class="sidebar">
-            <!-- ... mevcut sidebar içeriği ... -->
+            <div class="sidebar-header">
+                <img src="../assets/images/logo.png" alt="FitWeb Logo">
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html"><i class="fas fa-home"></i> Ana Sayfa</a>
+                <a href="workout.html"><i class="fas fa-dumbbell"></i> Antrenmanlar</a>
+                <a href="nutrition.html"><i class="fas fa-apple-alt"></i> Beslenme</a>
+                <a href="profile.html" class="active"><i class="fas fa-user"></i> Profil</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+            </div>
         </aside>
 
         <main class="main-content">
             <header class="dashboard-header">
-                <!-- ... mevcut header içeriği ... -->
+                <button class="menu-toggle"><i class="fas fa-bars"></i></button>
+                <div class="user-menu">
+                    <span class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count">3</span>
+                    </span>
+                    <div class="user-profile">
+                        <img src="../assets/images/avatar.png" alt="Kullanıcı">
+                        <span id="userGreeting">Hoşgeldin, Kullanıcı</span>
+                    </div>
+                </div>
             </header>
 
             <div class="dashboard-content">
                 <div class="profile-container">
-                    <!-- Profil Başlığı -->
-                    <div class="profile-header">
-                        <div class="profile-avatar">
-                            <img src="../assets/images/avatar.jpg" alt="Profil Fotoğrafı">
-                            <button class="change-avatar">
-                                <i class="fas fa-camera"></i>
-                            </button>
-                        </div>
-                        <div class="profile-info">
-                            <h1>Kullanıcı Adı</h1>
-                            <p>Üyelik Tarihi: 01.01.2024</p>
-                        </div>
-                    </div>
-
-                    <!-- Profil Sekmeler -->
-                    <div class="profile-tabs">
-                        <button class="tab-btn active" data-tab="personal">Kişisel Bilgiler</button>
-                        <button class="tab-btn" data-tab="goals">Hedefler</button>
-                        <button class="tab-btn" data-tab="measurements">Ölçümler</button>
-                        <button class="tab-btn" data-tab="settings">Ayarlar</button>
-                    </div>
-
-                    <!-- Kişisel Bilgiler Sekmesi -->
-                    <div class="tab-content active" id="personal">
-                        <form class="profile-form">
-                            <div class="form-group">
-                                <label>Ad Soyad</label>
-                                <input type="text" value="Kullanıcı Adı">
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Yaş</label>
-                                    <input type="number" value="25">
+                    <!-- Profil Özeti Kartı -->
+                    <div class="profile-summary-card">
+                        <div class="profile-header">
+                            <div class="profile-avatar-container">
+                                <div class="profile-avatar">
+                                    <img src="../assets/images/avatar.png" alt="Profil Fotoğrafı">
+                                    <button class="change-avatar">
+                                        <i class="fas fa-camera"></i>
+                                    </button>
                                 </div>
-                                <div class="form-group">
-                                    <label>Cinsiyet</label>
-                                    <select>
-                                        <option>Erkek</option>
-                                        <option>Kadın</option>
-                                    </select>
+                                <div class="profile-badges">
+                                    <span class="badge premium-badge">
+                                        <i class="fas fa-crown"></i>
+                                        Premium Üye
+                                    </span>
                                 </div>
                             </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Boy (cm)</label>
-                                    <input type="number" value="175">
-                                </div>
-                                <div class="form-group">
-                                    <label>Kilo (kg)</label>
-                                    <input type="number" value="70">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Aktivite Seviyesi</label>
-                                <select>
-                                    <option>Hareketsiz</option>
-                                    <option>Az Hareketli</option>
-                                    <option selected>Orta Derece Aktif</option>
-                                    <option>Çok Aktif</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Değişiklikleri Kaydet</button>
-                        </form>
-                    </div>
-
-                    <!-- Hedefler Sekmesi -->
-                    <div class="tab-content" id="goals">
-                        <div class="goals-grid">
-                            <div class="goal-card">
-                                <div class="goal-icon">
-                                    <i class="fas fa-weight"></i>
-                                </div>
-                                <div class="goal-info">
-                                    <h3>Kilo Hedefi</h3>
-                                    <p>Hedef: 65 kg</p>
-                                    <div class="progress-bar">
-                                        <div class="progress" style="width: 75%"></div>
+                            <div class="profile-info">
+                                <h1>Kullanıcı Adı</h1>
+                                <p class="membership-date">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Üyelik Tarihi: 01.01.2024
+                                </p>
+                                <div class="profile-stats">
+                                    <div class="stat-card">
+                                        <i class="fas fa-dumbbell"></i>
+                                        <div class="stat-info">
+                                            <span class="stat-value">45</span>
+                                            <span class="stat-label">Antrenman</span>
+                                        </div>
                                     </div>
-                                    <span class="goal-status">5 kg kaldı</span>
-                                </div>
-                            </div>
-
-                            <div class="goal-card">
-                                <div class="goal-icon">
-                                    <i class="fas fa-dumbbell"></i>
-                                </div>
-                                <div class="goal-info">
-                                    <h3>Antrenman Hedefi</h3>
-                                    <p>Haftalık: 4 antrenman</p>
-                                    <div class="progress-bar">
-                                        <div class="progress" style="width: 50%"></div>
+                                    <div class="stat-card">
+                                        <i class="fas fa-fire"></i>
+                                        <div class="stat-info">
+                                            <span class="stat-value">12,500</span>
+                                            <span class="stat-label">Kalori</span>
+                                        </div>
                                     </div>
-                                    <span class="goal-status">2 antrenman kaldı</span>
+                                    <div class="stat-card">
+                                        <i class="fas fa-trophy"></i>
+                                        <div class="stat-info">
+                                            <span class="stat-value">8</span>
+                                            <span class="stat-label">Hedef</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Ölçümler Sekmesi -->
-                    <div class="tab-content" id="measurements">
-                        <div class="measurements-chart">
-                            <canvas id="measurementsChart"></canvas>
+                    <!-- Ana İçerik Grid -->
+                    <div class="profile-grid">
+                        <!-- Kişisel Bilgiler Kartı -->
+                        <div class="profile-card">
+                            <div class="card-header">
+                                <h2><i class="fas fa-user-circle"></i> Kişisel Bilgiler</h2>
+                                <button class="btn-edit">
+                                    <i class="fas fa-edit"></i>
+                                    Düzenle
+                                </button>
+                            </div>
+                            <div class="card-content">
+                                <form class="profile-form">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label><i class="fas fa-user"></i> Ad Soyad</label>
+                                            <input type="text" name="name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label><i class="fas fa-envelope"></i> E-posta</label>
+                                            <input type="email" name="email" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label><i class="fas fa-birthday-cake"></i> Yaş</label>
+                                            <input type="number" name="age" min="15" max="100" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label><i class="fas fa-venus-mars"></i> Cinsiyet</label>
+                                            <select name="gender" required>
+                                                <option value="male">Erkek</option>
+                                                <option value="female">Kadın</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label><i class="fas fa-ruler-vertical"></i> Boy (cm)</label>
+                                            <input type="number" name="height" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label><i class="fas fa-weight"></i> Kilo (kg)</label>
+                                            <input type="number" name="weight" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><i class="fas fa-running"></i> Aktivite Seviyesi</label>
+                                        <select name="activityLevel">
+                                            <option value="sedentary">Hareketsiz</option>
+                                            <option value="light">Az Hareketli</option>
+                                            <option value="moderate">Orta Derece Aktif</option>
+                                            <option value="very">Çok Aktif</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i>
+                                        Değişiklikleri Kaydet
+                                    </button>
+                                </form>
+                            </div>
                         </div>
-                        <div class="measurements-table">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Tarih</th>
-                                        <th>Kilo</th>
-                                        <th>Vücut Yağ %</th>
-                                        <th>Kas Kütlesi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>01.03.2024</td>
-                                        <td>70 kg</td>
-                                        <td>18%</td>
-                                        <td>55 kg</td>
-                                    </tr>
-                                    <!-- Diğer ölçümler -->
-                                </tbody>
-                            </table>
+
+                        <!-- Hedefler Kartı -->
+                        <div class="profile-card">
+                            <div class="card-header">
+                                <h2><i class="fas fa-bullseye"></i> Hedefler</h2>
+                                <button class="btn-add">
+                                    <i class="fas fa-plus"></i>
+                                    Yeni Hedef
+                                </button>
+                            </div>
+                            <div class="card-content">
+                                <div class="goals-grid">
+                                    <div class="goal-card">
+                                        <div class="goal-icon">
+                                            <i class="fas fa-weight"></i>
+                                        </div>
+                                        <div class="goal-info">
+                                            <h3>Kilo Hedefi</h3>
+                                            <div class="goal-progress">
+                                                <div class="progress-bar">
+                                                    <div class="progress" style="width: 75%"></div>
+                                                </div>
+                                                <span class="progress-text">75%</span>
+                                            </div>
+                                            <p class="goal-details">
+                                                <span>Başlangıç: 75kg</span>
+                                                <span>Hedef: 65kg</span>
+                                            </p>
+                                            <span class="goal-status">5 kg kaldı</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="goal-card">
+                                        <div class="goal-icon">
+                                            <i class="fas fa-dumbbell"></i>
+                                        </div>
+                                        <div class="goal-info">
+                                            <h3>Antrenman Hedefi</h3>
+                                            <div class="goal-progress">
+                                                <div class="progress-bar">
+                                                    <div class="progress" style="width: 50%"></div>
+                                                </div>
+                                                <span class="progress-text">50%</span>
+                                            </div>
+                                            <p class="goal-details">
+                                                <span>Haftalık: 4 antrenman</span>
+                                                <span>Tamamlanan: 2</span>
+                                            </p>
+                                            <span class="goal-status">2 antrenman kaldı</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </main>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="../assets/js/dashboard.js"></script>
-    <script src="../assets/js/profile.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <script type="module" src="../assets/js/profile.js"></script>
 </body>
 </html> 

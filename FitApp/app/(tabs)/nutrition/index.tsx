@@ -42,16 +42,6 @@ interface FoodItem {
   image: string;
 }
 
-// Örnek besin verileri
-const SAMPLE_FOODS: FoodItem[] = [
-  { id: 1, name: 'Yulaf Ezmesi', calories: 150, protein: 5, carbs: 27, fat: 3, portion: '40g', mealType: 'breakfast', image: 'https://cdn-icons-png.flaticon.com/128/2674/2674446.png' },
-  { id: 2, name: 'Tam Yağlı Süt', calories: 120, protein: 3.2, carbs: 4.8, fat: 3.6, portion: '200ml', mealType: 'breakfast', image: 'https://cdn-icons-png.flaticon.com/128/2674/2674504.png' },
-  { id: 3, name: 'Tavuk Göğsü', calories: 165, protein: 31, carbs: 0, fat: 3.6, portion: '100g', mealType: 'lunch', image: 'https://cdn-icons-png.flaticon.com/128/2674/2674477.png' },
-  { id: 4, name: 'Pirinç', calories: 130, protein: 2.7, carbs: 28, fat: 0.3, portion: '100g', mealType: 'lunch', image: 'https://cdn-icons-png.flaticon.com/128/2674/2674486.png' },
-  { id: 5, name: 'Elma', calories: 52, protein: 0.3, carbs: 14, fat: 0.2, portion: '1 adet', mealType: 'snack', image: 'https://cdn-icons-png.flaticon.com/128/2674/2674494.png' },
-  { id: 6, name: 'Somon', calories: 206, protein: 22, carbs: 0, fat: 13, portion: '100g', mealType: 'dinner', image: 'https://cdn-icons-png.flaticon.com/128/2674/2674442.png' },
-];
-
 // Tüm öğün tipleri için veri yapısını tiplendir
 interface MealType {
   id: string;
@@ -76,7 +66,7 @@ interface Meal {
   icon: string;
   time: string;
   color: string;
-  foods: typeof SAMPLE_FOODS;
+  foods: FoodItem[];
 }
 
 // Günün saatine göre selamlama mesajı
@@ -86,26 +76,6 @@ const greeting = () => {
   if (hours < 18) return 'İyi günler';
   return 'İyi akşamlar';
 };
-
-// Yapay zeka beslenme önerileri arayüzü
-interface INutritionRecommendation {
-  recommendations: string[];
-  meals: {
-    type: string;
-    name: string;
-    calories: number;
-    protein: number;
-    carbs: number;
-    fat: number;
-    description?: string;
-    ingredients?: {
-      name: string;
-      amount: string;
-      calories: number;
-    }[];
-    recipe?: string;
-  }[];
-}
 
 export default function NutritionScreen() {
   const { width } = useWindowDimensions();
@@ -117,13 +87,11 @@ export default function NutritionScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedMeal, setSelectedMeal] = useState<string | null>(null);
-  const [nutritionRecommendation, setNutritionRecommendation] = useState<INutritionRecommendation | null>(null);
-  const [showRecommendations, setShowRecommendations] = useState(false);
   const [dailySummary, setDailySummary] = useState({
-    calories: { consumed: 1450, target: 2000 },
-    protein: { consumed: 90, target: 120 },
-    carbs: { consumed: 160, target: 220 },
-    fat: { consumed: 45, target: 65 }
+    calories: { consumed: 0, target: 2000 },
+    protein: { consumed: 0, target: 120 },
+    carbs: { consumed: 0, target: 220 },
+    fat: { consumed: 0, target: 65 }
   });
   
   // Günlük toplam kalori ve makro hesaplama
@@ -166,7 +134,6 @@ export default function NutritionScreen() {
   // Örnek verilerle sayfa başlat
   useEffect(() => {
     fetchUserData();
-    fetchNutritionRecommendation();
   }, [selectedDate]);
 
   // Kullanıcı verilerini çek
@@ -185,31 +152,6 @@ export default function NutritionScreen() {
       }
       const data = await userService.getProfile();
       setUserData(data);
-      
-      // Örnek besinler - gerçek uygulamada API'den alınacak
-      const updatedMealTypes = [...MEAL_TYPES];
-      
-      // Her öğüne rastgele besinler ekle
-      updatedMealTypes.forEach((meal, index) => {
-        const foodCount = Math.floor(Math.random() * 4); // 0-3 arası yemek
-        
-        const foods: FoodItem[] = [];
-        for (let i = 0; i < foodCount; i++) {
-          foods.push({
-            id: i + 1,
-            name: ['Elma', 'Yulaf', 'Tavuk Göğsü', 'Badem', 'Yumurta', 'Yoğurt', 'Peynir', 'Ekmek', 'Patates Püresi', 'Köfte'][Math.floor(Math.random() * 10)],
-            portion: ['100g', '1 porsiyon', '1 adet', '30g', '200ml'][Math.floor(Math.random() * 5)],
-            calories: Math.floor(Math.random() * 300) + 50,
-            protein: Math.floor(Math.random() * 20) + 2,
-            carbs: Math.floor(Math.random() * 30) + 5,
-            fat: Math.floor(Math.random() * 15) + 1,
-            mealType: meal.id,
-            image: 'https://cdn-icons-png.flaticon.com/128/2674/2674446.png'
-          });
-        }
-        
-        updatedMealTypes[index].foods = foods;
-      });
       
       // Doğru formatta günlük özet oluştur
       const calculatedTotals = {
@@ -265,41 +207,9 @@ export default function NutritionScreen() {
     }
   };
 
-  const fetchNutritionRecommendation = async () => {
-    try {
-      if (!user?.id) {
-        console.error('Kullanıcı kimliği bulunamadı');
-        return;
-      }
-      
-      setIsLoading(true);
-      const recommendation = await api.getNutritionRecommendation(user.id, selectedDate);
-      
-      if (recommendation) {
-        console.log('Beslenme önerisi alındı:', recommendation);
-        setNutritionRecommendation(recommendation);
-        
-        // Eğer öneri varsa ve kullanıcı henüz kendi beslenme planını oluşturmamışsa
-        // önerileri otomatik olarak gösteriyoruz
-        if (recommendation.meals && recommendation.meals.length > 0) {
-          const currentDate = new Date();
-          if (isSameDay(selectedDate, currentDate)) {
-            setShowRecommendations(true);
-          }
-        }
-      }
-      
-      setIsLoading(false);
-    } catch (error) {
-      console.error('Beslenme önerileri alınamadı:', error);
-      setIsLoading(false);
-    }
-  };
-
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await fetchUserData();
-    await fetchNutritionRecommendation();
     setRefreshing(false);
   }, [selectedDate]);
 
@@ -311,7 +221,7 @@ export default function NutritionScreen() {
     }
   };
 
-  const renderFoodItem = ({ item }: { item: typeof SAMPLE_FOODS[0] }) => (
+  const renderFoodItem = ({ item }: { item: FoodItem }) => (
     <Surface style={styles.foodItem}>
       <View style={styles.foodImageContainer}>
         <Image source={{ uri: item.image }} style={{width: 24, height: 24}} />
@@ -440,132 +350,6 @@ export default function NutritionScreen() {
           </View>
         </View>
       </Card>
-
-      {/* Yapay Zeka Beslenme Önerileri */}
-      {nutritionRecommendation && (
-        <Card style={styles.aiRecommendationCard}>
-          <View style={styles.aiRecommendationHeader}>
-            <View style={styles.aiRecommendationHeaderLeft}>
-              <MaterialCommunityIcons name="robot" size={24} color={theme.colors.primary} />
-              <Text style={styles.aiRecommendationTitle}>Yapay Zeka Beslenme Önerileri</Text>
-            </View>
-            <TouchableOpacity 
-              onPress={() => setShowRecommendations(!showRecommendations)}
-              style={styles.toggleButton}
-            >
-              <Text style={styles.toggleButtonText}>
-                {showRecommendations ? 'Gizle' : 'Göster'}
-              </Text>
-              <MaterialCommunityIcons 
-                name={showRecommendations ? "chevron-up" : "chevron-down"} 
-                size={16} 
-                color={theme.colors.primary} 
-              />
-            </TouchableOpacity>
-          </View>
-
-          {showRecommendations && (
-            <View style={styles.aiRecommendationContent}>
-              {nutritionRecommendation.recommendations && nutritionRecommendation.recommendations.length > 0 && (
-                <View style={styles.recommendationNotesContainer}>
-                  <Text style={styles.recommendationNotesTitle}>Beslenme Önerileri:</Text>
-                  {nutritionRecommendation.recommendations.map((recommendation, index) => (
-                    <View key={index} style={styles.recommendationItem}>
-                      <MaterialCommunityIcons name="information" size={16} color={theme.colors.primary} />
-                      <Text style={styles.recommendationText}>{recommendation}</Text>
-                    </View>
-                  ))}
-                </View>
-              )}
-
-              {nutritionRecommendation.meals.map((meal, index) => (
-                <Surface key={index} style={styles.recommendedMealItem}>
-                  <View style={styles.recommendedMealHeader}>
-                    <View style={styles.recommendedMealHeaderLeft}>
-                      <MaterialCommunityIcons 
-                        name={
-                          meal.type === 'breakfast' ? 'food-apple' : 
-                          meal.type === 'lunch' ? 'food' : 
-                          meal.type === 'dinner' ? 'food-turkey' : 'food-apple-outline'
-                        } 
-                        size={24} 
-                        color={
-                          meal.type === 'breakfast' ? '#FF9500' : 
-                          meal.type === 'lunch' ? '#4CAF50' : 
-                          meal.type === 'dinner' ? '#2196F3' : '#9C27B0'
-                        } 
-                      />
-                      <View>
-                        <Text style={styles.recommendedMealType}>
-                          {meal.type === 'breakfast' ? 'Kahvaltı' : 
-                          meal.type === 'lunch' ? 'Öğle Yemeği' : 
-                          meal.type === 'dinner' ? 'Akşam Yemeği' : 'Atıştırmalık'}
-                        </Text>
-                        <Text style={styles.recommendedMealName}>{meal.name}</Text>
-                      </View>
-                    </View>
-                    <View style={styles.recommendedMealNutrition}>
-                      <Text style={styles.recommendedMealCalories}>{meal.calories} kcal</Text>
-                      <View style={styles.macroRow}>
-                        <Text style={styles.macroText}>P: {meal.protein}g</Text>
-                        <Text style={styles.macroText}>K: {meal.carbs}g</Text>
-                        <Text style={styles.macroText}>Y: {meal.fat}g</Text>
-                      </View>
-                    </View>
-                  </View>
-
-                  {meal.description && (
-                    <Text style={styles.recommendedMealDescription}>{meal.description}</Text>
-                  )}
-
-                  {meal.ingredients && meal.ingredients.length > 0 && (
-                    <View style={styles.ingredientsContainer}>
-                      <Text style={styles.ingredientsTitle}>Malzemeler:</Text>
-                      {meal.ingredients.map((ingredient, idx) => (
-                        <View key={idx} style={styles.ingredientItem}>
-                          <Text style={styles.ingredientName}>• {ingredient.name} ({ingredient.amount})</Text>
-                          <Text style={styles.ingredientCalories}>{ingredient.calories} kcal</Text>
-                        </View>
-                      ))}
-                    </View>
-                  )}
-
-                  {meal.recipe && (
-                    <View style={styles.recipeContainer}>
-                      <Text style={styles.recipeTitle}>Hazırlanışı:</Text>
-                      <Text style={styles.recipeText}>{meal.recipe}</Text>
-                    </View>
-                  )}
-
-                  <View style={styles.recommendationButtonsContainer}>
-                    <TouchableOpacity 
-                      style={styles.recommendationButton}
-                      onPress={() => {
-                        Alert.alert('Menüye Ekle', 'Bu yemek planınıza eklenecek');
-                        // TODO: Öğünü kişisel beslenme planına ekle
-                      }}
-                    >
-                      <MaterialCommunityIcons name="plus" size={16} color="#fff" />
-                      <Text style={styles.recommendationButtonText}>Menüme Ekle</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity 
-                      style={[styles.recommendationButton, styles.outlineButton]}
-                      onPress={() => {
-                        Alert.alert('Alternatif İste', 'Bu öğün için alternatif öneriler istenecek');
-                        // TODO: Alternatif öğün önerisi iste
-                      }}
-                    >
-                      <MaterialCommunityIcons name="refresh" size={16} color={theme.colors.primary} />
-                      <Text style={[styles.recommendationButtonText, styles.outlineButtonText]}>Alternatif İste</Text>
-                    </TouchableOpacity>
-                  </View>
-                </Surface>
-              ))}
-            </View>
-          )}
-        </Card>
-      )}
 
       {/* Öğünler */}
       <View style={styles.mealsSection}>
@@ -1066,178 +850,5 @@ const styles = StyleSheet.create({
         elevation: 8,
       },
     }),
-  },
-  aiRecommendationCard: {
-    marginBottom: 20,
-    borderRadius: 12,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: `${theme.colors.primary}40`,
-  },
-  aiRecommendationHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: `${theme.colors.primary}08`,
-  },
-  aiRecommendationHeaderLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  aiRecommendationTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: theme.colors.text.primary,
-    marginLeft: 8,
-  },
-  toggleButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: `${theme.colors.primary}15`,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 16,
-  },
-  toggleButtonText: {
-    fontSize: 12,
-    color: theme.colors.primary,
-    marginRight: 4,
-  },
-  aiRecommendationContent: {
-    padding: 16,
-  },
-  recommendationNotesContainer: {
-    backgroundColor: `${theme.colors.primary}08`,
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 16,
-  },
-  recommendationNotesTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: theme.colors.text.primary,
-    marginBottom: 8,
-  },
-  recommendationItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 8,
-  },
-  recommendationText: {
-    fontSize: 14,
-    color: theme.colors.text.secondary,
-    flex: 1,
-    marginLeft: 8,
-  },
-  recommendedMealItem: {
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 16,
-    backgroundColor: '#fff',
-    elevation: 2,
-  },
-  recommendedMealHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 12,
-  },
-  recommendedMealHeaderLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  recommendedMealType: {
-    fontSize: 12,
-    color: theme.colors.text.secondary,
-    marginLeft: 8,
-  },
-  recommendedMealName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: theme.colors.text.primary,
-    marginLeft: 8,
-  },
-  recommendedMealNutrition: {
-    alignItems: 'flex-end',
-  },
-  recommendedMealCalories: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: theme.colors.text.primary,
-  },
-  recommendedMealDescription: {
-    fontSize: 14,
-    color: theme.colors.text.secondary,
-    marginBottom: 12,
-    lineHeight: 20,
-  },
-  ingredientsContainer: {
-    marginTop: 12,
-    marginBottom: 12,
-  },
-  ingredientsTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: theme.colors.text.primary,
-    marginBottom: 8,
-  },
-  ingredientItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 4,
-  },
-  ingredientName: {
-    fontSize: 14,
-    color: theme.colors.text.secondary,
-  },
-  ingredientCalories: {
-    fontSize: 14,
-    color: theme.colors.text.secondary,
-  },
-  recipeContainer: {
-    marginTop: 12,
-    marginBottom: 12,
-  },
-  recipeTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: theme.colors.text.primary,
-    marginBottom: 8,
-  },
-  recipeText: {
-    fontSize: 14,
-    color: theme.colors.text.secondary,
-    lineHeight: 20,
-  },
-  recommendationButtonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 16,
-  },
-  recommendationButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: theme.colors.primary,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    flex: 1,
-    marginHorizontal: 4,
-  },
-  recommendationButtonText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
-    marginLeft: 4,
-  },
-  outlineButton: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: theme.colors.primary,
-  },
-  outlineButtonText: {
-    color: theme.colors.primary,
   },
 }); 

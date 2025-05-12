@@ -177,6 +177,51 @@ export default function HomeScreen() {
     };
   };
 
+  // Plan oluşturma fonksiyonu
+  const handleCreatePlan = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      // Kullanıcı verilerini hazırla
+      const userData = {
+        name: user?.name,
+        gender: user?.gender,
+        age: user?.age,
+        weight: user?.weight,
+        height: user?.height,
+        activity_level: user?.activityLevel,
+        goal: user?.goal,
+        dietary_restrictions: 0,
+        allergies: 0,
+        preferred_cuisine: 1,
+        meal_preferences: 4,
+        calorie_target: 2000
+      };
+      // Beslenme planı isteği
+      const nutritionRes = await fetch(`${API_URL}/nutrition/ai-plan`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData)
+      });
+      const nutritionPlan = await nutritionRes.json();
+      // Antrenman planı isteği
+      const workoutRes = await fetch(`${API_URL}/workouts/ai-plan`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData)
+      });
+      const workoutPlan = await workoutRes.json();
+      setLoading(false);
+      // Sonuçları göster (ileride ilgili sayfalara yönlendirme yapılabilir)
+      Alert.alert('Planlar Oluşturuldu', 'Beslenme ve antrenman planı başarıyla alındı!');
+      // Burada planları context veya navigation ile ilgili sayfalara aktarabilirsin
+      // Örn: navigation.navigate('nutrition', { plan: nutritionPlan })
+    } catch (err) {
+      setLoading(false);
+      setError('Plan oluşturulurken hata oluştu');
+    }
+  };
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -217,6 +262,16 @@ export default function HomeScreen() {
 
   return (
     <ScrollView style={styles.container}>
+      {/* Plan Oluştur Butonu */}
+      <Button
+        mode="contained"
+        icon="plus"
+        style={{ margin: 16, backgroundColor: theme.colors.primary }}
+        labelStyle={{ color: '#fff', fontWeight: 'bold' }}
+        onPress={handleCreatePlan}
+      >
+        Plan Oluştur
+      </Button>
       {/* Selamlama Kartı */}
       <LinearGradient
         colors={['#00adf5', '#0088cc']}
@@ -278,11 +333,7 @@ export default function HomeScreen() {
             theme={{
               todayTextColor: theme.colors.primary,
               selectedDayBackgroundColor: theme.colors.primary,
-              dotStyle: { marginTop: 1 },
-              'stylesheet.calendar.header': {
-                dayTextAtIndex0: { color: '#FF3B30' }, // Pazar günleri
-                dayTextAtIndex6: { color: '#007AFF' }, // Cumartesi günleri
-              }
+              dotStyle: { marginTop: 1 }
             }}
           />
         </Card.Content>

@@ -4,7 +4,6 @@
     "slug": "fitapp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "scheme": "fitapp",
     "assetBundlePatterns": [
@@ -21,6 +20,7 @@
       "expo-router",
       "expo-font"
     ],
+    "sdkVersion": "53.0.0",
     "newArchEnabled": true
   }
 }

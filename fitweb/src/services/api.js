@@ -1,5 +1,5 @@
 // API URL'sini geliştirme ortamına göre ayarla
-const DEV_API_URL = 'http://192.168.1.101:5000/api';
+const DEV_API_URL = 'http://192.168.98.198:5000/api';
 const PROD_API_URL = 'https://api.fitapp.com/api'; // Prodüksiyon URL'si
 
 export const API_URL = DEV_API_URL; // Geliştirme ortamında DEV_API_URL kullan
@@ -7,23 +7,77 @@ export const API_URL = DEV_API_URL; // Geliştirme ortamında DEV_API_URL kullan
 const TOKEN_KEY = '@fitapp_token';
 const USER_KEY = '@fitapp_user';
 
-// Token yönetimi için yardımcı fonksiyonlar
-const getToken = () => {
-    return localStorage.getItem(TOKEN_KEY);
-};
-
-const setToken = (token) => {
-    localStorage.setItem(TOKEN_KEY, token);
-};
-
+// Token yönetimi
+const getToken = () => localStorage.getItem(TOKEN_KEY);
+const setToken = (token) => localStorage.setItem(TOKEN_KEY, token);
 const clearToken = () => {
     localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
 };
 
+// Token geçerliliğini kontrol et
+const isTokenValid = (token) => {
+    if (!token) return false;
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload.exp * 1000 > Date.now();
+    } catch {
+        return false;
+    }
+};
+
+// Auth header'ı oluştur
 const getAuthHeader = () => {
     const token = getToken();
-    return token ? { Authorization: `Bearer ${token}` } : {};
+    if (!token || !isTokenValid(token)) {
+        clearToken();
+        return {};
+    }
+    return {
+        'Authorization': `Bearer ${token}`
+    };
 };
+
+/**
+ * Kullanıcı profil bilgilerini getirir
+ * @returns {Promise<Object>} Kullanıcı bilgileri
+ */
+async function getUserProfile() {
+    try {
+        console.log('getUserProfile çağrıldı');
+        
+        const headers = {
+            ...getAuthHeader(),
+            'Content-Type': 'application/json'
+        };
+        
+        console.log('API URL:', `${API_URL}/users/profile`);
+        console.log('Headers:', headers);
+
+        const response = await fetch(`${API_URL}/users/profile`, {
+            method: 'GET',
+            headers
+        });
+
+        console.log('API yanıt durumu:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`Profil bilgileri alınamadı: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('API yanıt verisi:', data);
+        
+        if (!data.success) {
+            throw new Error(data.message || 'Profil bilgileri alınamadı');
+        }
+
+        return data.user;
+    } catch (error) {
+        console.error('Profil bilgileri alınırken hata:', error);
+        throw error;
+    }
+}
 
 export const apiService = {
     // Kullanıcı işlemleri
@@ -44,9 +98,11 @@ export const apiService = {
                 throw new Error(data.message || 'Kayıt işlemi başarısız');
             }
             
-            if (data.token) {
+            if (data.token && isTokenValid(data.token)) {
                 setToken(data.token);
                 localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+            } else {
+                throw new Error('Geçersiz token alındı');
             }
             
             return data;
@@ -62,12 +118,12 @@ export const apiService = {
             clearToken();
             console.log('Login isteği gönderiliyor:', { email });
             const response = await fetch(`${API_URL}/auth/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify({ email, password }),
-        });
+            });
             
             const data = await response.json();
             
@@ -75,12 +131,15 @@ export const apiService = {
                 throw new Error(data.message || 'Giriş işlemi başarısız');
             }
             
-            if (data.token) {
+            if (data.token && isTokenValid(data.token)) {
                 setToken(data.token);
-                localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+                if (data.user) {
+                    localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+                }
+                return data;
+            } else {
+                throw new Error('Geçersiz token alındı');
             }
-            
-            return data;
         } catch (error) {
             console.error('Login hatası:', error);
             clearToken();
@@ -476,6 +535,17 @@ export const apiService = {
     // Oturum kontrolü
     async checkAuth() {
         try {
+            const token = getToken();
+            
+            // Token yoksa veya geçersizse
+            if (!token || !isTokenValid(token)) {
+                clearToken();
+                return {
+                    isAuthenticated: false,
+                    user: null
+                };
+            }
+
             const response = await fetch(`${API_URL}/auth/verify`, {
                 headers: {
                     ...getAuthHeader(),
@@ -485,12 +555,26 @@ export const apiService = {
             
             const data = await response.json();
             
+            if (!data.success) {
+                clearToken();
+                return {
+                    isAuthenticated: false,
+                    user: null
+                };
+            }
+
+            // Kullanıcı bilgilerini güncelle
+            if (data.user) {
+                localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+            }
+            
             return {
-                isAuthenticated: data.success,
-                user: data.user || null
+                isAuthenticated: true,
+                user: data.user
             };
         } catch (error) {
             console.error('Oturum kontrolü hatası:', error);
+            clearToken();
             return {
                 isAuthenticated: false,
                 user: null
@@ -501,7 +585,8 @@ export const apiService = {
     // Çıkış yap
     logout() {
         clearToken();
-        localStorage.removeItem(USER_KEY);
         return true;
-    }
+    },
+
+    getUserProfile,
 }; 

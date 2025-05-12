@@ -2,8 +2,11 @@
 // import { apiService } from '../../src/services/api.js';
 // Global apiService değişkeni zaten script tag olarak yüklendi
 
+import { setupLogout } from './utils/logout.js';
+
 document.addEventListener('DOMContentLoaded', function() {
     // Sayfa yüklendiğinde aksiyon
+    setupLogout();
     init();
 });
 

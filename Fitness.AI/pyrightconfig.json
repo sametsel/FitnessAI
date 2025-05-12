@@ -1,7 +1,0 @@
-{
-  "reportMissingImports": false,
-  "extraPaths": ["C:/python12/Lib/site-packages"],
-  "useLibraryCodeForTypes": true,
-  "venvPath": "C:/python12",
-  "pythonPath": "C:/python12/python.exe"
-}

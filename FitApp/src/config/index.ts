@@ -1,5 +1,5 @@
 // API yapılandırması
-export const API_URL = 'http://192.168.80.1:5000/api';
+export const API_URL = 'http://192.168.1.110:5000/api';
 
 // Uygulama yapılandırması
 export const APP_CONFIG = {

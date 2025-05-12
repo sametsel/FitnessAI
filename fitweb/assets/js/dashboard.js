@@ -1,16 +1,23 @@
 // API servisi importu
 import { apiService } from '../../src/services/api.js';
+import { setupLogout } from './utils/logout.js';
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Sidebar toggle fonksiyonu
+document.addEventListener('DOMContentLoaded', () => {
+    // Kullanıcı adını göster
+    const userGreeting = document.getElementById('userGreeting');
+    const user = JSON.parse(localStorage.getItem('@fitapp_user'));
+    if (user && user.name) {
+        userGreeting.textContent = `Hoşgeldin, ${user.name}`;
+    }
+
+    // Sidebar menü toggle (mobil için)
     const menuToggle = document.querySelector('.menu-toggle');
     const sidebar = document.querySelector('.sidebar');
     const sidebarClose = document.querySelector('.sidebar-close');
-
-    if (menuToggle) {
-        menuToggle.addEventListener('click', function() {
-        sidebar.classList.add('active');
-    });
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
     }
 
     if (sidebarClose) {
@@ -19,19 +26,29 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     }
 
-    // Çıkış yapma fonksiyonu
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-            
-            if (confirm('Çıkış yapmak istediğinize emin misiniz?')) {
-                // Token ve kullanıcı bilgilerini temizle
-                localStorage.removeItem('token');
-                localStorage.removeItem('userName');
-                
-                // Login sayfasına yönlendir
-                window.location.href = 'login.html';
+    // Yükleniyor göstergesi
+    const loadingIndicator = document.getElementById('loading-indicator');
+    function showLoading(show = true) {
+        if (loadingIndicator) loadingIndicator.style.display = show ? 'flex' : 'none';
+    }
+
+    // Özet kartlarına animasyon ekle
+    document.querySelectorAll('.summary-card').forEach((card, i) => {
+        card.style.opacity = 0;
+        setTimeout(() => {
+            card.style.transition = 'opacity 0.7s cubic-bezier(0.4,0,0.2,1)';
+            card.style.opacity = 1;
+        }, 200 + i * 200);
+    });
+
+    // Takvim (flatpickr)
+    if (window.flatpickr) {
+        flatpickr('#calendar', {
+            locale: 'tr',
+            inline: true,
+            defaultDate: new Date(),
+            onChange: function(selectedDates) {
+                // Tarih değişince veri çekilebilir
             }
         });
     }
@@ -120,18 +137,6 @@ async function loadDashboardData() {
         showError('Veriler yüklenirken bir hata oluştu.');
     } finally {
         showLoading(false);
-    }
-}
-
-// Yükleme göstergesi
-function showLoading(isLoading) {
-    const loadingIndicator = document.getElementById('loading-indicator');
-    if (!loadingIndicator) return;
-    
-    if (isLoading) {
-        loadingIndicator.style.display = 'flex';
-    } else {
-        loadingIndicator.style.display = 'none';
     }
 }
 
@@ -417,4 +422,6 @@ function formatDateYMD(date) {
     const day = String(date.getDate()).padStart(2, '0');
     
     return `${year}-${month}-${day}`;
-} 
+}
+
+setupLogout(); 

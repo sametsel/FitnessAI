@@ -1,3 +1,0 @@
-"""
-Fitness AI paketi
-""" 

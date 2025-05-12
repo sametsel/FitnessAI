@@ -20,30 +20,93 @@
             </div>
             <div id="error-message" class="error-message" style="display: none;"></div>
             <form id="registerForm" class="auth-form">
-                <div class="form-group">
-                    <i class="fas fa-user"></i>
-                    <input type="text" name="name" placeholder="Adınız" required>
+                <!-- Kişisel Bilgiler -->
+                <div class="form-section">
+                    <h3>Kişisel Bilgiler</h3>
+                    <div class="form-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="name" placeholder="Adınız" required>
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" name="email" placeholder="E-posta" required>
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" placeholder="Şifre" required>
+                        <i class="fas fa-eye-slash password-toggle"></i>
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="confirmPassword" placeholder="Şifre Tekrar" required>
+                        <i class="fas fa-eye-slash password-toggle"></i>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" name="email" placeholder="E-posta" required>
+                <!-- Fiziksel Özellikler -->
+                <div class="form-section">
+                    <h3>Fiziksel Özellikler</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <i class="fas fa-venus-mars"></i>
+                            <select name="gender" required>
+                                <option value="">Cinsiyet Seçin</option>
+                                <option value="erkek">Erkek</option>
+                                <option value="kadın">Kadın</option>
+                                <option value="diğer">Diğer</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <i class="fas fa-birthday-cake"></i>
+                            <input type="number" name="age" placeholder="Yaş" min="15" max="100" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <i class="fas fa-weight"></i>
+                            <input type="number" name="weight" placeholder="Kilo (kg)" min="30" max="300" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <i class="fas fa-ruler-vertical"></i>
+                            <input type="number" name="height" placeholder="Boy (cm)" min="100" max="250" required>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" name="password" placeholder="Şifre" required>
-                    <i class="fas fa-eye-slash password-toggle"></i>
-                </div>
-                <div class="form-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" name="confirmPassword" placeholder="Şifre Tekrar" required>
-                    <i class="fas fa-eye-slash password-toggle"></i>
+                <!-- Hedef ve Aktivite Seviyesi -->
+                <div class="form-section">
+                    <h3>Hedef</h3>
+                    <div class="form-group">
+                        <i class="fas fa-bullseye"></i>
+                        <select name="goal" required>
+                            <option value="">Hedef Seçin</option>
+                            <option value="kilo_verme">Kilo Verme</option>
+                            <option value="kilo_alma">Kilo Alma</option>
+                            <option value="kas_kazanma">Kas Kazanma</option>
+                            <option value="form_koruma">Form Koruma</option>
+                        </select>
+                    </div>
+                    <h3>Aktivite Seviyesi</h3>
+                    <div class="form-group">
+                        <i class="fas fa-running"></i>
+                        <select name="activityLevel" required>
+                            <option value="">Aktivite Seviyesi Seçin</option>
+                            <option value="sedanter">Hareketsiz</option>
+                            <option value="hafif_aktif">Az Hareketli</option>
+                            <option value="orta_aktif">Orta Derece Aktif</option>
+                            <option value="aktif">Aktif</option>
+                            <option value="cok_aktif">Çok Aktif</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-options">
-                    <label>
-                        <input type="checkbox" name="terms" required> Kullanım koşullarını ve gizlilik politikasını kabul ediyorum
+                    <label class="terms-checkbox">
+                        <input type="checkbox" name="terms" required>
+                        Kullanım koşullarını ve gizlilik politikasını kabul ediyorum
                     </label>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Kayıt Ol</button>
+                <button type="submit" class="btn btn-primary btn-block">
+                    <i class="fas fa-user-plus"></i>
+                    Kayıt Ol
+                </button>
             </form>
             <div class="auth-footer">
                 <p>Zaten hesabınız var mı? <a href="login.html">Giriş Yap</a></p>

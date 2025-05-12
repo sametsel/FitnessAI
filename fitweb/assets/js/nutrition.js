@@ -1,8 +1,10 @@
 // API servisi importu
 import { apiService } from '../../src/services/api.js';
+import { setupLogout } from './utils/logout.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     // Sayfa yüklendiğinde aksiyon
+    setupLogout();
     init();
 });
 

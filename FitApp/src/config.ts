@@ -1,5 +1,5 @@
 // API URL'sini geliştirme ortamına göre ayarla
-const DEV_API_URL = 'http://192.168.1.101:5000/api';
+const DEV_API_URL = 'http://192.168.1.110:5000/api';
 const PROD_API_URL = 'https://api.fitapp.com/api'; // Prodüksiyon URL'si
 
 export const API_URL = __DEV__ ? DEV_API_URL : PROD_API_URL;

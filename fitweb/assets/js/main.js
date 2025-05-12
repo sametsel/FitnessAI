@@ -5,8 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Çıkış yapma işlevi
     setupLogout();
     
-    // Giriş kontrolü
-    checkAuth();
+    // Aktif menü öğesini işaretle
+    highlightActiveMenu();
 });
 
 /**
@@ -19,19 +19,12 @@ function setupMobileMenu() {
     
     if (menuToggle) {
         menuToggle.addEventListener('click', function() {
-            // Menüyü aç/kapat
             navLinks.classList.toggle('show');
             navAuth.classList.toggle('show');
             
-            // Menü ikonunu değiştir (hamburger/çarpı)
             const icon = this.querySelector('i');
-            if (icon.classList.contains('fa-bars')) {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
-            } else {
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
-            }
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
         });
         
         // Sayfa scroll olduğunda menüyü kapat
@@ -54,82 +47,49 @@ function setupLogout() {
     const logoutBtn = document.getElementById('logoutBtn');
     
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', function(e) {
+        logoutBtn.addEventListener('click', async function(e) {
             e.preventDefault();
             
-            // LocalStorage'dan kullanıcı bilgilerini temizle
-            localStorage.removeItem('token');
-            localStorage.removeItem('userName');
-            
-            // Ana sayfaya yönlendir
-            window.location.href = 'index.html';
+            try {
+                // API'ye çıkış yapma isteği gönder
+                await apiService.logout();
+                
+                // Tüm localStorage verilerini temizle
+                localStorage.clear();
+                
+                // Session storage'ı temizle
+                sessionStorage.clear();
+                
+                // Çerezleri temizle
+                document.cookie.split(";").forEach(function(c) { 
+                    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+                });
+                
+                // Ana sayfaya yönlendir
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Çıkış yapma hatası:', error);
+                // Hata olsa bile kullanıcıyı çıkış yaptır
+                localStorage.clear();
+                sessionStorage.clear();
+                window.location.href = 'index.html';
+            }
         });
     }
 }
 
 /**
- * Kullanıcı giriş durumunu kontrol et
+ * Aktif menü öğesini işaretler
  */
-function checkAuth() {
-    const token = localStorage.getItem('token');
-    const authLinks = document.querySelector('.nav-auth');
-    const dashboardLink = document.createElement('a');
-    
-    // Eğer token varsa ve ana sayfadaysak
-    if (token && window.location.pathname.includes('index.html')) {
-        // Kullanıcı giriş yapmış, dashboard linkini göster, giriş/kayıt butonlarını gizle
-        if (authLinks) {
-            authLinks.innerHTML = '';
-            dashboardLink.href = 'dashboard.html';
-            dashboardLink.className = 'btn btn-primary';
-            dashboardLink.textContent = 'Dashboard';
-            authLinks.appendChild(dashboardLink);
-            
-            const logoutLink = document.createElement('a');
-            logoutLink.href = '#';
-            logoutLink.className = 'btn btn-login';
-            logoutLink.textContent = 'Çıkış Yap';
-            logoutLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                localStorage.removeItem('token');
-                localStorage.removeItem('userName');
-                window.location.reload();
-            });
-            
-            authLinks.appendChild(logoutLink);
-        }
-    }
-    // Korumalı sayfalar için güvenlik kontrolü
-    else if (!token && isProtectedPage()) {
-        // Kullanıcı giriş yapmamış ama korumalı sayfada, login sayfasına yönlendir
-        window.location.href = 'login.html';
-    }
-}
-
-/**
- * Mevcut sayfanın giriş gerektiren bir sayfa olup olmadığını kontrol eder
- */
-function isProtectedPage() {
-    const protectedPages = ['dashboard.html', 'workout.html', 'nutrition.html', 'profile.html'];
+function highlightActiveMenu() {
     const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll('.nav-links a');
     
-    return protectedPages.some(page => currentPath.includes(page));
-}
-
-// Karanlık mod tercihi
-const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-
-// Kullanıcı karanlık mod tercihini değiştirdiğinde
-prefersDarkScheme.addEventListener('change', function(e) {
-    // Eğer karanlık mod tercih ediliyorsa
-    if (e.matches) {
-        document.body.classList.add('dark-mode');
-    } else {
-        document.body.classList.remove('dark-mode');
-    }
-});
-
-// Sayfa yüklendiğinde doğru modu ayarla
-if (prefersDarkScheme.matches) {
-    document.body.classList.add('dark-mode');
+    navLinks.forEach(link => {
+        if (currentPath.includes(link.getAttribute('href'))) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
 } 

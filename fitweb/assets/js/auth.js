@@ -1,37 +1,49 @@
 // API Servisini import et
 import { apiService } from '../../src/services/api.js';
+import { API_URL } from './api.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     // Şifre göster/gizle fonksiyonu
+    setupPasswordToggles();
+    
+    // Form işlemleri
+    setupLoginForm();
+    setupRegisterForm();
+    
+    // Token kontrolü
+    checkToken();
+});
+
+/**
+ * Şifre göster/gizle fonksiyonunu ayarlar
+ */
+function setupPasswordToggles() {
     const passwordToggles = document.querySelectorAll('.password-toggle');
     passwordToggles.forEach(toggle => {
         toggle.addEventListener('click', function() {
             const input = this.previousElementSibling;
-            if (input.type === 'password') {
-                input.type = 'text';
-                this.classList.remove('fa-eye-slash');
-                this.classList.add('fa-eye');
-            } else {
-                input.type = 'password';
-                this.classList.remove('fa-eye');
-                this.classList.add('fa-eye-slash');
-            }
+            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+            input.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
         });
     });
+}
 
-    // Form gönderme işlemi
+/**
+ * Giriş formunu ayarlar
+ */
+function setupLoginForm() {
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // Giriş butonunu devre dışı bırak ve yükleniyor göster
             const submitButton = this.querySelector('button[type="submit"]');
             const originalButtonText = submitButton.textContent;
             submitButton.disabled = true;
             submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Giriş yapılıyor...';
             
-            // Hata mesajı konteynerini temizle
             const errorContainer = document.getElementById('error-message');
             if (errorContainer) {
                 errorContainer.textContent = '';
@@ -43,28 +55,36 @@ document.addEventListener('DOMContentLoaded', function() {
             const rememberMe = this.querySelector('input[name="rememberMe"]').checked;
 
             try {
-                // API servisi ile giriş yap
                 const result = await apiService.login(email, password);
                 
-                if (rememberMe) {
-                    localStorage.setItem('rememberMe', 'true');
-                }
+                if (result.success && result.token) {
+                    // Token'ı kaydet
+                    localStorage.setItem('token', result.token);
+                    
+                    // Kullanıcı bilgilerini kaydet
+                    if (result.user) {
+                        localStorage.setItem('userName', result.user.name);
+                        localStorage.setItem('userData', JSON.stringify(result.user));
+                    }
 
-                // Başarılı mesajı göster
-                if (errorContainer) {
-                    errorContainer.textContent = 'Giriş başarılı, yönlendiriliyorsunuz...';
-                    errorContainer.style.display = 'block';
-                    errorContainer.className = 'success-message';
-                }
-                
-                // Dashboard'a yönlendir
-                setTimeout(() => {
+                    if (rememberMe) {
+                        localStorage.setItem('rememberMe', 'true');
+                    }
+
+                    if (errorContainer) {
+                        errorContainer.textContent = 'Giriş başarılı, yönlendiriliyorsunuz...';
+                        errorContainer.style.display = 'block';
+                        errorContainer.className = 'success-message';
+                    }
+                    
+                    // Yönlendirme
                     window.location.href = 'dashboard.html';
-                }, 1000);
+                } else {
+                    throw new Error('Giriş işlemi başarısız');
+                }
             } catch (error) {
                 console.error('Giriş hatası:', error);
                 
-                // Hata mesajını göster
                 if (errorContainer) {
                     errorContainer.textContent = error.message || 'Giriş yapılırken bir hata oluştu. Lütfen bilgilerinizi kontrol edin.';
                     errorContainer.style.display = 'block';
@@ -73,40 +93,49 @@ document.addEventListener('DOMContentLoaded', function() {
                     alert(error.message || 'Giriş yapılırken bir hata oluştu.');
                 }
                 
-                // Giriş butonunu tekrar aktif et
                 submitButton.disabled = false;
                 submitButton.textContent = originalButtonText;
             }
         });
     }
+}
 
-    // Kayıt formu işlemi
+/**
+ * Kayıt formunu ayarlar
+ */
+function setupRegisterForm() {
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
         registerForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // Kayıt butonunu devre dışı bırak ve yükleniyor göster
             const submitButton = this.querySelector('button[type="submit"]');
             const originalButtonText = submitButton.textContent;
             submitButton.disabled = true;
             submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Kayıt yapılıyor...';
             
-            // Hata mesajı konteynerini temizle
             const errorContainer = document.getElementById('error-message');
             if (errorContainer) {
                 errorContainer.textContent = '';
                 errorContainer.style.display = 'none';
             }
             
-            const formData = {
-                name: this.querySelector('input[name="name"]').value.trim(),
-                email: this.querySelector('input[name="email"]').value.trim(),
-                password: this.querySelector('input[type="password"]').value,
-                confirmPassword: this.querySelector('input[name="confirmPassword"]').value
+            const formData = new FormData(this);
+            const userData = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                password: formData.get('password'),
+                confirmPassword: formData.get('confirmPassword'),
+                gender: formData.get('gender'),
+                age: parseInt(formData.get('age')),
+                weight: parseFloat(formData.get('weight')),
+                height: parseInt(formData.get('height')),
+                goal: formData.get('goal'),
+                activityLevel: formData.get('activityLevel'),
+                terms: formData.get('terms') === 'on'
             };
 
-            if (formData.password !== formData.confirmPassword) {
+            if (userData.password !== userData.confirmPassword) {
                 if (errorContainer) {
                     errorContainer.textContent = 'Şifreler eşleşmiyor!';
                     errorContainer.style.display = 'block';
@@ -121,28 +150,33 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             try {
-                // API servisi ile kayıt ol
-                const result = await apiService.register({
-                    name: formData.name,
-                    email: formData.email,
-                    password: formData.password
+                const response = await fetch(`${API_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
                 });
-                
-                // Başarılı mesajı göster
-                if (errorContainer) {
-                    errorContainer.textContent = 'Kayıt başarılı, yönlendiriliyorsunuz...';
-                    errorContainer.style.display = 'block';
-                    errorContainer.className = 'success-message';
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (errorContainer) {
+                        errorContainer.textContent = 'Kayıt başarılı, yönlendiriliyorsunuz...';
+                        errorContainer.style.display = 'block';
+                        errorContainer.className = 'success-message';
+                    }
+                    
+                    localStorage.setItem('token', data.token);
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1000);
+                } else {
+                    throw new Error(data.message || 'Kayıt işlemi başarısız oldu!');
                 }
-                
-                // Dashboard'a yönlendir
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1000);
             } catch (error) {
                 console.error('Kayıt hatası:', error);
                 
-                // Hata mesajını göster
                 if (errorContainer) {
                     errorContainer.textContent = error.message || 'Kayıt olurken bir hata oluştu. Lütfen bilgilerinizi kontrol edin.';
                     errorContainer.style.display = 'block';
@@ -151,19 +185,31 @@ document.addEventListener('DOMContentLoaded', function() {
                     alert(error.message || 'Kayıt olurken bir hata oluştu.');
                 }
                 
-                // Kayıt butonunu tekrar aktif et
                 submitButton.disabled = false;
                 submitButton.textContent = originalButtonText;
             }
         });
     }
+}
 
-    // Token kontrolü
-    const token = localStorage.getItem('@fitapp_token');
+/**
+ * Token kontrolü yapar
+ */
+function checkToken() {
+    const token = localStorage.getItem('token');
     if (token) {
+        // Token varsa ve login/register sayfalarındaysak dashboard'a yönlendir
         if (window.location.pathname.includes('login.html') || 
             window.location.pathname.includes('register.html')) {
             window.location.href = 'dashboard.html';
         }
+    } else {
+        // Token yoksa ve korumalı sayfalardaysak login'e yönlendir
+        if (window.location.pathname.includes('dashboard.html') || 
+            window.location.pathname.includes('profile.html') ||
+            window.location.pathname.includes('workout.html') ||
+            window.location.pathname.includes('nutrition.html')) {
+            window.location.href = 'login.html';
+        }
     }
-}); 
+} 

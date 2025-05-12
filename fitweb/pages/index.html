@@ -3,115 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="FitWeb - Yapay zeka destekli kişiselleştirilmiş fitness ve beslenme asistanı">
     <title>FitWeb - Akıllı Fitness Asistanı</title>
+    <!-- CSS Dosyaları -->
+    <link rel="stylesheet" href="../assets/css/normalize.css">
     <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
+    <link rel="stylesheet" href="../assets/css/index.css">
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-brand">
-            <img src="../assets/images/logo.png" alt="FitWeb Logo">
+            <a href="index.html">
+                <img src="../assets/images/logo.png" alt="FitWeb Logo" class="logo">
+            </a>
         </div>
         <div class="nav-links">
-            <a href="index.html" class="active">Ana Sayfa</a>
-            <a href="workout.html">Antrenman</a>
-            <a href="nutrition.html">Beslenme</a>
-            <a href="profile.html">Profil</a>
+            <a href="#features">Özellikler</a>
+            <a href="#download">Uygulama</a>
+            <a href="#about">Hakkımızda</a>
+            <a href="#contact">İletişim</a>
         </div>
         <div class="nav-auth">
-            <a href="login.html" class="btn btn-login">Giriş Yap</a>
-            <a href="register.html" class="btn btn-register">Kayıt Ol</a>
+            <a href="login.html" class="btn btn-outline">Giriş Yap</a>
+            <a href="register.html" class="btn btn-primary">Kayıt Ol</a>
         </div>
-        <button class="mobile-menu-toggle">
+        <button class="mobile-menu-toggle" aria-label="Menüyü Aç/Kapat">
             <i class="fas fa-bars"></i>
         </button>
     </nav>
 
-    <header class="hero">
+    <!-- Hero Section -->
+    <section class="hero-section">
         <div class="hero-content">
-            <h1>Yapay Zeka Destekli Fitness Yolculuğu</h1>
-            <p>Kişiselleştirilmiş antrenman ve beslenme programları ile hedeflerinize ulaşın</p>
-            <a href="register.html" class="btn btn-primary">Hemen Başla</a>
+            <h1 class="hero-title">Yapay Zeka ile Fitness Yolculuğunuzu Keşfedin</h1>
+            <p class="hero-subtitle">Kişiselleştirilmiş antrenman ve beslenme programları ile hedeflerinize ulaşın</p>
+            <div class="hero-buttons">
+                <a href="register.html" class="btn btn-primary btn-lg">Ücretsiz Başla</a>
+                <a href="#features" class="btn btn-outline btn-lg">Daha Fazla Bilgi</a>
+            </div>
         </div>
-    </header>
+        <div class="hero-image">
+            <img src="../assets/images/hero-image.png" alt="Fitness İllüstrasyonu" class="floating">
+        </div>
+    </section>
 
-    <main>
-        <section class="features">
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="section-header">
             <h2>Özelliklerimiz</h2>
-            <div class="feature-grid">
+            <p>Size özel tasarlanmış fitness deneyimi</p>
+        </div>
+        <div class="features-grid">
                 <div class="feature-card">
+                <div class="feature-icon">
                     <i class="fas fa-dumbbell"></i>
-                    <h3>Akıllı Antrenman Programları</h3>
-                    <p>AI destekli kişiselleştirilmiş fitness planları</p>
+                </div>
+                <h3>Akıllı Antrenman</h3>
+                <p>Yapay zeka destekli kişiselleştirilmiş fitness programları ile hedeflerinize ulaşın</p>
+                <a href="workout.html" class="feature-link">Keşfet <i class="fas fa-arrow-right"></i></a>
                 </div>
                 <div class="feature-card">
+                <div class="feature-icon">
                     <i class="fas fa-apple-alt"></i>
-                    <h3>Beslenme Takibi</h3>
-                    <p>Hedefinize uygun beslenme önerileri</p>
+                </div>
+                <h3>Beslenme Planı</h3>
+                <p>Hedeflerinize uygun beslenme önerileri ve takip sistemi</p>
+                <a href="nutrition.html" class="feature-link">Keşfet <i class="fas fa-arrow-right"></i></a>
                 </div>
                 <div class="feature-card">
+                <div class="feature-icon">
                     <i class="fas fa-chart-line"></i>
+                </div>
                     <h3>İlerleme Takibi</h3>
-                    <p>Detaylı raporlar ve analizler</p>
+                <p>Detaylı raporlar ve analizler ile gelişiminizi izleyin</p>
+                <a href="profile.html" class="feature-link">Keşfet <i class="fas fa-arrow-right"></i></a>
                 </div>
                 <div class="feature-card">
+                <div class="feature-icon">
                     <i class="fas fa-brain"></i>
-                    <h3>Yapay Zeka Desteği</h3>
-                    <p>Kişiselleştirilmiş öneriler ve analizler</p>
+                </div>
+                <h3>AI Asistan</h3>
+                <p>7/24 yapay zeka destekli kişisel fitness asistanınız</p>
+                <a href="register.html" class="feature-link">Keşfet <i class="fas fa-arrow-right"></i></a>
                 </div>
             </div>
         </section>
 
-        <section class="download-app">
+    <!-- Download App Section -->
+    <section id="download" class="download-section">
             <div class="download-content">
                 <h2>Mobil Uygulamamızı İndirin</h2>
                 <p>Fitness yolculuğunuzu her yerde sürdürmek için mobil uygulamamızı hemen indirin.</p>
                 <div class="app-buttons">
-                    <a href="#" class="app-button">
+                    <a href="https://play.google.com/store" target="_blank" rel="noopener noreferrer" class="app-button">
                         <i class="fab fa-google-play"></i>
-                        <span>Google Play</span>
+                    <div class="app-button-text">
+                        <span class="small-text">GET IT ON</span>
+                        <span class="large-text">Google Play</span>
+                    </div>
                     </a>
-                    <a href="#" class="app-button">
+                    <a href="https://apps.apple.com" target="_blank" rel="noopener noreferrer" class="app-button">
                         <i class="fab fa-apple"></i>
-                        <span>App Store</span>
+                    <div class="app-button-text">
+                        <span class="small-text">Download on the</span>
+                        <span class="large-text">App Store</span>
+                    </div>
                     </a>
                 </div>
             </div>
             <div class="app-preview">
-                <img src="../assets/images/app-preview.png" alt="FitApp Önizleme">
+            <img src="../assets/images/app-preview.png" alt="FitApp Önizleme" class="floating">
             </div>
         </section>
-    </main>
 
-    <footer>
+    <!-- Footer -->
+    <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <h4>FitWeb</h4>
+                <img src="../assets/images/logo.png" alt="FitWeb Logo" class="footer-logo">
                 <p>Yapay zeka destekli fitness asistanınız</p>
             </div>
             <div class="footer-section">
                 <h4>Hızlı Bağlantılar</h4>
-                <a href="#">Hakkımızda</a>
-                <a href="#">SSS</a>
-                <a href="#">İletişim</a>
+                <a href="#features">Özellikler</a>
+                <a href="#download">Uygulama</a>
+                <a href="about.html">Hakkımızda</a>
+                <a href="contact.html">İletişim</a>
             </div>
             <div class="footer-section">
                 <h4>Bizi Takip Edin</h4>
                 <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
                 </div>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2023 FitWeb. Tüm hakları saklıdır.</p>
+            <p>&copy; 2024 FitWeb. Tüm hakları saklıdır.</p>
         </div>
     </footer>
 
-    <script src="../assets/js/main.js"></script>
+    <!-- JavaScript Dosyaları -->
+    <script src="../assets/js/utils.js" type="module"></script>
+    <script src="../assets/js/auth.js" type="module"></script>
+    <script src="../assets/js/main.js" type="module"></script>
+    <script src="../assets/js/index.js" type="module"></script>
 </body>
 </html> 
