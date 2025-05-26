@@ -91,7 +91,22 @@ exports.login = async (req, res) => {
         const user = await User.findOne({ email }).select('+password');
         console.log('Kullanıcı bulundu:', user ? 'Evet' : 'Hayır');
 
-        if (!user || !(await user.comparePassword(password))) {
+        if (!user) {
+            console.log('Kullanıcı bulunamadı:', email);
+            return res.status(401).json({
+                success: false,
+                message: 'Hatalı email veya şifre',
+                error: 'Invalid credentials'
+            });
+        }
+
+        // Şifre kontrolü
+        console.log('Şifre kontrolü yapılıyor...');
+        const isMatch = await user.comparePassword(password);
+        console.log('Şifre eşleşmesi:', isMatch);
+
+        if (!isMatch) {
+            console.log('Şifre eşleşmedi');
             return res.status(401).json({
                 success: false,
                 message: 'Hatalı email veya şifre',
@@ -103,22 +118,36 @@ exports.login = async (req, res) => {
         user.password = undefined;
 
         // Token oluştur
+        console.log('Token oluşturuluyor...');
         const token = createToken(user._id);
+        console.log('Token oluşturuldu:', token ? 'Evet' : 'Hayır');
+
         if (!token) {
+            console.log('Token oluşturulamadı');
             return res.status(500).json({
                 success: false,
                 message: 'Token oluşturulamadı',
                 error: 'Token creation failed'
             });
         }
-        console.log('Login token oluşturuldu:', token.substring(0, 20) + '...');
 
         // Yanıtı gönder
+        console.log('Başarılı giriş, yanıt gönderiliyor...');
         res.status(200).json({
             success: true,
             message: 'Giriş başarılı',
             token,
-            user
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                age: user.age,
+                height: user.height,
+                weight: user.weight,
+                gender: user.gender,
+                activityLevel: user.activityLevel,
+                goals: user.goals
+            }
         });
     } catch (error) {
         console.error('Login hatası:', error);

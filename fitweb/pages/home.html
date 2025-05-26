@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitApp - Ana Sayfa</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+    .main-card-calendar, .main-card-today, .main-card-nutrition {
+        max-width: 98vw;
+        width: 100%;
+        min-width: 320px;
+        margin: 2.5rem auto 0 auto;
+        background: #fff;
+        border-radius: 22px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+        padding: 2.5rem 2rem 2rem 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        box-sizing: border-box;
+    }
+    @media (min-width: 900px) {
+        .main-card-calendar, .main-card-today, .main-card-nutrition {
+            max-width: 600px;
+            padding: 2.5rem 2.5rem 2.5rem 2.5rem;
+        }
+    }
+    .main-card-today {
+        background: linear-gradient(90deg, #e3f0ff 60%, #fff 100%);
+        border-left: 8px solid #007AFF;
+        max-width: 900px;
+        width: 100%;
+        margin: 2.5rem auto 0 auto;
+        padding: 2.5rem 1.5rem 2rem 1.5rem;
+    }
+    .main-card-nutrition {
+        background: #f9fafc;
+        border-left: 6px solid #FF9500;
+        box-shadow: 0 4px 24px rgba(255, 149, 0, 0.07);
+        padding: 2.5rem 1.5rem 2rem 1.5rem;
+        max-width: 900px;
+        width: 100%;
+        margin: 2.5rem auto 0 auto;
+    }
+    .main-card-calendar {
+        background: linear-gradient(90deg, #e6fbe8 60%, #fff 100%);
+        border-left: 8px solid #34C759;
+    }
+    .main-card-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #222;
+        margin-bottom: 1.2rem;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+    }
+    .main-card-title i {
+        font-size: 1.5rem;
+    }
+    .calendar-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.2rem;
+    }
+    .calendar-header-row h3 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #0047ab;
+        margin: 0;
+        text-align: center;
+        flex: 1;
+    }
+    .calendar-nav-btn {
+        background: #f4f8ff;
+        border: 1px solid #e0e7ef;
+        border-radius: 8px;
+        padding: 0.5rem 1.1rem;
+        font-size: 1.2rem;
+        color: #0047ab;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
+    }
+    .calendar-nav-btn:hover {
+        background: #e6f0ff;
+        color: #007AFF;
+    }
+    .calendar-weekdays {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        text-align: center;
+        font-weight: 600;
+        color: #7F8C8D;
+        margin-bottom: 0.5rem;
+        font-size: 1.05rem;
+        letter-spacing: 0.5px;
+    }
+    .calendar-days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .calendar-day {
+        background: #f4f7fa;
+        border-radius: 8px;
+        text-align: center;
+        padding: 10px 0;
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #1a2340;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        border: 2px solid transparent;
+        min-width: 36px;
+        min-height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .calendar-day:hover:not(.calendar-day-disabled) {
+        background: #e6f0ff;
+        color: #007aff;
+        border-color: #b3d4fc;
+    }
+    .calendar-day-active {
+        background: #007aff !important;
+        color: #fff !important;
+        border-color: #007aff !important;
+        box-shadow: 0 2px 8px rgba(0,122,255,0.10);
+        font-weight: 700;
+    }
+    .calendar-day-disabled {
+        background: #f0f0f0 !important;
+        color: #bdbdbd !important;
+        cursor: not-allowed !important;
+        opacity: 0.6;
+        border: 2px solid #f0f0f0 !important;
+    }
+    .main-card-today .workout-status h3,
+    .main-card-today .workout-desc {
+        color: #007AFF !important;
+    }
+    .nutrition-header-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.2rem;
+    }
+    .nutrition-header-row .icon {
+        color: #FF9500;
+        font-size: 1.7rem;
+    }
+    .nutrition-header-row .title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #222;
+    }
+    .nutrition-header-row .day-badge {
+        background: #007AFF;
+        color: #fff;
+        font-size: 0.95rem;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 0.2rem 0.8rem;
+        margin-left: 0.7rem;
+    }
+    .meals-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.1rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+    .meal-card {
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        padding: 1.1rem 1.2rem 0.8rem 1.2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        border-left: 5px solid #e3e8f0;
+        position: relative;
+    }
+    .meal-card .meal-header {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        margin-bottom: 0.2rem;
+    }
+    .meal-type-badge {
+        font-size: 0.95rem;
+        font-weight: 700;
+        border-radius: 7px;
+        padding: 0.15rem 0.7rem;
+        color: #fff;
+        background: #007AFF;
+        margin-right: 0.4rem;
+    }
+    .meal-type-badge.ara { background: #34C759; }
+    .meal-type-badge.ogle { background: #007AFF; }
+    .meal-type-badge.aksam { background: #FF9500; }
+    .meal-type-badge.sabah { background: #5856D6; }
+    .meal-type-badge.diger { background: #bdbdbd; }
+    .meal-time {
+        color: #007AFF;
+        font-size: 0.98rem;
+        font-weight: 600;
+        margin-left: 0.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.2rem;
+    }
+    .meal-title {
+        font-size: 1.08rem;
+        font-weight: 600;
+        color: #222;
+        margin-bottom: 0.1rem;
+    }
+    .meal-info-row {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+        margin-top: 0.1rem;
+    }
+    .meal-info-row .icon {
+        color: #FF9500;
+        margin-right: 0.2rem;
+        font-size: 1.1rem;
+    }
+    .meal-info-row .protein {
+        color: #34C759;
+        font-weight: 600;
+        font-size: 1.01rem;
+        margin-left: 0.5rem;
+    }
+    .empty-meal-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #bdbdbd;
+        font-size: 1.1rem;
+        margin: 2rem 0 1rem 0;
+    }
+    .empty-meal-placeholder i {
+        font-size: 2.2rem;
+        margin-bottom: 0.5rem;
+        color: #FF9500;
+    }
+    @media (max-width: 600px) {
+        .main-card-calendar, .main-card-today, .main-card-nutrition {
+            max-width: 98vw;
+            padding: 1.2rem 0.5rem 1.2rem 0.5rem;
+        }
+        .calendar-days {
+            gap: 0.2rem;
+        }
+        .calendar-day {
+            min-height: 32px;
+            font-size: 0.95rem;
+        }
+        .meal-card { padding: 0.8rem 0.7rem 0.7rem 0.7rem; }
+        .main-card-nutrition { padding: 1.2rem 0.5rem 1.2rem 0.5rem; max-width: 98vw; }
+        .main-card-today { padding: 1.2rem 0.5rem 1.2rem 0.5rem; max-width: 98vw; }
+    }
+    .workout-header-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.2rem;
+    }
+    .workout-header-row .icon {
+        color: #FF9500;
+        font-size: 1.7rem;
+    }
+    .workout-header-row .title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #222;
+    }
+    .workout-header-row .date-badge {
+        background: #338bff;
+        color: #fff;
+        font-size: 0.95rem;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 0.2rem 0.8rem;
+        margin-left: 0.7rem;
+    }
+    .workout-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.1rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+    .workout-card {
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        padding: 1.1rem 1.2rem 0.8rem 1.2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        border-left: 5px solid #e3e8f0;
+        position: relative;
+    }
+    .workout-card .workout-header {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        margin-bottom: 0.2rem;
+    }
+    .workout-type-badge {
+        font-size: 0.95rem;
+        font-weight: 700;
+        border-radius: 7px;
+        padding: 0.15rem 0.7rem;
+        color: #fff;
+        background: #338bff;
+        margin-right: 0.4rem;
+    }
+    .workout-type-badge.kardiyo { background: #338bff; }
+    .workout-type-badge.kuvvet { background: #34C759; }
+    .workout-type-badge.diger { background: #bdbdbd; }
+    .workout-time {
+        color: #338bff;
+        font-size: 0.98rem;
+        font-weight: 600;
+        margin-left: 0.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.2rem;
+    }
+    .workout-title {
+        font-size: 1.08rem;
+        font-weight: 600;
+        color: #222;
+        margin-bottom: 0.1rem;
+    }
+    .workout-info-row {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+        margin-top: 0.1rem;
+        flex-wrap: wrap;
+    }
+    .workout-info-row .icon {
+        color: #FF9500;
+        margin-right: 0.2rem;
+        font-size: 1.1rem;
+    }
+    .workout-info-row .set, .workout-info-row .rep, .workout-info-row .duration {
+        color: #338bff;
+        font-weight: 600;
+        font-size: 1.01rem;
+        margin-left: 0.5rem;
+    }
+    .workout-muscle {
+        color: #222;
+        font-size: 0.98rem;
+        margin-bottom: 0.2rem;
+    }
+    .workout-desc-box {
+        background: #f7f9fb;
+        border-radius: 8px;
+        padding: 0.7rem 1rem;
+        color: #444;
+        font-size: 0.98rem;
+        margin-top: 0.2rem;
+    }
+    @media (max-width: 600px) {
+        .workout-card { padding: 0.8rem 0.7rem 0.7rem 0.7rem; }
+    }
+    .stat-card.duration-card {
+        border-left: 8px solid #338bff;
+        background: linear-gradient(90deg, #e3f0ff 60%, #fff 100%);
+    }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header class="main-header">
+            <nav class="main-nav">
+                <div class="logo">
+                    <i class="fas fa-dumbbell"></i>
+                    <span>FitApp</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="home.html" class="active"><i class="fas fa-home"></i> Ana Sayfa</a></li>
+                    <li><a href="nutrition.html"><i class="fas fa-utensils"></i> Beslenme</a></li>
+                    <li><a href="workout.html"><i class="fas fa-dumbbell"></i> Spor</a></li>
+                    <li><a href="profile.html"><i class="fas fa-user"></i> Profil</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <div class="all-cards-vertical">
+                <div class="stats-container">
+                    <div class="stat-card workout-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Set</h3>
+                            <p class="stat-value" id="setValue">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card burned-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Alınan</h3>
+                            <p class="stat-value" id="takenValue">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card calorie-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-apple-alt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Protein</h3>
+                            <p class="stat-value" id="proteinValue">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card duration-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-stopwatch"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Süre</h3>
+                            <p class="stat-value" id="durationValue">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="main-card-calendar">
+                    <div class="main-card-title"><i class="fas fa-calendar"></i> Antrenman Takvimi</div>
+                    <div class="calendar-header-row">
+                        <button id="prevMonth" class="calendar-nav-btn">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <h3 id="calendarTitle">Mayıs 2025</h3>
+                        <button id="nextMonth" class="calendar-nav-btn">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="calendar-weekdays">
+                        <div>Pzt</div>
+                        <div>Sal</div>
+                        <div>Çar</div>
+                        <div>Per</div>
+                        <div>Cum</div>
+                        <div>Cmt</div>
+                        <div>Paz</div>
+                    </div>
+                    <div id="calendarDays" class="calendar-days">
+                        <!-- Günler JavaScript ile doldurulacak -->
+                    </div>
+                </div>
+                <div class="main-card-today">
+                    <div class="workout-header-row">
+                        <span class="icon"><i class="fas fa-running"></i></span>
+                        <span class="title">Günün Antrenmanı</span>
+                        <span class="date-badge" id="workoutDayBadge"></span>
+                    </div>
+                    <div class="today-workout card-body">
+                        <ul id="workoutList" class="workout-list empty-list"></ul>
+                        <div class="empty-workout-placeholder" style="display:none;">
+                            <i class="fas fa-bed"></i>
+                            <span>Bugün dinlenme günü. Vücudunuzun toparlanması için önemli bir gün.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="main-card-nutrition">
+                    <div class="nutrition-header-row">
+                        <span class="icon"><i class="fas fa-utensils"></i></span>
+                        <span class="title">Günün Öğünleri</span>
+                        <span class="day-badge" id="nutritionDayBadge">Pazartesi</span>
+                    </div>
+                    <div class="nutrition-summary card-body">
+                        <ul id="mealsList" class="meals-list empty-list"></ul>
+                        <div class="empty-meal-placeholder">
+                            <i class="fas fa-utensils"></i>
+                            <span>Henüz öğün kaydı yok</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+       
+    </div>
+    <script src="../js/main.js"></script>
+    <script type="module">
+    </script>
+    <script>
+    let availablePlanDates = [];
+    let availableWorkoutDates = [];
+    let activeCalendarDates = [];
+    let registerDate = null;
+
+    async function getAvailablePlanDates() {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch('http://localhost:3000/api/nutrition-plans', {
+                headers: token ? { 'Authorization': 'Bearer ' + token } : {},
+                credentials: 'include'
+            });
+            const plans = await res.json();
+            const plan = Array.isArray(plans) && plans.length > 0 ? plans[0] : null;
+            if (plan && plan.dailyPlans) {
+                availablePlanDates = plan.dailyPlans.map(d => d.date);
+            } else {
+                availablePlanDates = [];
+            }
+        } catch (e) {
+            availablePlanDates = [];
+        }
+    }
+
+    async function getAvailableWorkoutDates() {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch('http://localhost:3000/api/workout-plans', {
+                headers: token ? { 'Authorization': 'Bearer ' + token } : {},
+                credentials: 'include'
+            });
+            const plans = await res.json();
+            const plan = Array.isArray(plans) && plans.length > 0 ? plans[0] : null;
+            if (plan && plan.workouts) {
+                availableWorkoutDates = plan.workouts.map(w => w.date);
+            } else {
+                availableWorkoutDates = [];
+            }
+        } catch (e) {
+            availableWorkoutDates = [];
+        }
+    }
+
+    async function getRegisterDate() {
+        registerDate = localStorage.getItem('registerDate');
+        if (registerDate) {
+            registerDate = new Date(registerDate);
+            return;
+        }
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch('http://localhost:3000/api/profile', {
+                headers: token ? { 'Authorization': 'Bearer ' + token } : {},
+                credentials: 'include'
+            });
+            const data = await res.json();
+            if (data && data.data && data.data.createdAt) {
+                registerDate = new Date(data.data.createdAt);
+                localStorage.setItem('registerDate', registerDate.toISOString());
+            } else {
+                registerDate = new Date();
+            }
+        } catch (e) {
+            registerDate = new Date();
+        }
+    }
+
+    function normalizeDate(date) {
+        return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    }
+
+    async function renderCalendar() {
+        await getAvailablePlanDates();
+        await getAvailableWorkoutDates();
+        await getRegisterDate();
+        activeCalendarDates = availablePlanDates.filter(date => availableWorkoutDates.includes(date));
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth(); // 0-indexed
+        const today = now.getDate();
+        const selectedDate = localStorage.getItem('selectedDate');
+        const monthNames = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+        document.getElementById('calendarTitle').textContent = `${monthNames[month]} ${year}`;
+
+        const firstDay = new Date(year, month, 1);
+        let startDay = firstDay.getDay();
+        startDay = startDay === 0 ? 7 : startDay; // Pazar'ı 7 yap
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        let html = '';
+        for (let i = 1; i < startDay; i++) {
+            html += '<div></div>';
+        }
+        for (let d = 1; d <= daysInMonth; d++) {
+            const currentDate = new Date(year, month, d);
+            currentDate.setDate(currentDate.getDate() +1); // 1 gün geri al
+            const dateStr = currentDate.toISOString().slice(0, 10);
+            const isActive = activeCalendarDates.includes(dateStr);
+            const isSelected = selectedDate === dateStr;
+            html += `<div class="calendar-day${isSelected ? ' calendar-day-active' : ''}${!isActive ? ' calendar-day-disabled' : ''}" data-date="${dateStr}" ${!isActive ? 'style=\"pointer-events:none;opacity:0.5;\"' : ''}>${d}</div>`;
+        }
+        document.getElementById('calendarDays').innerHTML = html;
+    }
+    renderCalendar();
+
+    document.getElementById('calendarDays').onclick = function(e) {
+        const dayElement = e.target.closest('.calendar-day');
+        if (!dayElement || dayElement.classList.contains('calendar-day-disabled')) return;
+        const selectedDate = dayElement.getAttribute('data-date');
+        localStorage.setItem('selectedDate', selectedDate);
+        renderCalendar();
+    };
+
+    async function loadTodayWorkoutHome() {
+        const token = localStorage.getItem('token');
+        try {
+            const res = await fetch('http://localhost:3000/api/workout-plans/today', {
+                headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+            });
+            const container = document.querySelector('.main-card-today .today-workout');
+            if (!container) return;
+            const list = container.querySelector('#workoutList');
+            const emptyPlaceholder = container.querySelector('.empty-workout-placeholder');
+            let badge = document.getElementById('workoutDayBadge');
+            if (res.ok) {
+                const data = await res.json();
+                let workouts = [];
+                if (Array.isArray(data)) {
+                    workouts = data;
+                } else if (data && data.name) {
+                    workouts = [data];
+                }
+                if (workouts.length > 0) {
+                    // Gün etiketi
+                    if (badge && workouts[0].day) badge.textContent = workouts[0].day + (workouts[0].date ? ' ' + workouts[0].date : '');
+                    list.innerHTML = workouts.map(w => {
+                        let type = (w.type || '').toLowerCase();
+                        let badgeClass = 'diger';
+                        if(type.includes('kardiyo')) badgeClass = 'kardiyo';
+                        else if(type.includes('kuvvet')) badgeClass = 'kuvvet';
+                        return `<li class="workout-card">
+                            <div class="workout-header">
+                                <span class="workout-type-badge ${badgeClass}">${w.type || ''}</span>
+                                <span class="workout-time"><i class='fas fa-clock'></i> ${w.duration || 0} dk</span>
+                            </div>
+                            <div class="workout-title">${w.name || ''}</div>
+                            <div class="workout-info-row">
+                                <span><i class='fas fa-fire icon'></i> ${w.calories || 0} kcal</span>
+                                <span class="set"><i class='fas fa-dumbbell'></i> ${w.sets || 0} set</span>
+                                <span class="rep"><i class='fas fa-redo'></i> ${w.reps || 0} tekrar</span>
+                                <span class="duration"><i class='fas fa-clock'></i> ${w.duration || 0} dk</span>
+                            </div>
+                            <div class="workout-muscle">${(w.targetMuscleGroups && w.targetMuscleGroups.length > 0) ? w.targetMuscleGroups.join(', ') : ''}</div>
+                            <div class="workout-desc-box">${w.description || ''}</div>
+                        </li>`;
+                    }).join('');
+                    list.classList.remove('empty-list');
+                    emptyPlaceholder.style.display = 'none';
+                } else {
+                    list.innerHTML = '';
+                    list.classList.add('empty-list');
+                    emptyPlaceholder.style.display = 'flex';
+                    if (badge) badge.textContent = '';
+                }
+            } else {
+                list.innerHTML = '';
+                list.classList.add('empty-list');
+                emptyPlaceholder.style.display = 'flex';
+                if (badge) badge.textContent = '';
+            }
+        } catch (err) {
+            // Hata olursa yine dinlenme günü göster
+            const container = document.querySelector('.main-card-today .today-workout');
+            if (!container) return;
+            const list = container.querySelector('#workoutList');
+            const emptyPlaceholder = container.querySelector('.empty-workout-placeholder');
+            list.innerHTML = '';
+            list.classList.add('empty-list');
+            emptyPlaceholder.style.display = 'flex';
+            let badge = document.getElementById('workoutDayBadge');
+            if (badge) badge.textContent = '';
+        }
+    }
+    document.addEventListener('DOMContentLoaded', loadTodayWorkoutHome);
+
+    async function loadTodayNutritionHome() {
+        const token = localStorage.getItem('token');
+        try {
+            const res = await fetch('http://localhost:3000/api/nutrition-plans/today', {
+                headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+            });
+            const container = document.querySelector('.main-card-nutrition .nutrition-summary');
+            if (!container) return;
+            let meals = [];
+            let dayName = '';
+            if (res.ok) {
+                const data = await res.json();
+                meals = data.meals || data.mealsList || data.dailyMeals || [];
+                dayName = data.day || '';
+            }
+            // Gün etiketi
+            const badge = document.getElementById('nutritionDayBadge');
+            if (badge && dayName) badge.textContent = dayName;
+            // Öğün listesini güncelle
+            const mealsList = container.querySelector('#mealsList');
+            const emptyPlaceholder = container.querySelector('.empty-meal-placeholder');
+            if (meals && meals.length > 0) {
+                mealsList.innerHTML = meals.map(meal => {
+                    // Tip ve renk
+                    let type = (meal.type || '').toLowerCase();
+                    let badgeClass = 'diger';
+                    if(type.includes('sabah')) badgeClass = 'sabah';
+                    else if(type.includes('ara')) badgeClass = 'ara';
+                    else if(type.includes('öğle') || type.includes('ogle')) badgeClass = 'ogle';
+                    else if(type.includes('akşam') || type.includes('aksam')) badgeClass = 'aksam';
+                    return `<li class="meal-card">
+                        <div class="meal-header">
+                            <span class="meal-type-badge ${badgeClass}">${meal.type || ''}</span>
+                            <span class="meal-time"><i class='fas fa-clock'></i> ${meal.time || ''}</span>
+                        </div>
+                        <div class="meal-title">${meal.name || ''}</div>
+                        <div class="meal-info-row">
+                            <span><i class='fas fa-fire icon'></i> ${meal.calories || 0} kcal</span>
+                            <span class="protein"><i class='fas fa-drumstick-bite'></i> ${(meal.protein || 0)}g protein</span>
+                        </div>
+                    </li>`;
+                }).join('');
+                mealsList.classList.remove('empty-list');
+                emptyPlaceholder.style.display = 'none';
+            } else {
+                mealsList.innerHTML = '';
+                mealsList.classList.add('empty-list');
+                emptyPlaceholder.style.display = 'flex';
+            }
+        } catch (err) {
+            // Hata olursa boş göster
+            const container = document.querySelector('.main-card-nutrition .nutrition-summary');
+            if (!container) return;
+            const badge = document.getElementById('nutritionDayBadge');
+            if (badge) badge.textContent = '';
+            const mealsList = container.querySelector('#mealsList');
+            const emptyPlaceholder = container.querySelector('.empty-meal-placeholder');
+            mealsList.innerHTML = '';
+            mealsList.classList.add('empty-list');
+            emptyPlaceholder.style.display = 'flex';
+        }
+    }
+    document.addEventListener('DOMContentLoaded', loadTodayNutritionHome);
+
+    async function loadStatsHome() {
+        const token = localStorage.getItem('token');
+        let setCount = 0;
+        let taken = 0;
+        let protein = 0;
+        let duration = 0;
+        try {
+            // Bugünkü antrenmanlar
+            const workoutRes = await fetch('http://localhost:3000/api/workout-plans/today', {
+                headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+            });
+            if (workoutRes.ok) {
+                const data = await workoutRes.json();
+                let workouts = Array.isArray(data) ? data : (data && data.name ? [data] : []);
+                setCount = workouts.reduce((sum, w) => sum + (Number(w.sets) || 0), 0);
+                duration = workouts.reduce((sum, w) => sum + (Number(w.duration) || 0), 0);
+            }
+            // Bugünkü beslenme
+            const nutritionRes = await fetch('http://localhost:3000/api/nutrition-plans/summary', {
+                headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+            });
+            if (nutritionRes.ok) {
+                const summary = await nutritionRes.json();
+                taken = summary.calories || 0;
+                protein = summary.protein || 0;
+            }
+        } catch (e) {}
+        document.getElementById('setValue').textContent = setCount;
+        document.getElementById('takenValue').textContent = taken;
+        document.getElementById('proteinValue').textContent = protein;
+        document.getElementById('durationValue').textContent = duration + ' dk';
+    }
+    document.addEventListener('DOMContentLoaded', loadStatsHome);
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Bugünün gün adını antrenman ve beslenme kartı başlıklarına ekle
+        const days = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
+        const todayName = days[new Date().getDay()];
+        const workoutBadge = document.getElementById('workoutDayBadge');
+        if (workoutBadge && !workoutBadge.textContent) workoutBadge.textContent = todayName;
+        const nutritionBadge = document.getElementById('nutritionDayBadge');
+        if (nutritionBadge && !nutritionBadge.textContent) nutritionBadge.textContent = todayName;
+    });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+</body>
+</html> 

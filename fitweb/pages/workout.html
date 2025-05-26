@@ -3,218 +3,369 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Antrenmanlar - FitWeb</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/dashboard.css">
-    <link rel="stylesheet" href="../assets/css/workout.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Takvim için flatpickr -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <title>FitApp - Spor Programı</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+    .workout-summary-modern {
+        background: #f8fafc;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        padding: 24px 28px 18px 28px;
+        margin-bottom: 32px;
+        border-left: 6px solid #4f8cff;
+    }
+    .summary-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+    }
+    .summary-icon {
+        color: #4f8cff;
+        font-size: 2rem;
+        margin-right: 2px;
+    }
+    .workout-list-modern {
+        background: #f8fafc;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        padding: 24px 28px 18px 28px;
+        margin-bottom: 32px;
+        border-left: 6px solid #ff9800;
+    }
+    .workout-list-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+    }
+    .workout-list-icon {
+        color: #ff9800;
+        font-size: 2rem;
+        margin-right: 2px;
+    }
+    .today-name {
+        background: #4f8cff;
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 2px 12px;
+        margin-left: 10px;
+        letter-spacing: 0.5px;
+        box-shadow: 0 1px 4px rgba(79,140,255,0.08);
+    }
+    .workout-card-modern {
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        margin-bottom: 18px;
+        padding: 20px 24px 16px 24px;
+        transition: box-shadow 0.2s;
+        border-left: 6px solid #4f8cff;
+        position: relative;
+    }
+    .workout-card-modern:hover {
+        box-shadow: 0 4px 16px rgba(79,140,255,0.10);
+        border-left: 6px solid #2d6cdf;
+    }
+    .workout-header-modern {
+        margin-bottom: 10px;
+    }
+    .workout-header-top {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 2px;
+    }
+    .workout-type-badge {
+        background: linear-gradient(90deg, #4f8cff 60%, #2d6cdf 100%);
+        color: #fff;
+        font-size: 0.95rem;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 2px 12px;
+        letter-spacing: 0.5px;
+        box-shadow: 0 1px 4px rgba(79,140,255,0.08);
+        display: inline-block;
+    }
+    .workout-time {
+        color: #4f8cff;
+        font-size: 0.97rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .workout-name {
+        font-size: 1.18rem;
+        font-weight: 700;
+        color: #1a2340;
+        margin: 0;
+        margin-top: 2px;
+        letter-spacing: 0.2px;
+    }
+    .workout-info-modern {
+        display: flex;
+        gap: 18px;
+        margin-top: 8px;
+        font-size: 1.05rem;
+        color: #3a3a3a;
+    }
+    .workout-calories i, .workout-sets i {
+        color: #ff9800;
+        margin-right: 4px;
+    }
+    .workout-sets i {
+        color: #4caf50;
+    }
+    .calendar-days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .calendar-day {
+        background: #f4f7fa;
+        border-radius: 8px;
+        text-align: center;
+        padding: 10px 0;
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #1a2340;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        border: 2px solid transparent;
+        min-width: 36px;
+        min-height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .calendar-day:hover:not(.calendar-day-disabled) {
+        background: #e6f0ff;
+        color: #007aff;
+        border-color: #b3d4fc;
+    }
+    .calendar-day-active {
+        background: #007aff !important;
+        color: #fff !important;
+        border-color: #007aff !important;
+        box-shadow: 0 2px 8px rgba(0,122,255,0.10);
+        font-weight: 700;
+    }
+    .calendar-day-disabled {
+        background: #f0f0f0 !important;
+        color: #bdbdbd !important;
+        cursor: not-allowed !important;
+        opacity: 0.6;
+        border: 2px solid #f0f0f0 !important;
+    }
+    </style>
 </head>
 <body>
-    <div class="dashboard-container">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <img src="../assets/images/logo.png" alt="FitWeb Logo">
-                <span class="sidebar-close"><i class="fas fa-times"></i></span>
-            </div>
-            <nav class="sidebar-nav">
-                <a href="dashboard.html"><i class="fas fa-home"></i> Ana Sayfa</a>
-                <a href="workout.html" class="active"><i class="fas fa-dumbbell"></i> Antrenmanlar</a>
-                <a href="nutrition.html"><i class="fas fa-apple-alt"></i> Beslenme</a>
-                <a href="profile.html"><i class="fas fa-user"></i> Profil</a>
+    <div id="app">
+        <header>
+            <nav>
+                <div class="logo">FitApp</div>
+                <ul>
+                    <li><a href="home.html"><i class="fas fa-home"></i> Ana Sayfa</a></li>
+                    <li><a href="nutrition.html"><i class="fas fa-utensils"></i> Beslenme</a></li>
+                    <li><a href="workout.html" class="active"><i class="fas fa-dumbbell"></i> Spor</a></li>
+                    <li><a href="profile.html"><i class="fas fa-user"></i> Profil</a></li>
+                </ul>
             </nav>
-            <div class="sidebar-footer">
-                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+        </header>
+
+        <main>
+            <!-- WorkoutSummary Bileşeni -->
+            <div class="workout-summary workout-summary-modern">
+                <div class="summary-header">
+                    <i class="fas fa-dumbbell summary-icon"></i>
+                    <h2>Haftalık İstatistikler</h2>
+                </div>
+                <div class="workout-stats">
+                    <div class="stat-item stat-item-green">
+                        <i class="fas fa-clock"></i>
+                        <h3>Antrenman Süresi</h3>
+                        <p id="workoutDuration">-</p>
+                        <div class="progress-bar">
+                            <div class="progress" id="workoutDurationProgress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-item stat-item-yellow">
+                        <i class="fas fa-dumbbell"></i>
+                        <h3>Tamamlanan Set</h3>
+                        <p id="workoutSets">-</p>
+                        <div class="progress-bar">
+                            <div class="progress" id="workoutSetsProgress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </aside>
 
-        <main class="main-content">
-            <header class="dashboard-header">
-                <button class="menu-toggle"><i class="fas fa-bars"></i></button>
-                <div class="user-menu">
-                    <span class="notification-bell">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-count">3</span>
-                    </span>
-                    <div class="user-profile">
-                        <img src="../assets/images/avatar.png" alt="Kullanıcı">
-                        <span id="userGreeting">Hoşgeldin, Kullanıcı</span>
-                    </div>
+            <!-- WorkoutList Bileşeni -->
+            <div class="workout-list workout-list-modern">
+                <div class="workout-list-header">
+                    <i class="fas fa-running workout-list-icon"></i>
+                    <h2>Günün Antrenmanı <span id="todayName" class="today-name"></span></h2>
                 </div>
-            </header>
-
-            <div class="dashboard-content">
-                <!-- Tarih Seçici -->
-                <div class="date-picker-container">
-                    <button class="date-nav-btn prev-date">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <div class="date-display">
-                        <input type="text" id="date-picker" class="date-picker" placeholder="Tarih Seçin">
-                        <i class="fas fa-calendar-alt"></i>
-                    </div>
-                    <button class="date-nav-btn next-date">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-
-                <!-- Yükleniyor Göstergesi -->
-                <div id="loading-indicator" class="loading-container" style="display: none;">
-                    <div class="spinner"></div>
-                    <p>Veriler yükleniyor...</p>
-                </div>
-
-                <!-- Antrenman Özeti -->
-                <div class="workout-summary">
-                    <div class="summary-card">
-                        <div class="summary-icon">
-                            <i class="fas fa-heartbeat"></i>
-                        </div>
-                        <div class="summary-details">
-                            <h3 id="workout-status">Antrenman Durumu</h3>
-                            <p id="workout-type">Antrenman Tipi</p>
-                            <div class="workout-actions">
-                                <button id="start-workout-btn" class="btn btn-primary">Antrenmanı Başlat</button>
-                                <button id="complete-workout-btn" class="btn btn-success" style="display: none;">Tamamla</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Antrenman İstatistikleri -->
-                    <div class="stats-cards">
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-fire"></i>
-                            </div>
-                            <div class="stat-info">
-                                <span id="calories-burned">0</span>
-                                <p>Yakılan Kalori</p>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <div class="stat-info">
-                                <span id="workout-duration">0 dk</span>
-                                <p>Süre</p>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                            <div class="stat-info">
-                                <span id="completed-workouts">0</span>
-                                <p>Tamamlanan</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Egzersiz Listesi -->
-                <div class="exercises-section">
-                    <div class="section-header">
-                        <h2>Egzersizler</h2>
-                        <button id="add-exercise-btn" class="btn btn-primary" style="display: none;"><i class="fas fa-plus"></i> Egzersiz Ekle</button>
-                    </div>
-
-                    <div id="exercises-container" class="exercises-container">
-                        <!-- Egzersizler JavaScript ile doldurulacak -->
-                    </div>
-                </div>
-
-                <!-- Yapay Zeka Önerileri -->
-                <div class="ai-recommendations-section">
-                    <div class="section-header">
-                        <h2><i class="fas fa-robot"></i> Yapay Zeka Antrenman Önerileri</h2>
-                        <button id="toggle-recommendations-btn" class="btn btn-outline">Önerileri Göster</button>
-                    </div>
-                    
-                    <div id="recommendations-container" class="recommendations-container" style="display: none;">
-                        <!-- Yapay zeka önerileri burada gösterilecek -->
-                    </div>
-                </div>
-
-                <!-- Antrenman Geçmişi -->
-                <div class="workout-history-section">
-                    <div class="section-header">
-                        <h2>Antrenman Geçmişi</h2>
-                        <div class="history-filter">
-                            <label for="history-filter-select">Filtrele:</label>
-                            <select id="history-filter-select">
-                                <option value="week">Bu Hafta</option>
-                                <option value="month">Bu Ay</option>
-                                <option value="all">Tümü</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div id="workout-history-container" class="workout-history-container">
-                        <!-- Geçmiş antrenmanlar JavaScript ile doldurulacak -->
-                    </div>
-                </div>
+                <div class="workout-cards"></div>
             </div>
         </main>
-    </div>
 
-    <!-- Egzersiz Ekleme Modal -->
-    <div id="add-exercise-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Egzersiz Ekle</h2>
-                <span class="close-modal">&times;</span>
-            </div>
-            <div class="modal-body">
-                <form id="add-exercise-form">
-                    <div class="form-group">
-                        <label for="exercise-name">Egzersiz Adı</label>
-                        <input type="text" id="exercise-name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="exercise-type">Egzersiz Tipi</label>
-                        <select id="exercise-type" required>
-                            <option value="strength">Kuvvet</option>
-                            <option value="cardio">Kardio</option>
-                            <option value="flexibility">Esneklik</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="exercise-sets">Set Sayısı</label>
-                        <input type="number" id="exercise-sets" min="1" value="3" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="exercise-reps">Tekrar Sayısı</label>
-                        <input type="number" id="exercise-reps" min="1" value="10" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="exercise-weight">Ağırlık (kg)</label>
-                        <input type="number" id="exercise-weight" min="0" step="0.5" value="0">
-                    </div>
-                    <div class="form-group">
-                        <label for="exercise-duration">Süre (dakika)</label>
-                        <input type="number" id="exercise-duration" min="0" value="0">
-                    </div>
-                    <div class="form-group">
-                        <label for="exercise-notes">Notlar</label>
-                        <textarea id="exercise-notes" rows="3"></textarea>
-                    </div>
-                    <div class="form-buttons">
-                        <button type="button" class="btn btn-outline" id="cancel-exercise-btn">İptal</button>
-                        <button type="submit" class="btn btn-primary">Kaydet</button>
-                    </div>
-                </form>
-            </div>
-        </div>
     </div>
+    <script src="../js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+    <script>
+    const API_BASE = "http://localhost:3000";
 
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="../assets/js/main.js" type="module"></script>
-    <script src="../assets/js/dashboard.js" type="module"></script>
-    <script src="../assets/js/flatpickr.min.js"></script>
-    <script src="../src/services/api.js" type="module"></script>
-    <script src="../assets/js/workout.js" type="module"></script>
+    async function loadTodayWorkout() {
+        const token = localStorage.getItem('token');
+        const container = document.querySelector('.workout-cards');
+        try {
+            const res = await fetch('http://127.0.0.1:3000/api/workout-plans/today', {
+                headers: { Authorization: 'Bearer ' + token }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                // Gelen veri dizi ise (birden fazla antrenman)
+                if (Array.isArray(data) && data.length) {
+                    container.innerHTML = data.map(workout => `
+                        <div class="workout-card workout-card-modern">
+                            <div class="workout-header-modern">
+                                <div class="workout-header-top">
+                                    <span class="workout-type-badge">${workout.type || ''}</span>
+                                    <span class="workout-time"><i class="fas fa-clock"></i> ${workout.duration || ''} dk</span>
+                                </div>
+                                <h3 class="workout-name">${workout.name || ''}</h3>
+                            </div>
+                            <div class="workout-info-modern">
+                                <span class="workout-calories"><i class="fas fa-fire"></i> <b>${workout.caloriesBurned || '-'}</b> kcal</span>
+                                <span class="workout-sets"><i class="fas fa-dumbbell"></i> <b>${workout.sets || '-'}</b> set</span>
+                            </div>
+                            ${workout.description ? `<div class="exercise-description" style="margin-top:10px;font-size:1rem;color:#444;background:#f7f7fa;padding:10px 14px;border-radius:8px;">${workout.description}</div>` : ''}
+                        </div>
+                    `).join('');
+                } else if (data && data.name) {
+                    // Tek antrenman objesi gelirse
+                    const workout = data;
+                    container.innerHTML = `
+                        <div class="workout-card workout-card-modern">
+                            <div class="workout-header-modern">
+                                <div class="workout-header-top">
+                                    <span class="workout-type-badge">${workout.type || ''}</span>
+                                    <span class="workout-time"><i class="fas fa-clock"></i> ${workout.duration || ''} dk</span>
+                                </div>
+                                <h3 class="workout-name">${workout.name || ''}</h3>
+                            </div>
+                            <div class="workout-info-modern">
+                                <span class="workout-calories"><i class="fas fa-fire"></i> <b>${workout.caloriesBurned || '-'}</b> kcal</span>
+                                <span class="workout-sets"><i class="fas fa-dumbbell"></i> <b>${workout.sets || '-'}</b> set</span>
+                            </div>
+                            ${workout.description ? `<div class="exercise-description" style="margin-top:10px;font-size:1rem;color:#444;background:#f7f7fa;padding:10px 14px;border-radius:8px;">${workout.description}</div>` : ''}
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `<div class="workout-card workout-card-modern"><p>Bugün için antrenman bulunamadı.</p></div>`;
+                }
+            } else {
+                container.innerHTML = `<div class="workout-card workout-card-modern"><p>Bugün için antrenman bulunamadı.</p></div>`;
+            }
+        } catch (err) {
+            container.innerHTML = `<div class="workout-card workout-card-modern"><p>Sunucu hatası.</p></div>`;
+        }
+    }
+    window.addEventListener('DOMContentLoaded', loadTodayWorkout);
+
+    // Bugünün gün adını göster
+    const days = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
+    const todayName = days[new Date().getDay()];
+    document.getElementById('todayName').textContent = todayName;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        loadWorkoutForSelectedDate();
+    });
+
+    async function loadWorkoutForSelectedDate() {
+        const selectedDate = localStorage.getItem('selectedDate') || new Date().toISOString().slice(0, 10);
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch(`${API_BASE}/api/workout-plans/plan?date=${selectedDate}`, {
+                headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+            });
+            if (res.ok) {
+                const data = await res.json();
+                if (data && data.data && data.data.length) {
+                    updateWorkoutList(data.data);
+                    // Günü başlıkta göster
+                    const todayName = document.getElementById('todayName');
+                    if (todayName) todayName.textContent = selectedDate;
+                }
+            }
+        } catch (error) {
+            console.error('Seçili gün için antrenman verisi yüklenemedi:', error);
+        }
+    }
+
+    function updateWorkoutList(workouts) {
+        const workoutListContainer = document.querySelector('.workout-cards');
+        if (!workoutListContainer) return;
+        if (!workouts || !workouts.length) {
+            workoutListContainer.innerHTML = '<div>Bu gün için antrenman bulunamadı.</div>';
+            return;
+        }
+        workoutListContainer.innerHTML = workouts.map(workout => `
+            <div class="workout-card-modern">
+                <div class="workout-header-modern">
+                    <div class="workout-header-top">
+                        <span class="workout-type-badge">${workout.type || ''}</span>
+                        <span class="workout-time"><i class="fas fa-clock"></i> ${workout.time || ''}</span>
+                    </div>
+                    <h3 class="workout-name">${workout.name || ''}</h3>
+                </div>
+                <div class="workout-info-modern">
+                    <span class="workout-calories"><i class="fas fa-fire"></i> ${workout.calories || 0} kcal</span>
+                    <span class="workout-sets"><i class="fas fa-dumbbell"></i> ${workout.sets || 0} set</span>
+                    <span><i class="fas fa-redo"></i> ${workout.reps || 0} tekrar</span>
+                    <span><i class="fas fa-clock"></i> ${workout.duration || 0} dk</span>
+                </div>
+                <div class="muscle-groups">
+                    ${(workout.targetMuscleGroups || []).map(muscle => `<span class='muscle-tag'>${muscle}</span>`).join('')}
+                </div>
+                <div class="workout-desc">${workout.description || ''}</div>
+            </div>
+        `).join('');
+    }
+
+    async function loadWorkoutStats() {
+        const token = localStorage.getItem('token');
+        let totalDuration = 0;
+        let totalSets = 0;
+        try {
+            const res = await fetch('http://127.0.0.1:3000/api/workout-plans/today', {
+                headers: { Authorization: 'Bearer ' + token }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                let workouts = Array.isArray(data) ? data : (data && data.name ? [data] : []);
+                totalDuration = workouts.reduce((sum, w) => sum + (Number(w.duration) || 0), 0);
+                totalSets = workouts.reduce((sum, w) => sum + (Number(w.sets) || 0), 0);
+            }
+        } catch (e) {}
+        document.getElementById('workoutDuration').textContent = (totalDuration/60).toFixed(1) + ' saat';
+        document.getElementById('workoutSets').textContent = totalSets + ' set';
+        document.getElementById('workoutDurationProgress').style.width = Math.min((totalDuration/300)*100,100) + '%';
+        document.getElementById('workoutSetsProgress').style.width = Math.min((totalSets/50)*100,100) + '%';
+    }
+    window.addEventListener('DOMContentLoaded', function() {
+        loadTodayWorkout();
+        loadWorkoutStats();
+    });
+    </script>
 </body>
 </html> 

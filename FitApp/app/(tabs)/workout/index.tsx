@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, ViewStyle, RefreshControl, Animated, Platform } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, ViewStyle, RefreshControl, Animated, Platform, Alert, Modal, Pressable } from 'react-native';
 import { useAuth } from '../../../src/context/AuthContext';
 import { Card } from '../../../src/components/Card';
 import { Button } from '../../../src/components/Button';
@@ -9,8 +9,38 @@ import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-ico
 import { api } from '../../../src/services/api';
 import { Workout } from '../../../src/types';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Calendar } from 'react-native-calendars';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Header } from '../../../src/components/common/Header';
+import { WorkoutFilter } from '../../../src/components/workout/WorkoutFilter';
+import { WorkoutCard } from '../../../src/components/workout/WorkoutCard';
+import { workoutService } from '../../../src/services/workout.service';
+import { WorkoutList } from '../../../src/components/workout/WorkoutList';
+import { Snackbar } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Calendar, LocaleConfig } from 'react-native-calendars';
+
+// Takvim için Türkçe ayarları
+LocaleConfig.locales['tr'] = {
+  monthNames: [
+    'Ocak',
+    'Şubat',
+    'Mart',
+    'Nisan',
+    'Mayıs',
+    'Haziran',
+    'Temmuz',
+    'Ağustos',
+    'Eylül',
+    'Ekim',
+    'Kasım',
+    'Aralık'
+  ],
+  monthNamesShort: ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'],
+  dayNames: ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'],
+  dayNamesShort: ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'],
+  today: 'Bugün'
+};
+LocaleConfig.defaultLocale = 'tr';
 
 // Geliştirilmiş LinearProgress bileşeni
 const LinearProgress: React.FC<{
@@ -98,7 +128,8 @@ interface ExtendedExercise {
 export default function WorkoutScreen() {
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
-  const [workouts, setWorkouts] = useState<ExtendedWorkout[]>([]);
+  const [allWorkouts, setAllWorkouts] = useState<ExtendedWorkout[]>([]);
+  const [displayedWorkouts, setDisplayedWorkouts] = useState<ExtendedWorkout[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -106,22 +137,22 @@ export default function WorkoutScreen() {
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [greeting, setGreeting] = useState('');
   const [expandedWorkout, setExpandedWorkout] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
-  const [calendarVisible, setCalendarVisible] = useState(false);
-  const [markedDates, setMarkedDates] = useState<{[date: string]: any}>({});
-  const [workoutStats, setWorkoutStats] = useState({
-    totalWorkouts: 0,
-    completedWorkouts: 0,
-    streakDays: 0,
-    totalExercises: 0
-  });
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [isCalendarVisible, setIsCalendarVisible] = useState(false);
+  const [markedDates, setMarkedDates] = useState<{[key: string]: any}>({});
 
   useEffect(() => {
     fetchWorkouts();
-    fetchWorkoutStats();
     setGreetingMessage();
-    generateMarkedDates();
   }, []);
+
+  useEffect(() => {
+    // Seçilen tarihe göre antrenmanları filtrele
+    const filtered = allWorkouts.filter(workout => workout.date === selectedDate);
+    setDisplayedWorkouts(filtered);
+  }, [selectedDate, allWorkouts]);
 
   const setGreetingMessage = () => {
     const currentHour = new Date().getHours();
@@ -147,42 +178,53 @@ export default function WorkoutScreen() {
   const fetchWorkouts = async () => {
     try {
       setLoading(true);
-      // Kullanıcı ID'sini doğru şekilde al, _id veya id alanını kontrol et
       const userId = user?._id || user?.id || '';
-      
       if (!userId) {
-        console.error('Kullanıcı kimliği bulunamadı:', user);
         setError('Kullanıcı bilgisi bulunamadı. Lütfen yeniden giriş yapın.');
         setLoading(false);
         return;
       }
       
-      console.log('Antrenmanlar yüklenirken kullanılan userId:', userId);
-      
-      // userId parametresi eklendi
-      const fetchedWorkouts = await api.getWorkouts(userId);
-      
-      // Workout tiplerini ExtendedWorkout tipine dönüştür
-      const extendedWorkouts = fetchedWorkouts.map(workout => {
-        return {
+      const fetchedPlans = await api.getWorkouts(userId);
+      const workouts = Array.isArray(fetchedPlans)
+        ? fetchedPlans.flatMap((plan: any) => Array.isArray(plan.workouts) ? plan.workouts : [])
+        : [];
+
+      // Tarihe göre sırala (en yeniden en eskiye)
+      const sortedWorkouts = workouts
+        .map((workout: any, idx: number) => ({
           ...workout,
-          _id: workout.id, // id'yi _id'ye kopyala
-          name: workout.type, // Geçici olarak tip adını kullanıyoruz
-          difficulty: 'orta', // Default değer
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          exercises: workout.exercises.map(ex => ({
-            ...ex,
-            completed: false
-          }))
-        } as ExtendedWorkout;
+          _id: workout.id || workout._id || idx,
+          name: workout.type,
+          difficulty: 'orta',
+          createdAt: new Date(workout.createdAt || workout.date),
+          updatedAt: new Date(workout.updatedAt || workout.date),
+          exercises: Array.isArray(workout.exercises)
+            ? workout.exercises.map((ex: any) => ({
+                ...ex,
+                completed: false
+              }))
+            : []
+        } as ExtendedWorkout))
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+      setAllWorkouts(sortedWorkouts);
+
+      // Takvim için işaretli günleri hazırla
+      const marked: {[key: string]: any} = {};
+      sortedWorkouts.forEach(workout => {
+        const dateStr = typeof workout.date === 'string' ? workout.date : new Date(workout.date).toISOString().split('T')[0];
+        marked[dateStr] = {
+          marked: true,
+          dotColor: theme.colors.primary,
+          selected: dateStr === selectedDate
+        };
       });
-      
-      setWorkouts(extendedWorkouts);
+      setMarkedDates(marked);
+
       setError(null);
     } catch (err) {
       setError('Antrenmanlar yüklenirken bir hata oluştu');
-      console.error('Antrenman yükleme hatası:', err);
     } finally {
       setLoading(false);
     }
@@ -204,9 +246,9 @@ export default function WorkoutScreen() {
   };
 
   const getFilteredWorkouts = () => {
-    if (!activeFilter) return workouts;
+    if (!activeFilter) return allWorkouts;
     
-    return workouts.filter(workout => {
+    return allWorkouts.filter(workout => {
       switch(activeFilter) {
         case 'completed': return workout.completed;
         case 'upcoming': return !workout.completed;
@@ -269,104 +311,52 @@ export default function WorkoutScreen() {
     return dayDiff;
   };
 
-  // İstatistikleri getir
-  const fetchWorkoutStats = async () => {
-    try {
-      // API'den gerçek veri gelene kadar örnek veri kullanalım
-      setWorkoutStats({
-        totalWorkouts: 15,
-        completedWorkouts: 8,
-        streakDays: 4,
-        totalExercises: 35
-      });
-      
-      // Gerçek implementasyon:
-      // const stats = await api.getWorkoutStats(user?._id || user?.id || '');
-      // setWorkoutStats(stats);
-    } catch (err) {
-      console.error('İstatistik yükleme hatası:', err);
-    }
-  };
+  // Motivasyon mesajları
+  const motivationMessages = [
+    'Harika iş çıkardın! Devam et!',
+    'Süpersin! Her gün daha iyiye!',
+    'Tebrikler, hedeflerine bir adım daha yaklaştın!',
+    'Enerjin çok iyi, aynen devam!',
+    'Vazgeçme, başarıya çok yakınsın!'
+  ];
+  const allDoneMessages = [
+    'Tüm antrenmanlarını tamamladın! Müthişsin! 🎉',
+    'Bugün harikaydın, tüm planı bitirdin! 🏆',
+    'Süper! Bugünün tüm antrenmanları tamamlandı! 💪',
+    'Efsanesin! Bugün kendini aştın! 🔥'
+  ];
 
-  // Takvim için işaretli tarihleri oluştur
-  const generateMarkedDates = () => {
-    const today = new Date().toISOString().split('T')[0];
-    const dates: {[date: string]: any} = {
-      [today]: { 
-        selected: true, 
-        selectedColor: theme.colors.primary,
-        marked: true
-      }
-    };
-    
-    // Örnek veri - Gerçek verilerle değiştirilmeli
-    const next7Days = [...Array(7)].map((_, i) => {
-      const date = new Date();
-      date.setDate(date.getDate() + i + 1);
-      return date.toISOString().split('T')[0];
-    });
-    
-    // Gelecekteki antrenmanlar için
-    next7Days.forEach((date, i) => {
-      if (i % 2 === 0) { // Sadece örnek olarak her iki günde bir antrenman
-        dates[date] = { 
-          marked: true, 
-          dotColor: theme.colors.primary,
-          activeOpacity: 0.5
-        };
-      }
-    });
-    
-    // Geçmiş tamamlanmış antrenmanlar için
-    const past7Days = [...Array(7)].map((_, i) => {
-      const date = new Date();
-      date.setDate(date.getDate() - i - 1);
-      return date.toISOString().split('T')[0];
-    });
-    
-    past7Days.forEach((date, i) => {
-      if (i % 3 === 0) { // Örnek olarak
-        dates[date] = { 
-          marked: true, 
-          dotColor: theme.colors.success
-        };
-      }
-    });
-    
-    setMarkedDates(dates);
-    setSelectedDate(today);
-  };
-  
-  // Takvimde tarih seçildiğinde
-  const onDayPress = (day: {dateString: string}) => {
-    setSelectedDate(day.dateString);
-    setCalendarVisible(false);
-    // Burada seçilen tarihe göre antrenmanları filtreleyebiliriz
-  };
-
-  // Antrenman tamamlama
-  const completeWorkout = async (workoutId: string) => {
-    try {
-      // TODO: Gerçek API çağrısı eklenecek
-      // await api.completeWorkout(workoutId);
-      
-      // Şimdilik yerel state'i güncelle
-      setWorkouts(prev => 
-        prev.map(w => 
-          w._id === workoutId 
-            ? {...w, completed: true, completedAt: new Date()} 
-            : w
-        )
+  // Antrenman tamamlama fonksiyonu (sadece state günceller)
+  const handleCompleteWorkout = (workoutId: string) => {
+   
+    setAllWorkouts(prev => {
+      const updated = prev.map(w =>
+        w._id === workoutId || w.id === workoutId ? { ...w, completed: true } : w
       );
-      
-      // İstatistikleri güncelle
-      setWorkoutStats(prev => ({
-        ...prev,
-        completedWorkouts: prev.completedWorkouts + 1
-      }));
-      
+      const remaining = updated.filter(w => !w.completed);
+      let msg = '';
+      if (remaining.length === 0 && updated.length > 0) {
+        msg = allDoneMessages[Math.floor(Math.random() * allDoneMessages.length)];
+        
+        setModalMessage(msg);
+        setModalVisible(true);
+      } else {
+        msg = motivationMessages[Math.floor(Math.random() * motivationMessages.length)];
+        
+        setModalMessage(msg);
+        setModalVisible(true);
+      }
+      // Otomatik kapansın
+      setTimeout(() => setModalVisible(false), 2500);
+      return updated;
+    });
+  };
+
+  const fetchTodayWorkout = async () => {
+    try {
+      // Bu fonksiyon artık kullanılmıyor, kaldırılabilir
     } catch (err) {
-      console.error('Antrenman tamamlama hatası:', err);
+      // Hata durumu
     }
   };
 
@@ -381,6 +371,22 @@ export default function WorkoutScreen() {
 
   const filteredWorkouts = getFilteredWorkouts();
 
+  // Key üretici fonksiyon
+  const getWorkoutKey = (workout: any, idx: number) => {
+    if (workout._id) return `workout-${workout._id}`;
+    if (workout.id) return `workout-${workout.id}`;
+    return `workout-${workout.date || 'no-date'}-${workout.name || 'no-name'}-${idx}`;
+  };
+
+  // Panel için istatistikler
+  const totalPlanned = allWorkouts.length;
+  const totalCompleted = allWorkouts.filter(w => w.completed).length;
+
+  const onDayPress = (day: any) => {
+    setSelectedDate(day.dateString);
+    setIsCalendarVisible(false);
+  };
+
   return (
     <ScrollView 
       style={[styles.container, { paddingTop: insets.top }]}
@@ -389,320 +395,88 @@ export default function WorkoutScreen() {
       }
       showsVerticalScrollIndicator={false}
     >
-      <LinearGradient
-        colors={['#00adf5', '#0088cc']}
-        start={{x: 0, y: 0}}
-        end={{x: 1, y: 0}}
-        style={styles.headerGradient}
+      <Header 
+        greeting={greeting}
+      />
+
+      <TouchableOpacity 
+        style={styles.calendarButton}
+        onPress={() => setIsCalendarVisible(!isCalendarVisible)}
       >
-        <View style={styles.headerContent}>
-          <View>
-            <Text style={styles.greetingText}>{greeting}</Text>
-            <Text style={styles.nameText}>{user?.name?.split(' ')[0] || 'Sporcu'}</Text>
-          </View>
-          <TouchableOpacity 
-            style={styles.calendarButton}
-            onPress={() => setCalendarVisible(!calendarVisible)}
-          >
-            <MaterialCommunityIcons name="calendar-month" size={24} color="#fff" />
-          </TouchableOpacity>
-        </View>
-      </LinearGradient>
-      
-      {calendarVisible && (
-        <View style={styles.calendarContainer}>
+        <MaterialCommunityIcons name="calendar" size={24} color={theme.colors.primary} />
+        <Text style={styles.calendarButtonText}>
+          {new Date(selectedDate).toLocaleDateString('tr-TR', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+          })}
+        </Text>
+      </TouchableOpacity>
+
+      {isCalendarVisible && (
+        <Card style={styles.calendarCard}>
           <Calendar
-            markedDates={markedDates}
             onDayPress={onDayPress}
+            markedDates={markedDates}
             theme={{
-              calendarBackground: theme.colors.white,
+              backgroundColor: '#ffffff',
+              calendarBackground: '#ffffff',
               textSectionTitleColor: theme.colors.primary,
               selectedDayBackgroundColor: theme.colors.primary,
-              selectedDayTextColor: theme.colors.white,
+              selectedDayTextColor: '#ffffff',
               todayTextColor: theme.colors.primary,
-              dayTextColor: theme.colors.text.primary,
-              textDisabledColor: theme.colors.gray300,
+              dayTextColor: '#2d4150',
+              textDisabledColor: '#d9e1e8',
+              dotColor: theme.colors.primary,
+              selectedDotColor: '#ffffff',
               arrowColor: theme.colors.primary,
-              monthTextColor: theme.colors.text.primary,
-              indicatorColor: theme.colors.primary
+              monthTextColor: theme.colors.primary,
+              indicatorColor: theme.colors.primary,
+              textDayFontWeight: '300',
+              textMonthFontWeight: 'bold',
+              textDayHeaderFontWeight: '300',
+              textDayFontSize: 16,
+              textMonthFontSize: 16,
+              textDayHeaderFontSize: 16
             }}
+            firstDay={1}
           />
-        </View>
+        </Card>
       )}
-      
-      {/* İstatistik Kartları */}
-      <ScrollView 
-        horizontal 
-        showsHorizontalScrollIndicator={false}
-        style={styles.statsScrollView}
+
+      <WorkoutList
+        workouts={displayedWorkouts}
+        onAddWorkout={() => {
+          Alert.alert('Yeni Antrenman', 'Yeni antrenman ekleme ekranı açılacak.');
+        }}
+        onComplete={handleCompleteWorkout}
+      />
+
+      <TouchableOpacity 
+        style={styles.floatingButton} 
+        onPress={() => {/* TODO: Antrenman ekleme sayfasına git */}}
       >
-        <View style={styles.statCard}>
-          <View style={[styles.statIconContainer, {backgroundColor: `${theme.colors.success}20`}]}>
-            <MaterialCommunityIcons name="dumbbell" size={18} color={theme.colors.success} />
-          </View>
-          <View>
-            <Text style={styles.statValue}>{workoutStats.totalWorkouts}</Text>
-            <Text style={styles.statLabel}>Toplam Antrenman</Text>
-          </View>
-        </View>
-        
-        <View style={styles.statCard}>
-          <View style={[styles.statIconContainer, {backgroundColor: `${theme.colors.primary}20`}]}>
-            <MaterialCommunityIcons name="check-circle" size={18} color={theme.colors.primary} />
-          </View>
-          <View>
-            <Text style={styles.statValue}>{workoutStats.completedWorkouts}</Text>
-            <Text style={styles.statLabel}>Tamamlanan</Text>
-          </View>
-        </View>
-        
-        <View style={styles.statCard}>
-          <View style={[styles.statIconContainer, {backgroundColor: `${theme.colors.warning}20`}]}>
-            <MaterialCommunityIcons name="fire" size={18} color={theme.colors.warning} />
-          </View>
-          <View>
-            <Text style={styles.statValue}>{workoutStats.streakDays}</Text>
-            <Text style={styles.statLabel}>Seri Gün</Text>
-          </View>
-        </View>
-        
-        <View style={styles.statCard}>
-          <View style={[styles.statIconContainer, {backgroundColor: `${theme.colors.accent}20`}]}>
-            <FontAwesome5 name="running" size={18} color={theme.colors.accent} />
-          </View>
-          <View>
-            <Text style={styles.statValue}>{workoutStats.totalExercises}</Text>
-            <Text style={styles.statLabel}>Toplam Egzersiz</Text>
-          </View>
-        </View>
-      </ScrollView>
-
-      <View style={styles.filterSection}>
-        <Text key="workouts-title" style={styles.title}>Antrenmanlarım</Text>
-        
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false} 
-          style={styles.filtersContainer}
+        <LinearGradient
+          colors={[theme.colors.primary, theme.colors.primary + 'CC']}
+          style={styles.floatingButtonGradient}
         >
-          <TouchableOpacity 
-            key="workout-filter-all"
-            style={[styles.filterChip, activeFilter === null && styles.activeFilterChip]} 
-            onPress={() => filterWorkouts(null)}
-          >
-            <Text style={[styles.filterChipText, activeFilter === null && styles.activeFilterChipText]}>Tümü</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            key="workout-filter-completed"
-            style={[styles.filterChip, activeFilter === 'completed' && styles.activeFilterChip]} 
-            onPress={() => filterWorkouts('completed')}
-          >
-            <Text style={[styles.filterChipText, activeFilter === 'completed' && styles.activeFilterChipText]}>Tamamlanan</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            key="workout-filter-upcoming"
-            style={[styles.filterChip, activeFilter === 'upcoming' && styles.activeFilterChip]} 
-            onPress={() => filterWorkouts('upcoming')}
-          >
-            <Text style={[styles.filterChipText, activeFilter === 'upcoming' && styles.activeFilterChipText]}>Yaklaşan</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            key="workout-filter-kardiyo"
-            style={[styles.filterChip, activeFilter === 'kardiyo' && styles.activeFilterChip]} 
-            onPress={() => filterWorkouts('kardiyo')}
-          >
-            <Text style={[styles.filterChipText, activeFilter === 'kardiyo' && styles.activeFilterChipText]}>Kardiyo</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            key="workout-filter-kuvvet"
-            style={[styles.filterChip, activeFilter === 'kuvvet' && styles.activeFilterChip]} 
-            onPress={() => filterWorkouts('kuvvet')}
-          >
-            <Text style={[styles.filterChipText, activeFilter === 'kuvvet' && styles.activeFilterChipText]}>Kuvvet</Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </View>
-      
-      {error && (
-        <View key="error-container" style={styles.errorContainer}>
-          <Text style={styles.errorText}>{error}</Text>
-          <Button key="retry-button" title="Tekrar Dene" onPress={fetchWorkouts} />
-        </View>
-      )}
-      
-      {filteredWorkouts.length === 0 ? (
-        <View key="empty-workout-container" style={styles.cardShadow}>
-          <Card style={styles.emptyCard}>
-            <MaterialCommunityIcons key="empty-icon" name="dumbbell" size={48} color={theme.colors.primary} style={styles.emptyIcon} />
-            <Text key="empty-text" style={styles.emptyText}>
-              {activeFilter ? 'Bu filtreye uygun antrenman bulunamadı' : 'Henüz antrenman eklenmemiş'}
-            </Text>
-            <Button 
-              key="add-workout-button"
-              title="Yeni Antrenman Ekle" 
-              onPress={() => {/* TODO: Yeni antrenman ekleme sayfasına yönlendir */}} 
-              style={styles.addButton}
-            />
-          </Card>
-        </View>
-      ) : (
-        filteredWorkouts.map((workout, workoutIndex) => (
-          <View key={`workout-${workout._id}-${workoutIndex}`} style={styles.cardShadow}>
-            <Card style={styles.workoutCard}>
-              <TouchableOpacity 
-                key={`workout-header-${workout._id}`}
-                style={styles.workoutHeader} 
-                onPress={() => toggleWorkout(workout._id)}
-              >
-                <View key={`workout-info-${workout._id}`} style={styles.workoutInfo}>
-                  <View key={`workout-icon-${workout._id}`} style={[styles.iconCircle, { backgroundColor: `${getWorkoutTypeColor(workout.type)}20` }]}>
-                    <MaterialCommunityIcons 
-                      key={`workout-icon-material-${workout._id}`}
-                      name={getWorkoutTypeIcon(workout.type)} 
-                      size={24} 
-                      color={getWorkoutTypeColor(workout.type)} 
-                    />
-                  </View>
-                  <View key={`workout-title-${workout._id}`} style={styles.workoutTitleContainer}>
-                    <Text style={styles.workoutName}>{workout.name}</Text>
-                    <Text style={styles.workoutType}>{workout.type.charAt(0).toUpperCase() + workout.type.slice(1)}</Text>
-                  </View>
-                </View>
-                <View key={`workout-difficulty-${workout._id}`} style={[styles.difficultyBadge, { backgroundColor: getDifficultyColor(workout.difficulty) }]}>
-                  <Text style={styles.difficultyText}>{workout.difficulty}</Text>
-                </View>
-              </TouchableOpacity>
-
-              <View key={`progress-section-${workout._id}`} style={styles.progressSection}>
-                <View key={`progress-label-container-${workout._id}`} style={styles.progressLabelContainer}>
-                  <Text key={`progress-label-${workout._id}`} style={styles.progressLabel}>İlerleme</Text>
-                  <Text key={`progress-percent-${workout._id}`} style={styles.progressPercent}>{Math.round(calculateProgress(workout))}%</Text>
-                </View>
-                <LinearProgress 
-                  key={`${workout._id}-progress`}
-                  progress={calculateProgress(workout) / 100} 
-                  color={theme.colors.primary}
-                  trackColor={theme.colors.gray200}
-                  style={styles.progressBar}
-                />
-              </View>
-
-              <View key={`workout-details-${workout._id}`} style={styles.workoutDetails}>
-                <View key={`${workout._id}-duration`} style={styles.detailChip}>
-                  <MaterialCommunityIcons name="clock-outline" size={16} color={theme.colors.text.secondary} />
-                  <Text style={styles.detailText}>{workout.duration} dk</Text>
-                </View>
-                
-                <View key={`${workout._id}-exercises`} style={styles.detailChip}>
-                  <MaterialCommunityIcons name="dumbbell" size={16} color={theme.colors.text.secondary} />
-                  <Text style={styles.detailText}>{workout.exercises.length} egzersiz</Text>
-                </View>
-                
-                {!workout.completed && (
-                  <View key={`${workout._id}-days`} style={styles.detailChip}>
-                    <MaterialCommunityIcons name="calendar-today" size={16} color={theme.colors.text.secondary} />
-                    <Text style={styles.detailText}>{getDaysLeft(workout)} gün kaldı</Text>
-                  </View>
-                )}
-              </View>
-
-              {expandedWorkout === workout._id && (
-                <React.Fragment key={`${workout._id}-expanded`}>
-                  <View key={`${workout._id}-separator`} style={styles.separator} />
-
-                  <TouchableOpacity 
-                    key={`${workout._id}-header`}
-                    style={styles.exercisesHeader}
-                    onPress={() => toggleExercises(workout._id)}
-                  >
-                    <Text style={styles.exercisesHeaderText}>Egzersizler</Text>
-                    <MaterialCommunityIcons 
-                      name={expandedExercises[workout._id] ? "chevron-up" : "chevron-down"} 
-                      size={24} 
-                      color={theme.colors.text.secondary} 
-                    />
-                  </TouchableOpacity>
-
-                  {expandedExercises[workout._id] && (
-                    <View key={`${workout._id}-exercises-list`} style={styles.exercisesList}>
-                      {workout.exercises.map((exercise, index) => (
-                        <View key={`${workout._id}-exercise-${index}`} style={styles.exerciseItem}>
-                          <View style={styles.exerciseHeaderContainer}>
-                            <Text style={styles.exerciseName}>{exercise.name}</Text>
-                            {exercise.completed ? (
-                              <View style={styles.completedBadge}>
-                                <MaterialCommunityIcons name="check" size={12} color="#fff" />
-                                <Text style={styles.completedText}>Tamamlandı</Text>
-                              </View>
-                            ) : null}
-                          </View>
-                          <Text style={styles.exerciseDetails}>
-                            {exercise.sets} set x {exercise.reps} tekrar
-                            {exercise.weight && exercise.weight > 0 && ` • ${exercise.weight} kg`}
-                            {exercise.restTime && ` • ${exercise.restTime} sn dinlenme`}
-                          </Text>
-                          
-                          {/* Egzersiz ekstra kontrolleri */}
-                          <View style={styles.exerciseControls}>
-                            <TouchableOpacity 
-                              style={[styles.exerciseControlButton, { backgroundColor: theme.colors.gray200 }]}
-                              onPress={() => {/* TODO: Egzersiz düzenleme */}}
-                            >
-                              <MaterialCommunityIcons name="pencil" size={16} color={theme.colors.text.secondary} />
-                            </TouchableOpacity>
-                            
-                            <TouchableOpacity 
-                              style={[styles.exerciseControlButton, { backgroundColor: exercise.completed ? theme.colors.success + '30' : theme.colors.primary + '30' }]}
-                              onPress={() => {/* TODO: Egzersiz tamamlama */}}
-                              disabled={exercise.completed}
-                            >
-                              <MaterialCommunityIcons 
-                                name={exercise.completed ? "check-circle" : "check"} 
-                                size={16} 
-                                color={exercise.completed ? theme.colors.success : theme.colors.primary} 
-                              />
-                            </TouchableOpacity>
-                          </View>
-                        </View>
-                      ))}
-                    </View>
-                  )}
-
-                  {workout.notes && (
-                    <View key={`${workout._id}-notes`} style={styles.notesContainer}>
-                      <Text style={styles.notesLabel}>Notlar:</Text>
-                      <Text style={styles.notesText}>{workout.notes}</Text>
-                    </View>
-                  )}
-                </React.Fragment>
-              )}
-
-              <View key={`workout-actions-${workout._id}`} style={styles.workoutActions}>
-                <Button 
-                  key={`${workout._id}-complete-btn`}
-                  title={workout.completed ? "Tamamlandı" : "Tamamla"} 
-                  onPress={() => completeWorkout(workout._id)}
-                  style={workout.completed ? styles.completedButton : styles.actionButton}
-                  disabled={workout.completed}
-                />
-                <Button 
-                  key={`${workout._id}-edit-btn`}
-                  title="Düzenle" 
-                  onPress={() => {/* TODO: Antrenman düzenleme sayfasına yönlendir */}}
-                  style={styles.editButton}
-                />
-              </View>
-            </Card>
-          </View>
-        ))
-      )}
-      
-      <TouchableOpacity key="floating-add-button" style={styles.floatingButton} onPress={() => {/* TODO: Antrenman ekleme sayfasına git */}}>
-        <MaterialCommunityIcons name="plus" size={24} color="#fff" />
+          <MaterialCommunityIcons name="plus" size={24} color="#fff" />
+        </LinearGradient>
       </TouchableOpacity>
-      
-      {/* Sayfa altında boşluk */}
       <View style={{ height: 80 }} />
+
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <Pressable style={styles.modalOverlay} onPress={() => setModalVisible(false)}>
+          <View style={styles.centeredModal}>
+            <Text style={styles.modalText}>{modalMessage}</Text>
+          </View>
+        </Pressable>
+      </Modal>
     </ScrollView>
   );
 }
@@ -731,14 +505,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.background.default,
-    padding: StyleGuide.layout.screenPadding,
+    padding: 16,
   },
   headerGradient: {
+    marginHorizontal: -16,
+    marginTop: -16,
     paddingHorizontal: 20,
     paddingVertical: 25,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
-    marginBottom: 15,
+    marginBottom: 20,
   },
   headerContent: {
     flexDirection: 'row',
@@ -756,78 +532,43 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   calendarButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  calendarContainer: {
-    marginBottom: 16,
-    borderRadius: 12,
-    overflow: 'hidden',
-    backgroundColor: theme.colors.white,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
-  },
-  statsScrollView: {
-    marginBottom: 8,
-  },
-  statCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.background.paper,
+    padding: 12,
     borderRadius: 12,
-    padding: 14,
-    marginRight: 12,
-    width: 160,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 2,
-      },
-    }),
+    marginHorizontal: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  statIconContainer: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  statValue: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  calendarButtonText: {
+    marginLeft: 8,
+    fontSize: 16,
     color: theme.colors.text.primary,
+    fontWeight: '500',
   },
-  statLabel: {
-    fontSize: 13,
-    color: theme.colors.text.secondary,
+  calendarCard: {
+    margin: 16,
+    borderRadius: 12,
+    overflow: 'hidden',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   filterSection: {
-    marginBottom: 16,
+    marginBottom: 20,
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
     color: theme.colors.text.primary,
-    marginBottom: 12,
+    marginBottom: 16,
   },
   filtersContainer: {
     flexDirection: 'row',
@@ -912,199 +653,6 @@ const styles = StyleSheet.create({
     width: 200,
     backgroundColor: theme.colors.primary,
   },
-  workoutCard: {
-    padding: StyleGuide.layout.padding,
-    borderRadius: 12,
-  },
-  workoutHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  workoutInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  iconCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  workoutTitleContainer: {
-    marginLeft: 12,
-    flex: 1,
-  },
-  workoutName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: theme.colors.text.primary,
-  },
-  workoutType: {
-    fontSize: 14,
-    color: theme.colors.text.secondary,
-    marginTop: 2,
-  },
-  difficultyBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 20,
-  },
-  difficultyText: {
-    color: theme.colors.white,
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  progressSection: {
-    marginBottom: 16,
-  },
-  progressLabelContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 6,
-  },
-  progressLabel: {
-    fontSize: 14,
-    color: theme.colors.text.secondary,
-  },
-  progressPercent: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: theme.colors.primary,
-  },
-  progressBar: {
-    height: 8,
-    borderRadius: 4,
-  },
-  workoutDetails: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginBottom: 16,
-  },
-  detailChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: theme.colors.gray200,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    marginRight: 8,
-    marginBottom: 8,
-  },
-  detailText: {
-    color: theme.colors.text.secondary,
-    fontSize: 13,
-    marginLeft: 6,
-  },
-  separator: {
-    height: 1,
-    backgroundColor: theme.colors.gray200,
-    marginVertical: 16,
-  },
-  exercisesHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
-  },
-  exercisesHeaderText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: theme.colors.text.primary,
-  },
-  exercisesList: {
-    marginTop: 8,
-  },
-  exerciseItem: {
-    marginBottom: 12,
-    padding: 14,
-    backgroundColor: theme.colors.gray100,
-    borderRadius: 10,
-  },
-  exerciseHeaderContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  exerciseName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: theme.colors.text.primary,
-  },
-  completedBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: theme.colors.success,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 12,
-  },
-  completedText: {
-    fontSize: 10,
-    color: theme.colors.white,
-    fontWeight: 'bold',
-    marginLeft: 2,
-  },
-  exerciseDetails: {
-    fontSize: 14,
-    color: theme.colors.text.secondary,
-    marginBottom: 8,
-  },
-  exerciseControls: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
-  exerciseControlButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 8,
-  },
-  notesContainer: {
-    backgroundColor: '#FFFDF0',
-    padding: 12,
-    borderRadius: 8,
-    marginTop: 16,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: theme.colors.warning + '30',
-  },
-  notesLabel: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: theme.colors.text.primary,
-    marginBottom: 4,
-  },
-  notesText: {
-    color: theme.colors.text.secondary,
-    fontSize: 14,
-  },
-  workoutActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 16,
-  },
-  actionButton: {
-    flex: 1,
-    marginRight: 8,
-    backgroundColor: theme.colors.primary,
-  },
-  completedButton: {
-    flex: 1,
-    marginRight: 8,
-    backgroundColor: theme.colors.success + '70',
-  },
-  editButton: {
-    flex: 1,
-    marginLeft: 8,
-    backgroundColor: theme.colors.gray200,
-  },
   floatingButton: {
     position: 'absolute',
     bottom: 20,
@@ -1112,9 +660,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: theme.colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
+    overflow: 'hidden',
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -1126,5 +672,166 @@ const styles = StyleSheet.create({
         elevation: 8,
       },
     }),
+  },
+  floatingButtonGradient: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  todayCard: {
+    borderRadius: 16,
+    marginBottom: 20,
+    overflow: 'hidden',
+  },
+  todayCardContent: {
+    padding: 20,
+  },
+  todayCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  todayTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: theme.colors.primary,
+    marginLeft: 8,
+  },
+  todayName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: theme.colors.text.primary,
+    marginBottom: 12,
+  },
+  todayDetails: {
+    flexDirection: 'row',
+    marginBottom: 16,
+  },
+  todayDetailItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 16,
+    backgroundColor: 'rgba(255,255,255,0.5)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  todayDetailText: {
+    marginLeft: 4,
+    fontSize: 14,
+    color: theme.colors.text.secondary,
+  },
+  todayButton: {
+    width: 140,
+    alignSelf: 'center',
+  },
+  todayText: {
+    fontSize: 15,
+    color: theme.colors.text.secondary,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  statsPanel: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: theme.colors.background.paper,
+    borderRadius: 16,
+    marginBottom: 20,
+    paddingVertical: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  statsItem: {
+    alignItems: 'center',
+  },
+  statsLabel: {
+    color: theme.colors.text.secondary,
+    fontSize: 15,
+    marginBottom: 4,
+  },
+  statsValue: {
+    color: theme.colors.primary,
+    fontWeight: 'bold',
+    fontSize: 22,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.25)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  centeredModal: {
+    backgroundColor: theme.colors.primary,
+    borderRadius: 18,
+    paddingVertical: 32,
+    paddingHorizontal: 32,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  modalText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 18,
+    textAlign: 'center',
+  },
+  selectedDateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: theme.colors.background.paper,
+    borderRadius: 12,
+    paddingVertical: 8,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 1,
+  },
+  selectedDateText: {
+    fontSize: 16,
+    color: theme.colors.text.primary,
+    fontWeight: 'bold',
+    textTransform: 'capitalize',
+  },
+  statsPanelModern: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: theme.colors.background.paper,
+    borderRadius: 16,
+    marginBottom: 20,
+    paddingVertical: 18,
+    marginHorizontal: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  statsItemModern: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  statsLabelModern: {
+    color: theme.colors.text.secondary,
+    fontSize: 15,
+    marginBottom: 2,
+    fontWeight: '500',
+  },
+  statsValueModern: {
+    color: theme.colors.primary,
+    fontWeight: 'bold',
+    fontSize: 26,
+    marginTop: 2,
   },
 }); 

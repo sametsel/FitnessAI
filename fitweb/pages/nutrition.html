@@ -3,212 +3,294 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beslenme - FitWeb</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/dashboard.css">
-    <link rel="stylesheet" href="../assets/css/nutrition.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Takvim için flatpickr -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <title>FitApp - Beslenme Programı</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+    .meal-card-modern {
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        margin-bottom: 18px;
+        padding: 20px 24px 16px 24px;
+        transition: box-shadow 0.2s;
+        border-left: 6px solid #4f8cff;
+        position: relative;
+    }
+    .meal-card-modern:hover {
+        box-shadow: 0 4px 16px rgba(79,140,255,0.10);
+        border-left: 6px solid #2d6cdf;
+    }
+    .meal-header-modern {
+        margin-bottom: 10px;
+    }
+    .meal-header-top {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 2px;
+    }
+    .meal-type-badge {
+        background: linear-gradient(90deg, #4f8cff 60%, #2d6cdf 100%);
+        color: #fff;
+        font-size: 0.95rem;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 2px 12px;
+        letter-spacing: 0.5px;
+        box-shadow: 0 1px 4px rgba(79,140,255,0.08);
+        display: inline-block;
+    }
+    .meal-time {
+        color: #4f8cff;
+        font-size: 0.97rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .meal-name {
+        font-size: 1.18rem;
+        font-weight: 700;
+        color: #1a2340;
+        margin: 0;
+        margin-top: 2px;
+        letter-spacing: 0.2px;
+    }
+    .meal-info-modern {
+        display: flex;
+        gap: 18px;
+        margin-top: 8px;
+        font-size: 1.05rem;
+        color: #3a3a3a;
+    }
+    .meal-calories i, .meal-protein i {
+        color: #ff9800;
+        margin-right: 4px;
+    }
+    .meal-protein i {
+        color: #4caf50;
+    }
+ 
+    .summary-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+    }
+    .summary-icon {
+        color: #4f8cff;
+        font-size: 2rem;
+        margin-right: 2px;
+    }
+    .meal-list-modern {
+        background: #f8fafc;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        padding: 24px 28px 18px 28px;
+        margin-bottom: 32px;
+        border-left: 6px solid #ff9800;
+    }
+    .meal-list-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+    }
+    .meal-list-icon {
+        color: #ff9800;
+        font-size: 2rem;
+        margin-right: 2px;
+    }
+    .today-name {
+        background: #4f8cff;
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 2px 12px;
+        margin-left: 10px;
+        letter-spacing: 0.5px;
+        box-shadow: 0 1px 4px rgba(79,140,255,0.08);
+    }
+    </style>
 </head>
 <body>
-    <div class="dashboard-container">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <img src="../assets/images/logo.png" alt="FitWeb Logo">
-                <span class="sidebar-close"><i class="fas fa-times"></i></span>
-            </div>
-            <nav class="sidebar-nav">
-                <a href="dashboard.html"><i class="fas fa-home"></i> Ana Sayfa</a>
-                <a href="workout.html"><i class="fas fa-dumbbell"></i> Antrenmanlar</a>
-                <a href="nutrition.html" class="active"><i class="fas fa-apple-alt"></i> Beslenme</a>
-                <a href="profile.html"><i class="fas fa-user"></i> Profil</a>
+    <div id="app">
+        <header>
+            <nav>
+                <div class="logo">FitApp</div>
+                <ul>
+                    <li><a href="home.html"><i class="fas fa-home"></i> Ana Sayfa</a></li>
+                    <li><a href="nutrition.html" class="active"><i class="fas fa-utensils"></i> Beslenme</a></li>
+                    <li><a href="workout.html"><i class="fas fa-dumbbell"></i> Spor</a></li>
+                    <li><a href="profile.html"><i class="fas fa-user"></i> Profil</a></li>
+                </ul>
             </nav>
-            <div class="sidebar-footer">
-                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+        </header>
+
+        <main>
+            <!-- NutritionSummary Bileşeni -->
+            <div class="nutrition-summary nutrition-summary-modern">
+                <div class="summary-header">
+                    <i class="fas fa-apple-alt summary-icon"></i>
+                    <h2>Günlük Besin Özeti</h2>
+                </div>
+                <div class="nutrition-stats">
+                    <div class="stat-item stat-item-orange">
+                        <i class="fas fa-fire"></i>
+                        <h3>Kalori</h3>
+                        <p class="calories">-</p>
+                        <div class="progress-bar">
+                            <div class="progress calories-progress" style="width:0%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-item stat-item-green">
+                        <i class="fas fa-drumstick-bite"></i>
+                        <h3>Protein</h3>
+                        <p class="protein">-</p>
+                        <div class="progress-bar">
+                            <div class="progress protein-progress" style="width:0%"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </aside>
 
-        <main class="main-content">
-            <header class="dashboard-header">
-                <button class="menu-toggle"><i class="fas fa-bars"></i></button>
-                <div class="user-menu">
-                    <span class="notification-bell">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-count">3</span>
-                    </span>
-                    <div class="user-profile">
-                        <img src="../assets/images/avatar.png" alt="Kullanıcı">
-                        <span id="userGreeting">Hoşgeldin, Kullanıcı</span>
-                    </div>
+            <!-- MealList Bileşeni -->
+            <div class="meal-list meal-list-modern">
+                <div class="meal-list-header">
+                    <i class="fas fa-utensils meal-list-icon"></i>
+                    <h2>Günün Öğünleri <span id="todayName" class="today-name"></span></h2>
                 </div>
-            </header>
-
-            <div class="dashboard-content">
-                <!-- Tarih Seçici -->
-                <div class="date-picker-container">
-                    <button class="date-nav-btn prev-date">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <div class="date-display">
-                        <input type="text" id="date-picker" class="date-picker" placeholder="Tarih Seçin">
-                        <i class="fas fa-calendar-alt"></i>
-                    </div>
-                    <button class="date-nav-btn next-date">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-
-                <!-- Yükleniyor Göstergesi -->
-                <div id="loading-indicator" class="loading-container" style="display: none;">
-                    <div class="spinner"></div>
-                    <p>Veriler yükleniyor...</p>
-                </div>
-
-                <!-- Beslenme Özeti -->
-                <div class="nutrition-summary">
-                    <div class="summary-card">
-                        <div class="summary-icon">
-                            <i class="fas fa-fire"></i>
-                        </div>
-                        <div class="summary-details">
-                            <h3><span id="current-calories">0</span> / <span id="target-calories">0</span></h3>
-                            <p>Günlük Kalori</p>
-                            <div class="progress-bar">
-                                <div id="calories-progress" class="progress" style="width: 0%"></div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="macro-cards">
-                        <div class="macro-card protein">
-                            <h4>Protein</h4>
-                            <p><span id="current-protein">0</span>g / <span id="target-protein">0</span>g</p>
-                            <div class="progress-bar">
-                                <div id="protein-progress" class="progress" style="width: 0%"></div>
-                            </div>
-                        </div>
-                        <div class="macro-card carbs">
-                            <h4>Karbonhidrat</h4>
-                            <p><span id="current-carbs">0</span>g / <span id="target-carbs">0</span>g</p>
-                            <div class="progress-bar">
-                                <div id="carbs-progress" class="progress" style="width: 0%"></div>
-                            </div>
-                        </div>
-                        <div class="macro-card fat">
-                            <h4>Yağ</h4>
-                            <p><span id="current-fat">0</span>g / <span id="target-fat">0</span>g</p>
-                            <div class="progress-bar">
-                                <div id="fat-progress" class="progress" style="width: 0%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Günlük Öğünler -->
-                <div class="meals-section">
-                    <div class="section-header">
-                        <h2>Günlük Öğünler</h2>
-                        <button id="add-meal-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Öğün Ekle</button>
-                    </div>
-
-                    <div id="meals-container" class="meals-container">
-                        <!-- Öğünler JavaScript ile doldurulacak -->
-                    </div>
-                </div>
-
-                <!-- Yapay Zeka Önerileri -->
-                <div class="ai-recommendations-section">
-                    <div class="section-header">
-                        <h2><i class="fas fa-robot"></i> Yapay Zeka Önerileri</h2>
-                        <button id="toggle-recommendations-btn" class="btn btn-outline">Önerileri Göster</button>
-                    </div>
-                    
-                    <div id="recommendations-container" class="recommendations-container" style="display: none;">
-                        <!-- Yapay zeka önerileri burada gösterilecek -->
-                    </div>
-                </div>
-
-                <!-- Önerilen Tarifler -->
-                <div class="recipes-section">
-                    <h2>Önerilen Sağlıklı Tarifler</h2>
-                    <div id="recipes-grid" class="recipes-grid">
-                        <!-- Tarifler JavaScript ile doldurulacak -->
-                    </div>
+                <div class="meal-cards">
+                    <!-- JS ile doldurulacak -->
                 </div>
             </div>
         </main>
     </div>
-
-    <!-- Öğün Ekleme Modal -->
-    <div id="add-meal-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Öğün Ekle</h2>
-                <span class="close-modal">&times;</span>
-            </div>
-            <div class="modal-body">
-                <form id="add-meal-form">
-                    <div class="form-group">
-                        <label for="meal-type">Öğün Tipi</label>
-                        <select id="meal-type" required>
-                            <option value="breakfast">Kahvaltı</option>
-                            <option value="lunch">Öğle Yemeği</option>
-                            <option value="dinner">Akşam Yemeği</option>
-                            <option value="snack">Atıştırmalık</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="meal-time">Saat</label>
-                        <input type="time" id="meal-time" required>
-                    </div>
-                    <div class="food-items-container">
-                        <h3>Yiyecekler</h3>
-                        <div id="food-items">
-                            <div class="food-item">
-                                <div class="form-group">
-                                    <label>Yiyecek Adı</label>
-                                    <input type="text" class="food-name" required>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+    <script>
+    async function loadNutritionSummary() {
+        const token = localStorage.getItem('token');
+        try {
+            const res = await fetch('http://127.0.0.1:3000/api/nutrition-plans/summary', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                document.querySelector('.calories').textContent = `${data.calories} / ${data.calorieGoal} kcal`;
+                document.querySelector('.protein').textContent = `${data.protein} / ${data.proteinGoal}g`;
+                document.querySelector('.calories-progress').style.width = `${Math.min((data.calories/data.calorieGoal)*100,100)}%`;
+                document.querySelector('.protein-progress').style.width = `${Math.min((data.protein/data.proteinGoal)*100,100)}%`;
+            }
+        } catch (err) {
+            // Hata durumunda özet boş kalır
+        }
+    }
+    async function loadMealList() {
+        const token = localStorage.getItem('token');
+        try {
+            const res = await fetch('http://127.0.0.1:3000/api/nutrition-plans/meals', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                }
+            });
+            const container = document.querySelector('.meal-cards');
+            if (res.ok) {
+                const data = await res.json();
+                if (data.meals && data.meals.length) {
+                    container.innerHTML = data.meals.map(meal => `
+                        <div class="meal-card meal-card-modern">
+                            <div class="meal-header-modern">
+                                <div class="meal-header-top">
+                                    <span class="meal-type-badge">${meal.type ? mealTypeLabel(meal.type) : ''}</span>
+                                    <span class="meal-time"><i class="fas fa-clock"></i> ${meal.time || ''}</span>
                                 </div>
-                                <div class="form-group">
-                                    <label>Porsiyon</label>
-                                    <input type="text" class="food-portion" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Kalori</label>
-                                    <input type="number" class="food-calories" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Protein (g)</label>
-                                    <input type="number" class="food-protein" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Karbonhidrat (g)</label>
-                                    <input type="number" class="food-carbs" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Yağ (g)</label>
-                                    <input type="number" class="food-fat" required>
-                                </div>
+                                <h3 class="meal-name">${meal.name || meal.type}</h3>
+                            </div>
+                            <div class="meal-info-modern">
+                                <span class="meal-calories"><i class="fas fa-fire"></i> <b>${meal.calories || '-'}</b> kcal</span>
+                                <span class="meal-protein"><i class="fas fa-drumstick-bite"></i> <b>${meal.protein || '-'}</b>g protein</span>
                             </div>
                         </div>
-                        <button type="button" id="add-food-btn" class="btn btn-outline-small">
-                            <i class="fas fa-plus"></i> Yiyecek Ekle
-                        </button>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<div class="meal-card"><p>Bugün için öğün bulunamadı.</p></div>';
+                }
+            } else {
+                container.innerHTML = '<div class="meal-card"><p>Bugün için öğün bulunamadı.</p></div>';
+            }
+        } catch (err) {
+            document.querySelector('.meal-cards').innerHTML = '<div class="meal-card"><p>Sunucu hatası.</p></div>';
+        }
+    }
+    function mealTypeLabel(type) {
+        switch(type) {
+            case 'sabah': return 'Sabah';
+            case 'ogle': return 'Öğle';
+            case 'aksam': return 'Akşam';
+            case 'ara_ogun': return 'Ara Öğün';
+            case 'ara_ogun_2': return 'Ara Öğün 2';
+            default: return type;
+        }
+    }
+    window.addEventListener('DOMContentLoaded', function() {
+        loadNutritionSummary();
+        loadMealList();
+        // Bugünün gün adını göster
+        const days = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
+        const todayName = days[new Date().getDay()];
+        document.getElementById('todayName').textContent = todayName;
+    });
+    document.addEventListener('DOMContentLoaded', async () => {
+        const today = new Date().toISOString().slice(0,10);
+        const selectedDate = localStorage.getItem('selectedDate') || today;
+        if (!localStorage.getItem('selectedDate')) {
+            localStorage.setItem('selectedDate', today);
+        }
+        const token = localStorage.getItem('token');
+        try {
+            const res = await fetch(`http://localhost:3000/api/nutrition-plans/plan?date=${selectedDate}`, {
+                headers: token ? { 'Authorization': 'Bearer ' + token } : {},
+                credentials: 'include'
+            });
+            const data = await res.json();
+            if (data.success) {
+                updateNutritionView(data.data);
+            } else {
+                console.error('Beslenme verisi alınamadı:', data.message);
+            }
+        } catch (err) {
+            console.error('Beslenme verisi alınamadı:', err);
+        }
+    });
+    function updateNutritionView(nutritionData) {
+        const container = document.querySelector('.meal-cards');
+        if (!nutritionData || !nutritionData.meals || nutritionData.meals.length === 0) {
+            container.innerHTML = '<div class="meal-card"><p>Bugün için öğün bulunamadı.</p></div>';
+            return;
+        }
+        container.innerHTML = nutritionData.meals.map(meal => `
+            <div class="meal-card meal-card-modern">
+                <div class="meal-header-modern">
+                    <div class="meal-header-top">
+                        <span class="meal-type-badge">${meal.type ? mealTypeLabel(meal.type) : ''}</span>
+                        <span class="meal-time"><i class="fas fa-clock"></i> ${meal.time || ''}</span>
                     </div>
-                    <div class="form-buttons">
-                        <button type="button" class="btn btn-outline" id="cancel-meal-btn">İptal</button>
-                        <button type="submit" class="btn btn-primary">Kaydet</button>
-                    </div>
-                </form>
+                    <h3 class="meal-name">${meal.name || meal.type}</h3>
+                </div>
+                <div class="meal-info-modern">
+                    <span class="meal-calories"><i class="fas fa-fire"></i> <b>${meal.calories || '-'}</b> kcal</span>
+                    <span class="meal-protein"><i class="fas fa-drumstick-bite"></i> <b>${meal.protein || '-'}</b>g protein</span>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="../assets/js/main.js" type="module"></script>
-    <script src="../assets/js/dashboard.js" type="module"></script>
-    <script src="../assets/js/nutrition.js" type="module"></script>
+        `).join('');
+    }
+    </script>
 </body>
 </html> 

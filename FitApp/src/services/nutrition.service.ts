@@ -1,95 +1,38 @@
 import axios from 'axios';
-import { NutritionPlan } from '../types/nutrition';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../config';
 
-interface ApiResponse<T> {
-  status: 'success' | 'error';
-  message?: string;
-  data?: {
-    nutritionPlan?: T;
-    nutritionPlans?: T[];
-  };
-}
-
 class NutritionService {
-  async createPlan(planData: Omit<NutritionPlan, 'id' | 'userId' | 'createdAt'>): Promise<NutritionPlan> {
-    try {
-      const response = await axios.post<ApiResponse<NutritionPlan>>(
-        `${API_URL}/nutrition/plans`,
-        planData
-      );
+  private async getHeaders() {
+    const token = await AsyncStorage.getItem('@fitapp_token');
 
-      if (response.data.status === 'success' && response.data.data?.nutritionPlan) {
-        return response.data.data.nutritionPlan;
-      }
-
-      throw new Error(response.data.message || 'Beslenme planı oluşturulamadı');
-    } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Beslenme planı oluşturulurken bir hata oluştu');
-    }
+    return {
+      Authorization: token ? `Bearer ${token}` : '',
+      'Content-Type': 'application/json',
+    };
   }
 
-  async updatePlan(planId: string, planData: Partial<NutritionPlan>): Promise<NutritionPlan> {
-    try {
-      const response = await axios.put<ApiResponse<NutritionPlan>>(
-        `${API_URL}/nutrition/plans/${planId}`,
-        planData
-      );
-
-      if (response.data.status === 'success' && response.data.data?.nutritionPlan) {
-        return response.data.data.nutritionPlan;
-      }
-
-      throw new Error(response.data.message || 'Beslenme planı güncellenemedi');
-    } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Beslenme planı güncellenirken bir hata oluştu');
-    }
+  async getUserPlans() {
+    const response = await axios.get(`${API_URL}/nutrition-plans`);
+    return response.data;
   }
 
-  async deletePlan(planId: string): Promise<void> {
-    try {
-      const response = await axios.delete<ApiResponse<null>>(
-        `${API_URL}/nutrition/plans/${planId}`
-      );
-
-      if (response.data.status !== 'success') {
-        throw new Error(response.data.message || 'Beslenme planı silinemedi');
-      }
-    } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Beslenme planı silinirken bir hata oluştu');
-    }
+  async getTodayNutrition(): Promise<any> {
+    const headers = await this.getHeaders();
+    const response = await axios.get(`${API_URL}/nutrition-plans/today`, {
+      headers,
+    });
+    
+    return response.data;
   }
 
-  async getPlan(planId: string): Promise<NutritionPlan> {
-    try {
-      const response = await axios.get<ApiResponse<NutritionPlan>>(
-        `${API_URL}/nutrition/plans/${planId}`
-      );
-
-      if (response.data.status === 'success' && response.data.data?.nutritionPlan) {
-        return response.data.data.nutritionPlan;
-      }
-
-      throw new Error(response.data.message || 'Beslenme planı bulunamadı');
-    } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Beslenme planı alınırken bir hata oluştu');
-    }
-  }
-
-  async getUserPlans(): Promise<NutritionPlan[]> {
-    try {
-      const response = await axios.get<ApiResponse<NutritionPlan>>(
-        `${API_URL}/nutrition/plans`
-      );
-
-      if (response.data.status === 'success' && response.data.data?.nutritionPlans) {
-        return response.data.data.nutritionPlans;
-      }
-
-      throw new Error(response.data.message || 'Beslenme planları bulunamadı');
-    } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Beslenme planları alınırken bir hata oluştu');
-    }
+  async getDailyNutritionPlan(date: string): Promise<any> {
+    const response = await axios.get(`${API_URL}/nutrition-plans/plan`, {
+      params: { date },
+      headers: await this.getHeaders(),
+    });
+    
+    return response.data;
   }
 }
 

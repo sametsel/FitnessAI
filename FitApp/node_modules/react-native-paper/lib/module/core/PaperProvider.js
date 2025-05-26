@@ -25,7 +25,7 @@ const PaperProvider = props => {
     return () => {
       if (!props.theme) {
         var _subscription;
-        (_subscription = subscription) === null || _subscription === void 0 ? void 0 : _subscription.remove();
+        (_subscription = subscription) === null || _subscription === void 0 || _subscription.remove();
       }
     };
   }, [props.theme]);
@@ -40,7 +40,7 @@ const PaperProvider = props => {
           appearanceSubscription.remove();
         } else {
           // @ts-expect-error: We keep deprecated listener remove method for backwards compat with old RN versions
-          Appearance === null || Appearance === void 0 ? void 0 : Appearance.removeChangeListener(handleAppearanceChange);
+          Appearance === null || Appearance === void 0 || Appearance.removeChangeListener(handleAppearanceChange);
         }
       }
     };

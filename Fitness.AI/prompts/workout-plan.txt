@@ -1,0 +1,56 @@
+Kullanıcı bilgileri:
+Yaş: {age}
+Kilo: {weight} kg
+Boy: {height} cm
+Cinsiyet: {gender}
+Aktivite Seviyesi: {activity_level}
+Hedefler: {goals}
+Kayıt Günü: {register_day}
+
+Aşağıdaki kurallara kesinlikle uy:
+- 4 haftalık (aylık) egzersiz programı hazırla.
+- Her hafta için, 1. gün = {register_day} olacak şekilde sırala ve haftalık döngüyü buna göre oluştur.
+- Haftanın ilk günü {register_day} olmalı, örneğin kullanıcı Cuma günü kayıt olduysa, 1. gün Cuma, 2. gün Cumartesi, 3. gün Pazar, 4. gün Pazartesi, 5. gün Salı, 6. gün Çarşamba, 7. gün Perşembe olmalı.
+- Lütfen gün isimlerini bu sırayla ve açıkça belirt.
+- Her gün için birden fazla antrenman (ör: sabah ve akşam) üret.
+- Her antrenman için: isim (name), hedef kas grubu (targetMuscleGroups), set, tekrar, süre, açıklama (description), tip (type), zorluk (intensity) ver.
+- Yanıtı haftalara ve günlere göre gruplandır.
+- Yanıtı sadece geçerli JSON formatında ve eksiksiz üret.
+
+Yanıtın kökünde mutlaka "workout_program" anahtarı olmalı. Yanıtı sadece geçerli ve eksiksiz JSON olarak döndür. JSON dışında hiçbir metin, kod bloğu veya açıklama ekleme.
+
+Örnek format:
+{{
+  "workout_program": {{
+    "Hafta_1": {{
+      "Pazartesi": [
+        {{
+          "name": "Sabah Kardiyo",
+          "type": "kardiyo",
+          "targetMuscleGroups": ["Bacak", "Kalp"],
+          "sets": 1,
+          "reps": 0,
+          "duration": 30,
+          "intensity": "orta",
+          "description": "30 dakika tempolu yürüyüş."
+        }},
+        {{
+          "name": "Akşam Kuvvet",
+          "type": "kuvvet",
+          "targetMuscleGroups": ["Göğüs", "Kol"],
+          "sets": 3,
+          "reps": 12,
+          "duration": 40,
+          "intensity": "yüksek",
+          "description": "Göğüs ve kol için ağırlık çalışması."
+        }}
+      ],
+      "Salı": [ ... ],
+      ...
+  }},
+    "Hafta_2": {{ ... }},
+    ...
+  }}
+}}
+-antrenman çeşitliliğini arttır aynı antrenmanları çok fazla tekrar etme
+-isim (name) daha profesyonel olarak yaz sen bir profesyonel fitness eğitmenisin

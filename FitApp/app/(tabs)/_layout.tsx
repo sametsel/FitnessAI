@@ -5,13 +5,17 @@ import { useEffect } from 'react';
 import { router } from 'expo-router';
 
 export default function TabLayout() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
   useEffect(() => {
-    if (!user) {
+    if (!loading && !user) {
       router.replace('/(auth)/login/index');
     }
-  }, [user]);
+  }, [user, loading]);
+
+  if (loading) {
+    return null;
+  }
 
   if (!user) {
     return null;

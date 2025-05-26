@@ -15,7 +15,6 @@ export interface Workout {
   id: string;
   name: string;
   description: string;
-  exercises: Exercise[];
 }
 
 export interface WorkoutDay {
@@ -28,7 +27,7 @@ export interface WorkoutDay {
 
 class WorkoutService {
   private async getHeaders() {
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem('@fitapp_token');
     return {
       Authorization: token ? `Bearer ${token}` : '',
       'Content-Type': 'application/json',
@@ -91,114 +90,89 @@ class WorkoutService {
   }
 
   // Antrenman işlemleri
-  async createWorkout(workout: Omit<Workout, 'id'>): Promise<Workout> {
-    try {
-      const response = await axios.post(`${API_URL}/workouts`, workout, {
-        headers: await this.getHeaders(),
-      });
-      return response.data as Workout;
-    } catch (error) {
-      throw new Error('Antrenman oluşturulurken bir hata oluştu');
-    }
-  }
-
   async getWorkouts(): Promise<Workout[]> {
-    try {
-      const response = await axios.get(`${API_URL}/workouts`, {
+    const response = await axios.get(`${API_URL}/workout-plans`, {
         headers: await this.getHeaders(),
       });
       return response.data as Workout[];
-    } catch (error) {
-      throw new Error('Antrenmanlar alınırken bir hata oluştu');
-    }
   }
 
   async getWorkoutById(id: string): Promise<Workout> {
-    try {
-      const response = await axios.get(`${API_URL}/workouts/${id}`, {
+    const response = await axios.get(`${API_URL}/workout-plans/${id}`, {
         headers: await this.getHeaders(),
       });
       return response.data as Workout;
-    } catch (error) {
-      throw new Error('Antrenman alınırken bir hata oluştu');
-    }
+  }
+
+  async createWorkout(workout: Omit<Workout, 'id'>): Promise<Workout> {
+    const response = await axios.post(`${API_URL}/workout-plans`, workout, {
+      headers: await this.getHeaders(),
+    });
+    return response.data as Workout;
   }
 
   async updateWorkout(id: string, workout: Partial<Workout>): Promise<Workout> {
-    try {
-      const response = await axios.put(`${API_URL}/workouts/${id}`, workout, {
+    const response = await axios.put(`${API_URL}/workout-plans/${id}`, workout, {
         headers: await this.getHeaders(),
       });
       return response.data as Workout;
-    } catch (error) {
-      throw new Error('Antrenman güncellenirken bir hata oluştu');
-    }
   }
 
   async deleteWorkout(id: string): Promise<void> {
-    try {
-      await axios.delete(`${API_URL}/workouts/${id}`, {
+    await axios.delete(`${API_URL}/workout-plans/${id}`, {
         headers: await this.getHeaders(),
       });
-    } catch (error) {
-      throw new Error('Antrenman silinirken bir hata oluştu');
-    }
   }
 
   // Antrenman günü işlemleri
   async addWorkoutDay(workoutId: string, day: Omit<WorkoutDay, 'id'>): Promise<WorkoutDay> {
-    try {
-      const response = await axios.post(`${API_URL}/workouts/${workoutId}/days`, day, {
+    const response = await axios.post(`${API_URL}/workout-plans/${workoutId}/days`, day, {
         headers: await this.getHeaders(),
       });
       return response.data as WorkoutDay;
-    } catch (error) {
-      throw new Error('Antrenman günü eklenirken bir hata oluştu');
-    }
   }
 
   async updateWorkoutDay(workoutId: string, dayId: string, day: Partial<WorkoutDay>): Promise<WorkoutDay> {
-    try {
-      const response = await axios.put(`${API_URL}/workouts/${workoutId}/days/${dayId}`, day, {
+    const response = await axios.put(`${API_URL}/workout-plans/${workoutId}/days/${dayId}`, day, {
         headers: await this.getHeaders(),
       });
       return response.data as WorkoutDay;
-    } catch (error) {
-      throw new Error('Antrenman günü güncellenirken bir hata oluştu');
-    }
   }
 
   async deleteWorkoutDay(workoutId: string, dayId: string): Promise<void> {
-    try {
-      await axios.delete(`${API_URL}/workouts/${workoutId}/days/${dayId}`, {
+    await axios.delete(`${API_URL}/workout-plans/${workoutId}/days/${dayId}`, {
         headers: await this.getHeaders(),
       });
-    } catch (error) {
-      throw new Error('Antrenman günü silinirken bir hata oluştu');
-    }
   }
 
   // İlerleme takibi
   async updateWorkoutProgress(workoutId: string, progress: number): Promise<WorkoutDay> {
-    try {
-      const response = await axios.put(`${API_URL}/workouts/${workoutId}/progress`, { progress }, {
+    const response = await axios.put(`${API_URL}/workout-plans/${workoutId}/progress`, { progress }, {
         headers: await this.getHeaders(),
       });
       return response.data as WorkoutDay;
-    } catch (error) {
-      throw new Error('Antrenman ilerlemesi güncellenirken bir hata oluştu');
-    }
   }
 
   async completeWorkoutDay(workoutId: string, dayId: string): Promise<WorkoutDay> {
-    try {
-      const response = await axios.put(`${API_URL}/workouts/${workoutId}/days/${dayId}/complete`, {}, {
+    const response = await axios.put(`${API_URL}/workout-plans/${workoutId}/days/${dayId}/complete`, {}, {
         headers: await this.getHeaders(),
       });
       return response.data as WorkoutDay;
-    } catch (error) {
-      throw new Error('Antrenman günü tamamlanırken bir hata oluştu');
-    }
+  }
+
+  async getDailyWorkoutPlan(date: string): Promise<any> {
+    const response = await axios.get(`${API_URL}/workout-plans/plan`, {
+      params: { date },
+      headers: await this.getHeaders(),
+    });
+    return response.data;
+  }
+
+  async getTodayWorkout(): Promise<any> {
+    const response = await axios.get(`${API_URL}/workout-plans/today`, {
+      headers: await this.getHeaders(),
+    });
+    return response.data;
   }
 }
 

@@ -8,7 +8,7 @@ export interface User {
   weight: number;
   gender: 'erkek' | 'kadın';
   activityLevel: 'sedanter' | 'hafif_aktif' | 'orta_aktif' | 'cok_aktif';
-  goal: 'form_koruma' | 'kilo_verme' | 'kilo_alma' | 'kas_kazanma';
+  goals: 'form_koruma' | 'kilo_verme' | 'kilo_alma' | 'kas_kazanma';
   createdAt: Date;
   updatedAt: Date;
 }

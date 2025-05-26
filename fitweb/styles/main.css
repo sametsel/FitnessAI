@@ -1,0 +1,1891 @@
+:root {
+    /* Ana renkler */
+    --primary: #0047ab;
+    --primaryLight: #4DA3FF;
+    --secondary: #5856D6;
+    --accent: #FF2D55;
+    --neutral: #8E8E93;
+    --text: #2C3E50;
+    --textLight: #7F8C8D;
+    --background: #F8F9FA;
+    --cardBackground: #FFFFFF;
+    
+    /* Nötr renkler */
+    --background-primary: #F5F5F5;
+    --background-secondary: #FFFFFF;
+    --background-dark: #1A1A1A;
+    --surface: #FFFFFF;
+    
+    /* Metin renkleri */
+    --text-primary: #2C3E50;
+    --text-secondary: #7F8C8D;
+    --text-light: #FFFFFF;
+    
+    /* Durum renkleri */
+    --success: #34C759;
+    --error: #FF3B30;
+    --warning: #FF9500;
+    --info: #2196F3;
+    
+    /* Boşluk değerleri */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    
+    /* Border radius değerleri */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    
+    /* Gölge değerleri */
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+    --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--background);
+    font-family: 'Poppins', sans-serif;
+    color: var(--text);
+    line-height: 1.6;
+}
+
+#app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header, nav {
+    background: var(--cardBackground);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    border-radius: 0 0 24px 24px;
+    padding: 0;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: none;
+    border-radius: 0;
+}
+
+nav .logo {
+    color: var(--primary);
+    font-size: 2.2rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+nav ul {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+nav ul li a {
+    color: var(--primary);
+    font-weight: 600;
+    padding: 0.7rem 1.5rem;
+    border-radius: 16px;
+    transition: background 0.2s, color 0.2s;
+    text-decoration: none;
+    font-size: 1.1rem;
+}
+
+nav ul li a.active, nav ul li a:hover {
+    background: #e6f0ff;
+    color: #005ecb;
+}
+
+main {
+    flex: 1;
+    padding: 7rem 2rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+h1, h2, h3 {
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 1.2rem;
+}
+
+h1 {
+    font-size: 2.2rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+}
+
+h3 {
+    font-size: 1.2rem;
+}
+.box, .nutrition-header, .nutrition-stats, .meal-plan, .profile-header, .profile-settings, .profile-stats, .card-green, .card-orange, .card-yellow {
+    background: var(--cardBackground);
+    border-radius: 18px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+p {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+}
+
+footer {
+    background: var(--cardBackground);
+    color: var(--primary);
+    text-align: center;
+    padding: 1.2rem 0;
+    border-radius: 1.5rem 1.5rem 0 0;
+    box-shadow: 0 -2px 16px rgba(0,0,0,0.07);
+    margin-top: 2rem;
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.feature-card {
+    background-color: var(--cardBackground);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.feature-card i {
+    font-size: 2.5rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.feature-card p {
+    color: var(--textLight);
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 900px) {
+    nav {
+        flex-direction: column;
+        padding: 1rem;
+    }
+    nav ul {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    nav .logo {
+        margin-bottom: 0.5rem;
+    }
+    main {
+        padding: 6rem 0.5rem 1rem;
+    }
+    .nutrition-stats, .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Sayfa Geçişleri */
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+/* Ana Sayfa Stilleri */
+.welcome-section {
+    background-color: var(--cardBackground);
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.welcome-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+}
+
+.quick-stats {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.quick-stats .stat-card {
+    flex: 1 1 0;
+    min-width: 140px;
+    max-width: 180px;
+    aspect-ratio: 1/1;
+    height: 180px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: box-shadow 0.2s, transform 0.2s;
+    margin: 0;
+    padding: 1.2rem 0.5rem;
+}
+
+.quick-stats .stat-card:not(:last-child) {
+    margin-right: 0;
+}
+
+.quick-stats .stat-card i {
+    font-size: 2.2rem;
+    margin-bottom: 0.7rem;
+}
+
+.quick-stats .stat-title {
+    font-size: 1.1rem;
+    color: var(--textLight);
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+}
+
+.quick-stats .stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+@media (max-width: 900px) {
+    .quick-stats {
+        flex-direction: column;
+        gap: 1.2rem;
+        align-items: center;
+    }
+    .quick-stats .stat-card {
+        max-width: 260px;
+        width: 100%;
+        aspect-ratio: 2/1;
+        height: 120px;
+    }
+}
+
+/* Beslenme Sayfası Stilleri */
+.nutrition-container {
+    display: grid;
+    gap: 2rem;
+}
+
+.meal-plan {
+    background-color: var(--cardBackground);
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.meal-plan h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.meal-cards {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.meal-card {
+    background-color: var(--background);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+}
+
+.meal-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: var(--primary);
+}
+
+.meal-items {
+    list-style: none;
+}
+
+.meal-items li {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--neutral);
+}
+
+.meal-items li:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.nutrition-stats {
+    background-color: var(--cardBackground);
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nutrition-stats h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 1rem;
+    background-color: var(--background);
+    border-radius: 0.5rem;
+}
+
+.stat-item i {
+    font-size: 1.5rem;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.stat-item h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--textLight);
+}
+
+.stat-item p {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--text);
+}
+
+/* Spor Sayfası Stilleri */
+.workout-container {
+    display: grid;
+    gap: 2rem;
+}
+
+.workout-plan {
+    background-color: var(--cardBackground);
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.workout-plan h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.workout-cards {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.workout-card {
+    background-color: var(--background);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+}
+
+.workout-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: var(--primary);
+}
+
+.workout-card ul {
+    list-style: none;
+    margin-bottom: 1rem;
+}
+
+.workout-card li {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--neutral);
+}
+
+.workout-card li:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.workout-info {
+    display: flex;
+    justify-content: space-between;
+    color: var(--textLight);
+    font-size: 0.9rem;
+}
+
+.workout-info i {
+    margin-right: 0.5rem;
+}
+
+.workout-stats {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    justify-content: center;
+    align-items: stretch;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.workout-stats .stat-item {
+    flex: 1 1 0;
+    min-width: 220px;
+    max-width: 300px;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    padding: 2rem 1.2rem 1.5rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin: 0;
+}
+
+.workout-stats .stat-item i {
+    font-size: 1.5rem;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.workout-stats .stat-item h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--textLight);
+}
+
+.workout-stats .stat-item p {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--text);
+}
+
+@media (max-width: 900px) {
+    .workout-stats {
+        flex-direction: column;
+        gap: 1.2rem;
+        align-items: center;
+    }
+    .workout-stats .stat-item {
+        min-width: 0;
+        width: 100%;
+        max-width: 350px;
+    }
+}
+
+/* Profil Sayfası Stilleri */
+.profile-container {
+    display: grid;
+    gap: 2rem;
+}
+
+.profile-info {
+    background-color: var(--cardBackground);
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    background: #fff;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 2rem 2.5rem;
+}
+
+.profile-avatar {
+    font-size: 5rem;
+    color: #007AFF;
+    background: linear-gradient(135deg, #e0e7ff 60%, #4DA3FF 100%);
+    border-radius: 50%;
+    padding: 1.2rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+.profile-info h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+
+.profile-info p {
+    margin: 0.2rem 0;
+    color: #555;
+}
+
+.profile-stats {
+    display: flex;
+    gap: 2rem;
+    justify-content: space-between;
+}
+
+.profile-settings {
+    background: #fff;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 2rem 2.5rem;
+}
+
+.profile-settings h2 {
+    color: #007AFF;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+}
+
+.settings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.setting-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: linear-gradient(90deg, #e0e7ff 60%, #4DA3FF 100%);
+    border-radius: 1rem;
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #222;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.setting-item:hover {
+    background: linear-gradient(90deg, #007AFF 60%, #4DA3FF 100%);
+    color: #fff;
+    box-shadow: 0 6px 24px rgba(0,122,255,0.13);
+}
+
+.setting-item i {
+    font-size: 1.3rem;
+}
+
+.profile-goals {
+    background-color: var(--cardBackground);
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.profile-goals h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+}
+
+.goals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.goal-item {
+    background-color: var(--background);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+}
+
+.goal-info h3 {
+    font-size: 1.1rem;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+
+.goal-info p {
+    color: var(--textLight);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.goal-progress {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.goal-progress span {
+    color: var(--textLight);
+    font-size: 0.9rem;
+    min-width: 3rem;
+    text-align: right;
+}
+
+.profile-achievements {
+    background-color: var(--cardBackground);
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.profile-achievements h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.achievement-item {
+    text-align: center;
+    padding: 1.5rem;
+    background-color: var(--background);
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.achievement-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.achievement-item i {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.achievement-item.locked i {
+    color: var(--textLight);
+}
+
+.achievement-item h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+}
+
+.achievement-item p {
+    color: var(--textLight);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Responsive Tasarım */
+@media (max-width: 768px) {
+    .quick-stats, .features, .stats-grid, .profile-stats, .achievements-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .profile-avatar {
+        font-size: 4rem;
+    }
+    
+    .goals-list {
+        gap: 0.75rem;
+    }
+    
+    .goal-item {
+        padding: 1rem;
+    }
+    
+    .achievements-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .workout-info {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+/* Progress Bar Stilleri */
+.progress-bar {
+    background: #e6f0ff;
+    border-radius: 8px;
+    height: 8px;
+    width: 100%;
+    margin-top: 0.3rem;
+}
+
+.progress {
+    background: linear-gradient(90deg, var(--primary) 60%, var(--primaryLight) 100%);
+    height: 100%;
+    border-radius: 8px;
+}
+
+/* TodayWorkout Bileşeni Stilleri */
+
+
+.today-workout h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+}
+
+.workout-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.workout-header h3 {
+    font-size: 1.2rem;
+    color: var(--primary);
+}
+
+.duration {
+    color: var(--textLight);
+    font-size: 0.9rem;
+}
+
+.workout-exercises {
+    margin-bottom: 1rem;
+}
+
+.exercise-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--neutral);
+}
+
+.exercise-item:last-child {
+    border-bottom: none;
+}
+
+.exercise-item i {
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+
+/* MealList Bileşeni Stilleri */
+.meal-list {
+    background-color: var(--cardBackground);
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.meal-list h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+}
+
+.meal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.meal-header h3 {
+    font-size: 1.2rem;
+    color: var(--primary);
+}
+
+.time {
+    color: var(--textLight);
+    font-size: 0.9rem;
+}
+
+.meal-items {
+    list-style: none;
+    margin-bottom: 1rem;
+}
+
+.meal-items li {
+    padding: 0.5rem 0;
+    color: var(--text);
+}
+
+.meal-info {
+    display: flex;
+    justify-content: space-between;
+    color: var(--textLight);
+    font-size: 0.9rem;
+}
+
+.meal-info i {
+    margin-right: 0.5rem;
+}
+
+/* NutritionSummary Bileşeni Stilleri */
+
+
+.nutrition-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.nutrition-stats .stat-item {
+    text-align: left;
+    padding: 1.5rem;
+    background-color: var(--background);
+    border-radius: 0.5rem;
+}
+
+.nutrition-stats .stat-item i {
+    font-size: 1.5rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.nutrition-stats .stat-item h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--textLight);
+}
+
+.nutrition-stats .stat-item p {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+
+/* Responsive Tasarım Güncellemeleri */
+@media (max-width: 768px) {
+    .nutrition-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .meal-info {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .workout-stats {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+/* NutritionHeader Bileşeni Stilleri */
+.nutrition-header {
+    background-color: var(--cardBackground);
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nutrition-header h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+}
+
+.nutrition-filters {
+    display: flex;
+    gap: 1rem;
+}
+
+.filter-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: var(--background);
+    color: var(--text);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+    background-color: var(--primaryLight);
+    color: white;
+}
+
+.filter-btn.active {
+    background-color: var(--primary);
+    color: white;
+}
+
+/* FoodItem Bileşeni Stilleri */
+.food-items {
+    margin-bottom: 1rem;
+}
+
+.food-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--background);
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.food-item:last-child {
+    margin-bottom: 0;
+}
+
+.food-info h4 {
+    font-size: 1rem;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+}
+
+.food-info p {
+    font-size: 0.9rem;
+    color: var(--textLight);
+    margin: 0;
+}
+
+.food-nutrition {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+}
+
+.food-nutrition span {
+    font-size: 0.9rem;
+    color: var(--textLight);
+}
+
+/* Responsive Tasarım Güncellemeleri */
+@media (max-width: 768px) {
+    .nutrition-filters {
+        flex-wrap: wrap;
+    }
+    
+    .filter-btn {
+        flex: 1;
+        min-width: 100px;
+        text-align: center;
+    }
+    
+    .food-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .food-nutrition {
+        align-items: flex-start;
+    }
+}
+
+/* WorkoutHeader Bileşeni Stilleri */
+.workout-header {
+    background-color: var(--cardBackground);
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.workout-header h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+}
+
+.workout-filters {
+    display: flex;
+    gap: 1rem;
+}
+
+/* ExerciseList Bileşeni Stilleri */
+.exercise-list {
+    margin-bottom: 1rem;
+}
+
+.exercise-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--background);
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.exercise-item:last-child {
+    margin-bottom: 0;
+}
+
+.exercise-info h4 {
+    font-size: 1rem;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+}
+
+.exercise-info p {
+    font-size: 0.9rem;
+    color: var(--textLight);
+    margin: 0;
+}
+
+.exercise-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+}
+
+.exercise-details span {
+    font-size: 0.9rem;
+    color: var(--textLight);
+}
+
+/* WorkoutCalendar Bileşeni Stilleri */
+.workout-calendar {
+    background-color: var(--cardBackground);
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.workout-calendar h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+}
+
+
+
+
+
+
+.day-number {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.workout-type {
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+/* Responsive Tasarım Güncellemeleri */
+@media (max-width: 768px) {
+    .workout-filters {
+        flex-wrap: wrap;
+    }
+    
+    .filter-btn {
+        flex: 1;
+        min-width: 100px;
+        text-align: center;
+    }
+    
+    .exercise-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .exercise-details {
+        align-items: flex-start;
+    }
+    
+   
+    
+    .workout-type {
+        font-size: 0.7rem;
+    }
+}
+
+/* Auth Sayfaları Stilleri */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+}
+
+.auth-logo {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.logo-circle {
+    width: 100px;
+    height: 100px;
+    background-color: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.logo-circle i {
+    font-size: 3rem;
+    color: white;
+}
+
+.app-name {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+.tagline {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.auth-form {
+    background-color: var(--cardBackground);
+    border-radius: 1rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.auth-form h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--neutral);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.password-input {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--textLight);
+    cursor: pointer;
+}
+
+.forgot-password {
+    display: block;
+    text-align: right;
+    color: var(--primary);
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.btn, .login-btn, .filter-btn, .btn-primary {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 0.8rem 2rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    cursor: pointer;
+}
+
+.btn:hover, .login-btn:hover, .filter-btn:hover, .btn-primary:hover {
+    background: #005ecb;
+}
+
+.filter-btn.active {
+    background: #005ecb;
+    color: #fff;
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+}
+
+.btn-outline:hover {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1.5rem 0;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--neutral);
+}
+
+.divider span {
+    padding: 0 1rem;
+    color: var(--textLight);
+    font-size: 0.9rem;
+}
+
+.auth-links {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.auth-links a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-links a:hover {
+    text-decoration: underline;
+}
+
+.step-indicator {
+    text-align: center;
+    color: var(--textLight);
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.button-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.button-group .btn {
+    flex: 1;
+}
+
+/* Responsive Tasarım */
+@media (max-width: 768px) {
+    .auth-container {
+        padding: 1rem;
+    }
+
+    .auth-form {
+        padding: 1.5rem;
+    }
+
+    .logo-circle {
+        width: 80px;
+        height: 80px;
+    }
+
+    .logo-circle i {
+        font-size: 2.5rem;
+    }
+
+    .app-name {
+        font-size: 2rem;
+    }
+}
+
+/* Genel Animasyonlar */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Sayfa Geçiş Efektleri */
+.page-transition {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Kart Hover Efektleri */
+
+
+.card.card-enter {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.card.card-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.card.card-leave {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.card.card-leave-active {
+    opacity: 0;
+    transform: translateY(-30px);
+}
+
+.fade-in {
+    animation: fadeIn 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+
+.slide-in {
+    animation: slideUp 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* Buton Hover Efektleri */
+.btn {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.btn:hover::after {
+    transform: translateX(100%);
+}
+
+/* İstatistik Kartları */
+.stat-item {
+    animation: slideUp 0.5s ease-out;
+    transition: transform 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: scale(1.05);
+}
+
+/* İlerleme Çubukları */
+.progress {
+    position: relative;
+    overflow: hidden;
+}
+
+.progress::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: shimmer 2s infinite;
+}
+
+/* Logo Animasyonu */
+.logo-circle {
+    animation: pulse 2s infinite;
+}
+
+/* Form Elemanları */
+input, select, textarea {
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Liste Öğeleri */
+.exercise-item, .meal-item {
+    animation: slideUp 0.5s ease-out;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.exercise-item:hover, .meal-item:hover {
+    transform: translateX(10px);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+
+/* Modal Animasyonu */
+.modal {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+    animation: slideUp 0.3s ease-out;
+}
+
+/* Yükleme Efekti */
+.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: shimmer 1.5s infinite;
+}
+
+/* Responsive Düzenlemeler */
+@media (max-width: 768px) {
+    .card:hover {
+        transform: none;
+    }
+    
+    .exercise-item:hover, .meal-item:hover {
+        transform: none;
+    }
+    
+   
+}
+
+/* Renkli kartlar için ek stiller */
+.card-green, .stat-item-green {
+    background: #e6fbe8;
+    border-left: 6px solid #34C759;
+}
+.card-green i, .stat-item-green i {
+    color: #34C759;
+}
+.card-green h3, .stat-item-green h3 {
+    color: #228b22;
+}
+
+.card-orange, .stat-item-orange {
+    background: #fff6e6;
+    border-left: 6px solid #FF9500;
+}
+.card-orange i, .stat-item-orange i {
+    color: #FF9500;
+}
+.card-orange h3, .stat-item-orange h3 {
+    color: #b36b00;
+}
+
+.card-yellow, .stat-item-yellow {
+    background: #fffde6;
+    border-left: 6px solid #FFD600;
+}
+.card-yellow i, .stat-item-yellow i {
+    color: #FFD600;
+}
+.card-yellow h3, .stat-item-yellow h3 {
+    color: #b3a100;
+}
+
+/* Aylık takvim için modern ve şık stiller */
+.monthly-calendar {
+    margin: 2rem auto;
+    max-width: 700px;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    padding: 2.5rem 2rem;
+}
+
+
+/* Ana kartlar için ortak stil */
+
+.quick-stats {
+    display: flex;
+    gap: 2rem;
+    justify-content: space-between;
+    margin-bottom: 0;
+}
+.quick-stats .stat-card {
+    flex: 1;
+    min-width: 0;
+    padding: 2rem 1rem;
+    font-size: 1.2rem;
+}
+.monthly-calendar{
+    padding: 2.5rem 2rem;
+    box-shadow: none;
+    margin: 2rem 0 0 0;
+}
+
+@media (max-width: 900px) {
+    .main-card {
+        max-width: 98vw;
+        padding: 1.2rem 0.5rem;
+    }
+    .quick-stats {
+        flex-direction: column;
+        gap: 1.2rem;
+    }
+    .quick-stats .stat-card {
+        padding: 1.2rem 0.7rem;
+        font-size: 1.05rem;
+    }
+}
+
+.row-container {
+    display: flex;
+    gap: 2rem;
+    width: 100%;
+    max-width: 1400px;
+    justify-content: center;
+}
+@media (max-width: 900px) {
+    .row-container {
+        flex-direction: column;
+        gap: 1.2rem;
+    }
+}
+
+.pro-btn {
+    transition: transform 0.18s, box-shadow 0.18s, background-color 0.2s;
+}
+
+.pro-btn.clicked {
+    transform: scale(0.95);
+    background-color: #0056b3;
+}
+
+
+/* Öğün Listesi Stilleri */
+.meal-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.meal-time {
+    min-width: 80px;
+    color: #666;
+}
+
+.meal-info {
+    flex: 1;
+}
+
+.meal-info h4 {
+    margin: 0;
+    color: #333;
+}
+
+.meal-calories {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.empty-list {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+/* Öğün Listesi */
+.meal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.meal-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--background);
+    border-radius: 12px;
+    transition: transform 0.2s ease;
+}
+
+.meal-item:hover {
+    transform: translateX(5px);
+}
+
+.meal-item i {
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+.meal-info {
+    flex: 1;
+}
+
+.meal-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+}
+
+.meal-info p {
+    font-size: 0.9rem;
+    color: var(--textLight);
+}
+
+/* İlerleme Kartı */
+.progress-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.progress-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.progress-item h3 {
+    font-size: 1rem;
+    color: var(--text);
+}
+
+.progress-bar {
+    height: 8px;
+    background: var(--background);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--primaryLight) 100%);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+/* Responsive Tasarım */
+@media (max-width: 1200px) {
+    .home-container {
+        padding: 1rem;
+    }
+    
+    .quick-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+   
+}
+
+@media (max-width: 768px) {
+    .quick-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .quick-stats .stat-card {
+        height: auto;
+    }
+    
+    .today-workout-card,
+    .meal-plan-card,
+    
+    .progress-card {
+        padding: 1.5rem;
+    }
+}
+
+/* Renkli Stat Kartları */
+.stat-card.workout-card {
+    border-left: 8px solid #007AFF;
+    background: linear-gradient(90deg, #e3f0ff 60%, #fff 100%);
+}
+.stat-card.burned-card {
+    border-left: 8px solid #FF9500;
+    background: linear-gradient(90deg, #fff6e6 60%, #fff 100%);
+}
+.stat-card.calorie-card {
+    border-left: 8px solid #34C759;
+    background: linear-gradient(90deg, #e6fbe8 60%, #fff 100%);
+}
+
+.stats-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+    gap: 2rem;
+    width: 100%;
+    margin-bottom: 2.2rem;
+}
+
+.stat-card {
+    min-width: 220px;
+    max-width: 270px;
+    height: 200px;
+    flex: 1 1 0;
+    background: var(--cardBackground);
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.2rem 1.2rem 1.2rem 1.2rem;
+    transition: box-shadow 0.3s, transform 0.3s;
+    position: relative;
+    text-align: center;
+}
+
+.stat-card:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.13);
+    transform: translateY(-6px) scale(1.03);
+}
+
+.stat-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.1rem;
+    font-size: 2.2rem;
+    background: linear-gradient(135deg, #fff 60%, #f0f4fa 100%);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.workout-card .stat-icon {
+    color: #007AFF;
+    background: linear-gradient(135deg, #e3f0ff 60%, #b3d1ff 100%);
+}
+.burned-card .stat-icon {
+    color: #FF9500;
+    background: linear-gradient(135deg, #fff6e6 60%, #ffe0b2 100%);
+}
+.calorie-card .stat-icon {
+    color: #34C759;
+    background: linear-gradient(135deg, #e6fbe8 60%, #b2f2d6 100%);
+}
+
+.stat-info h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    font-size: 2.1rem;
+    font-weight: 800;
+    color: #222;
+    margin-top: 0.2rem;
+    letter-spacing: 1px;
+}
+
+@media (max-width: 900px) {
+    .stats-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.2rem;
+    }
+    .stat-card {
+        min-width: 0;
+        width: 100%;
+        max-width: 350px;
+        height: 160px;
+    }
+}
+

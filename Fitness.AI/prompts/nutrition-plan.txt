@@ -1,0 +1,66 @@
+Kullanıcı bilgileri:
+Yas: {age}
+Kilo: {weight} kg
+Boy: {height} cm
+Cinsiyet: {gender}
+Aktivite Seviyesi: {activity_level}
+Hedef: {goals}
+Kayıt Günü: {register_day}
+
+Kurallar:
+- 4 haftalık (aylık) beslenme programı hazırla.
+- Her hafta için, 1. gün = {register_day} olacak şekilde sırala ve haftalık döngüyü buna göre oluştur.
+- Haftanın ilk günü {register_day} olmalı, örneğin kullanıcı Cuma günü kayıt olduysa, 1. gün Cuma, 2. gün Cumartesi, 3. gün Pazar, 4. gün Pazartesi, 5. gün Salı, 6. gün Çarşamba, 7. gün Perşembe olmalı.
+- Lütfen gün isimlerini bu sırayla ve açıkça belirt.
+- Her gün için 5 öğün: sabah, ara_ogun, ogle, ara_ogun_2, aksam.
+- Her öğün için: yemek_adi, kalori, protein, karbonhidrat, yag (string olarak) alanlarını DOLU şekilde yaz.
+- Tüm değerler string olmalı.
+- Hiçbir haftayı veya günü boş bırakma, her gün için farklı ve dolu öğünler ver.
+- Tüm 4 haftayı ve her günü eksiksiz ve DOLU şekilde üret. Hiçbir haftada veya günde ... veya benzeri kısaltma, boşluk veya eksik bilgi kullanma. Yanıtta asla ... veya benzeri kısaltma, boşluk veya eksik bilgi kullanma.
+- Yanıtı yalnızca geçerli JSON formatında ve kolayca parse edilebilir şekilde ver. JSON dışında ekstra metin veya açıklama ekleme.
+
+Örnek format:
+{{
+  "beslenme_programi": {{
+    "Hafta_1": {{
+      "Cuma": {{
+        "date": "2025-05-23",
+        "sabah": {{
+          "yemek_adi": "Yulaf Ezmesi",
+          "kalori": "350",
+          "protein": "12",
+          "karbonhidrat": "58",
+          "yag": "6.5"
+        }},
+        "ara_ogun": {{
+          "yemek_adi": "Muz",
+          "kalori": "105",
+          "protein": "1.3",
+          "karbonhidrat": "27",
+          "yag": "0.3"
+        }},
+        "ogle": {{
+          "yemek_adi": "Tavuk Gogsu",
+          "kalori": "450",
+          "protein": "35",
+          "karbonhidrat": "45",
+          "yag": "12"
+        }},
+        "ara_ogun_2": {{
+          "yemek_adi": "Yogurt",
+          "kalori": "150",
+          "protein": "8",
+          "karbonhidrat": "12",
+          "yag": "5"
+        }},
+        "aksam": {{
+          "yemek_adi": "Somon Baligi",
+          "kalori": "400",
+          "protein": "30",
+          "karbonhidrat": "0",
+          "yag": "25"
+        }}
+      }}
+    }}
+  }}
+}}

@@ -23,7 +23,7 @@ export default function RegisterScreen() {
     weight: '',
     gender: 'erkek',
     activityLevel: 'sedanter',
-    goal: 'form_koruma'
+    goals: 'form_koruma'
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -286,8 +286,8 @@ export default function RegisterScreen() {
         <Text style={styles.pickerLabel}>Hedef</Text>
         <View style={styles.pickerWrapper}>
           <Picker
-            selectedValue={formData.goal}
-            onValueChange={(value) => updateFormData('goal', value)}
+            selectedValue={formData.goals}
+            onValueChange={(value) => updateFormData('goals', value)}
             style={styles.picker}
           >
             <Picker.Item label="Kilo Verme" value="kilo_verme" />

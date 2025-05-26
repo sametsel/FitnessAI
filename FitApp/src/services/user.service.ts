@@ -119,7 +119,7 @@ class UserService {
   }
 
   async getUserWorkoutHistory(): Promise<WorkoutHistory[]> {
-    const response = await this.api.get<WorkoutHistory[]>('/users/workouts/history');
+    const response = await this.api.get<WorkoutHistory[]>('/workout-plans/history');
     return response.data;
   }
 

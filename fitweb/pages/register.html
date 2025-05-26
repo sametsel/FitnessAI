@@ -2,93 +2,300 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kayıt Ol - FitWeb</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/auth.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kayıt Ol - FitApp</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #007AFF;
+            --primary-light: #4DA3FF;
+            --primary-dark: #0056b3;
+            --success-color: #28a745;
+            --error-color: #ff3b30;
+            --text-color: #333;
+            --border-color: #e0e0e0;
+            --background-color: #f8f9fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 500px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .register-form {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-title {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .form-section-title {
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-section-title i {
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 0.8rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+
+        .form-group input:hover,
+        .form-group select:hover {
+            border-color: var(--primary-light);
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            border-radius: 0.8rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 122, 255, 0.3);
+        }
+
+        .register-btn:active {
+            transform: translateY(0);
+        }
+
+        .register-btn:disabled {
+            background: var(--border-color);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-color);
+            font-size: 0.95rem;
+        }
+
+        .login-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .login-link a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            text-align: center;
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: 0.5rem;
+            background-color: rgba(255, 59, 48, 0.1);
+            display: none;
+            font-size: 0.95rem;
+        }
+
+        .success-message {
+            color: var(--success-color);
+            text-align: center;
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: 0.5rem;
+            background-color: rgba(40, 167, 69, 0.1);
+            display: none;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 480px) {
+            .register-form {
+                padding: 1.5rem;
+            }
+
+            .form-title {
+                font-size: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .form-section-title {
+                font-size: 1.1rem;
+            }
+
+            .form-group input,
+            .form-group select {
+                padding: 0.8rem;
+            }
+
+            .register-btn {
+                padding: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="auth-container">
-        <div class="auth-card">
-            <div class="auth-header">
-                <img src="../assets/images/logo.png" alt="FitWeb Logo" class="auth-logo">
-                <h2>Kayıt Ol</h2>
-            </div>
-            <div id="error-message" class="error-message" style="display: none;"></div>
-            <form id="registerForm" class="auth-form">
-                <!-- Kişisel Bilgiler -->
+    <div class="register-container">
+        <div class="register-form">
+            <h2 class="form-title">FitApp'e Hoş Geldiniz</h2>
+            <form id="registerForm">
                 <div class="form-section">
-                    <h3>Kişisel Bilgiler</h3>
-                    <div class="form-group">
+                    <h3 class="form-section-title">
                         <i class="fas fa-user"></i>
-                        <input type="text" name="name" placeholder="Adınız" required>
+                        Hesap Bilgileri
+                    </h3>
+                    <div class="form-group">
+                        <label for="name">Ad Soyad</label>
+                        <input type="text" id="name" name="name" required placeholder="Adınız ve soyadınız">
                     </div>
                     <div class="form-group">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" name="email" placeholder="E-posta" required>
+                        <label for="email">E-posta</label>
+                        <input type="email" id="email" name="email" required placeholder="ornek@email.com">
                     </div>
                     <div class="form-group">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" name="password" placeholder="Şifre" required>
-                        <i class="fas fa-eye-slash password-toggle"></i>
+                        <label for="password">Şifre</label>
+                        <input type="password" id="password" name="password" required placeholder="En az 6 karakter">
                     </div>
                     <div class="form-group">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" name="confirmPassword" placeholder="Şifre Tekrar" required>
-                        <i class="fas fa-eye-slash password-toggle"></i>
+                        <label for="confirmPassword">Şifre Tekrar</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Şifrenizi tekrar girin">
                     </div>
                 </div>
-                <!-- Fiziksel Özellikler -->
+
                 <div class="form-section">
-                    <h3>Fiziksel Özellikler</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <i class="fas fa-venus-mars"></i>
-                            <select name="gender" required>
-                                <option value="">Cinsiyet Seçin</option>
-                                <option value="erkek">Erkek</option>
-                                <option value="kadın">Kadın</option>
-                                <option value="diğer">Diğer</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <i class="fas fa-birthday-cake"></i>
-                            <input type="number" name="age" placeholder="Yaş" min="15" max="100" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <i class="fas fa-weight"></i>
-                            <input type="number" name="weight" placeholder="Kilo (kg)" min="30" max="300" step="0.1" required>
-                        </div>
-                        <div class="form-group">
-                            <i class="fas fa-ruler-vertical"></i>
-                            <input type="number" name="height" placeholder="Boy (cm)" min="100" max="250" required>
-                        </div>
-                    </div>
-                </div>
-                <!-- Hedef ve Aktivite Seviyesi -->
-                <div class="form-section">
-                    <h3>Hedef</h3>
+                    <h3 class="form-section-title">
+                        <i class="fas fa-user-circle"></i>
+                        Kişisel Bilgiler
+                    </h3>
                     <div class="form-group">
-                        <i class="fas fa-bullseye"></i>
-                        <select name="goal" required>
-                            <option value="">Hedef Seçin</option>
-                            <option value="kilo_verme">Kilo Verme</option>
-                            <option value="kilo_alma">Kilo Alma</option>
-                            <option value="kas_kazanma">Kas Kazanma</option>
-                            <option value="form_koruma">Form Koruma</option>
+                        <label for="age">Yaş</label>
+                        <input type="number" id="age" name="age" min="13" max="100" required placeholder="Yaşınız">
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Cinsiyet</label>
+                        <select id="gender" name="gender" required>
+                            <option value="">Seçiniz</option>
+                            <option value="erkek">Erkek</option>
+                            <option value="kadın">Kadın</option>
+                            <option value="diger">Diğer</option>
                         </select>
                     </div>
-                    <h3>Aktivite Seviyesi</h3>
                     <div class="form-group">
-                        <i class="fas fa-running"></i>
-                        <select name="activityLevel" required>
-                            <option value="">Aktivite Seviyesi Seçin</option>
+                        <label for="height">Boy (cm)</label>
+                        <input type="number" id="height" name="height" min="100" max="250" required placeholder="Boyunuz">
+                    </div>
+                    <div class="form-group">
+                        <label for="weight">Kilo (kg)</label>
+                        <input type="number" id="weight" name="weight" min="30" max="300" required placeholder="Kilonuz">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3 class="form-section-title">
+                        <i class="fas fa-dumbbell"></i>
+                        Fitness Bilgileri
+                    </h3>
+                    <div class="form-group">
+                        <label for="activityLevel">Aktivite Seviyesi</label>
+                        <select id="activityLevel" name="activityLevel" required>
+                            <option value="">Seçiniz</option>
                             <option value="sedanter">Hareketsiz</option>
                             <option value="hafif_aktif">Az Hareketli</option>
                             <option value="orta_aktif">Orta Derece Aktif</option>
@@ -96,26 +303,137 @@
                             <option value="cok_aktif">Çok Aktif</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="goals">Hedef</label>
+                        <select id="goals" name="goals" required>
+                            <option value="">Seçiniz</option>
+                            <option value="kilo_verme">Kilo Verme</option>
+                            <option value="kilo_alma">Kilo Alma</option>
+                            <option value="kas_kazanma">Kas Kazanma</option>
+                            <option value="form_koruma">Form Koruma</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-options">
-                    <label class="terms-checkbox">
-                        <input type="checkbox" name="terms" required>
-                        Kullanım koşullarını ve gizlilik politikasını kabul ediyorum
-                    </label>
-                </div>
-                <button type="submit" class="btn btn-primary btn-block">
+
+                <button type="submit" class="register-btn">
                     <i class="fas fa-user-plus"></i>
                     Kayıt Ol
                 </button>
+                <div id="errorMessage" class="error-message"></div>
+                <div id="successMessage" class="success-message"></div>
             </form>
-            <div class="auth-footer">
-                <p>Zaten hesabınız var mı? <a href="login.html">Giriş Yap</a></p>
-            </div>
-            <div class="back-to-home">
-                <a href="index.html"><i class="fas fa-arrow-left"></i> Ana Sayfaya Dön</a>
+            <div class="login-link">
+                Zaten hesabınız var mı? <a href="login.html">Giriş Yapın</a>
             </div>
         </div>
     </div>
-    <script src="../assets/js/auth.js" type="module"></script>
+
+    <script type="module">
+        import { authAPI } from '../js/api.js';
+
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        const registerForm = document.getElementById('registerForm');
+        const registerBtn = registerForm.querySelector('button[type="submit"]');
+
+        // Form gönderildiğinde
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Tüm form verilerini topla
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                age: parseInt(document.getElementById('age').value),
+                gender: document.getElementById('gender').value,
+                height: parseInt(document.getElementById('height').value),
+                weight: parseInt(document.getElementById('weight').value),
+                activityLevel: document.getElementById('activityLevel').value,
+                goals: document.getElementById('goals').value
+            };
+
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Şifre kontrolü
+            if (formData.password !== confirmPassword) {
+                showError('Şifreler eşleşmiyor!');
+                return;
+            }
+
+            // Şifre uzunluğu kontrolü
+            if (formData.password.length < 6) {
+                showError('Şifre en az 6 karakter olmalıdır!');
+                return;
+            }
+
+            // Butonu devre dışı bırak ve yükleniyor göster
+            registerBtn.disabled = true;
+            registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Kayıt Yapılıyor...';
+            hideMessages();
+
+            try {
+                const response = await authAPI.register(formData);
+                localStorage.setItem('token', response.token);
+                
+                // Başarılı kayıt mesajı göster
+                showSuccess('Kayıt başarılı! Yönlendiriliyorsunuz...');
+                
+                // Kısa bir gecikme ile yönlendir
+                setTimeout(() => {
+                    window.location.href = 'home.html';
+                }, 1500);
+            } catch (error) {
+                showError(error.message || 'Kayıt başarısız. Lütfen bilgilerinizi kontrol edin.');
+            } finally {
+                // Butonu tekrar aktif et
+                registerBtn.disabled = false;
+                registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> Kayıt Ol';
+            }
+        });
+
+        // Input alanları değiştiğinde hata mesajını gizle
+        registerForm.querySelectorAll('input, select').forEach(input => {
+            input.addEventListener('input', () => {
+                hideMessages();
+            });
+        });
+
+        // Şifre alanları değiştiğinde eşleşme kontrolü
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+
+        const checkPasswords = () => {
+            if (passwordInput.value && confirmPasswordInput.value) {
+                if (passwordInput.value !== confirmPasswordInput.value) {
+                    showError('Şifreler eşleşmiyor!');
+                } else {
+                    hideMessages();
+                }
+            }
+        };
+
+        passwordInput.addEventListener('input', checkPasswords);
+        confirmPasswordInput.addEventListener('input', checkPasswords);
+
+        // Yardımcı fonksiyonlar
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+        }
+
+        function hideMessages() {
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
 </body>
 </html> 

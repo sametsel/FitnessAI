@@ -44,30 +44,7 @@ export default function ProfileScreen() {
       description: 'Boy, kilo, yaş bilgilerinizi yönetin',
       onPress: () => router.push('/modals/personal-info'),
     },
-    {
-      title: 'Fitness Hedefleri',
-      icon: 'fitness-outline',
-      description: 'Hedeflerinizi belirleyin ve takip edin',
-      onPress: () => router.push('/modals/fitness-goals'),
-    },
-    {
-      title: 'Bildirim Ayarları',
-      icon: 'notifications-outline',
-      description: 'Bildirim tercihlerinizi ayarlayın',
-      onPress: () => router.push('/modals/notifications'),
-    },
-    {
-      title: 'Uygulama Ayarları',
-      icon: 'settings-outline',
-      description: 'Uygulama tercihlerinizi düzenleyin',
-      onPress: () => router.push('/modals/settings'),
-    },
-    {
-      title: 'Yardım ve Destek',
-      icon: 'help-circle-outline',
-      description: 'SSS ve destek hizmetleri',
-      onPress: () => router.push('/modals/help'),
-    },
+   
     {
       title: 'Çıkış Yap',
       icon: 'log-out-outline',
@@ -219,52 +196,6 @@ export default function ProfileScreen() {
           </Card.Content>
         </Card>
       )}
-
-      {/* İlerleme Kartı */}
-      <Card style={styles.progressCard}>
-        <Card.Content>
-          <View style={styles.cardTitleContainer}>
-            <FontAwesome5 name="chart-line" size={20} color={theme.colors.primary} />
-            <Title style={styles.cardTitle}>İlerleme Durumu</Title>
-          </View>
-          
-          <View style={styles.progressItem}>
-            <View style={styles.progressLabelContainer}>
-              <Text style={styles.progressLabel}>Antrenman Tamamlama</Text>
-              <Text style={styles.progressValue}>{progressData.workoutCompletion * 100}%</Text>
-            </View>
-            <ProgressBar 
-              progress={progressData.workoutCompletion} 
-              color="#4CAF50" 
-              style={styles.progressBar} 
-            />
-          </View>
-          
-          <View style={styles.progressItem}>
-            <View style={styles.progressLabelContainer}>
-              <Text style={styles.progressLabel}>Hedef İlerlemesi</Text>
-              <Text style={styles.progressValue}>{progressData.goalProgress * 100}%</Text>
-            </View>
-            <ProgressBar 
-              progress={progressData.goalProgress} 
-              color="#FF9800" 
-              style={styles.progressBar} 
-            />
-          </View>
-          
-          <View style={styles.progressItem}>
-            <View style={styles.progressLabelContainer}>
-              <Text style={styles.progressLabel}>Beslenme Planı Uyumu</Text>
-              <Text style={styles.progressValue}>{progressData.nutritionAdherence * 100}%</Text>
-            </View>
-            <ProgressBar 
-              progress={progressData.nutritionAdherence} 
-              color="#2196F3" 
-              style={styles.progressBar} 
-            />
-          </View>
-        </Card.Content>
-      </Card>
 
       {/* Menü Öğeleri */}
       <Card style={styles.menuCard}>

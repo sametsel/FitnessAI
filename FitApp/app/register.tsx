@@ -21,7 +21,12 @@ export default function RegisterScreen() {
     weight: '',
     gender: 'erkek',
     activityLevel: 'sedanter',
-    goal: 'form_koruma'
+    goals: 'form_koruma',
+    experienceLevel: '1',
+    injuries: '0',
+    availableEquipment: '1',
+    timeAvailability: '60',
+    preferredWorkoutTime: '1'
   });
 
   const { register, loading } = useAuth();
@@ -47,9 +52,12 @@ export default function RegisterScreen() {
     { label: 'Diğer', value: 'diger' }
   ];
 
+
   const validateForm = (): boolean => {
     if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword ||
-        !formData.age || !formData.height || !formData.weight) {
+        !formData.age || !formData.height || !formData.weight || !formData.experienceLevel ||
+        !formData.injuries || !formData.availableEquipment || !formData.timeAvailability ||
+        !formData.preferredWorkoutTime) {
       Alert.alert('Hata', 'Tüm alanları doldurunuz');
       return false;
     }
@@ -189,8 +197,8 @@ export default function RegisterScreen() {
         <View style={styles.pickerContainer}>
           <Text style={StyleGuide.typography.label}>Hedef</Text>
           <Picker
-            selectedValue={formData.goal}
-            onValueChange={(value) => setFormData({...formData, goal: value})}
+            selectedValue={formData.goals}
+            onValueChange={(value) => setFormData({...formData, goals: value})}
             style={styles.picker}
           >
             {goals.map((goal) => (
@@ -200,6 +208,61 @@ export default function RegisterScreen() {
                 value={goal.value} 
               />
             ))}
+          </Picker>
+        </View>
+
+        <View style={styles.pickerContainer}>
+          <Text style={StyleGuide.typography.label}>Deneyim Seviyesi</Text>
+          <Picker
+            selectedValue={formData.experienceLevel}
+            onValueChange={(value) => setFormData({...formData, experienceLevel: value})}
+            style={styles.picker}
+          >
+            
+            
+          </Picker>
+        </View>
+
+        <View style={styles.pickerContainer}>
+          <Text style={StyleGuide.typography.label}>Sakatlık Durumu</Text>
+          <Picker
+            selectedValue={formData.injuries}
+            onValueChange={(value) => setFormData({...formData, injuries: value})}
+            style={styles.picker}
+          >
+          </Picker>
+        </View>
+
+        <View style={styles.pickerContainer}>
+          <Text style={StyleGuide.typography.label}>Mevcut Ekipman</Text>
+          <Picker
+            selectedValue={formData.availableEquipment}
+            onValueChange={(value) => setFormData({...formData, availableEquipment: value})}
+            style={styles.picker}
+          >
+
+          </Picker>
+        </View>
+
+        <View style={styles.pickerContainer}>
+          <Text style={StyleGuide.typography.label}>Antrenman Süresi</Text>
+          <Picker
+            selectedValue={formData.timeAvailability}
+            onValueChange={(value) => setFormData({...formData, timeAvailability: value})}
+            style={styles.picker}
+          >
+          
+          </Picker>
+        </View>
+
+        <View style={styles.pickerContainer}>
+          <Text style={StyleGuide.typography.label}>Tercih Edilen Antrenman Zamanı</Text>
+          <Picker
+            selectedValue={formData.preferredWorkoutTime}
+            onValueChange={(value) => setFormData({...formData, preferredWorkoutTime: value})}
+            style={styles.picker}
+          >
+          
           </Picker>
         </View>
 

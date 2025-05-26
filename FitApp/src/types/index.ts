@@ -13,7 +13,7 @@ export interface User {
   weight: number;
   height: number;
   gender: Gender;
-  goal: Goal;
+  goals: Goal;
   activityLevel: ActivityLevel;
   profilePicture?: string;
   createdAt: Date;
@@ -23,7 +23,7 @@ export interface User {
 // Güvenlik için, password'ü hariç tutan bir tip de oluşturalım
 export interface UserWithoutPassword {
   id: string;
-  _id?: string; // MongoDB'den gelen _id alanı için opsiyonel alan ekledik
+  _id?: string;
   name: string;
   email: string;
   profilePicture?: string;
@@ -31,7 +31,7 @@ export interface UserWithoutPassword {
   weight?: number;
   height?: number;
   gender?: Gender;
-  goal?: Goal;
+  goals?: Goal;
   activityLevel?: ActivityLevel;
   createdAt: Date;
   updatedAt: Date;
@@ -48,7 +48,12 @@ export interface RegisterFormData {
   weight: string;
   gender: Gender;
   activityLevel: ActivityLevel;
-  goal: Goal;
+  goals: Goal;
+  experienceLevel: string;
+  injuries: string;
+  availableEquipment: string;
+  timeAvailability: string;
+  preferredWorkoutTime: string;
 }
 
 // Auth ile ilgili tipler
@@ -202,15 +207,6 @@ export interface NutritionHistory {
   date: Date;
   portionSize: number;
   notes?: string;
-}
-
-export interface AIRecommendation {
-  _id: string;
-  userId: string;
-  type: 'workout' | 'nutrition';
-  recommendation: string;
-  date: Date;
-  isCompleted: boolean;
 }
 
 export interface AuthResponse {

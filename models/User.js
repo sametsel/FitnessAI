@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -12,7 +13,11 @@ const userSchema = new mongoose.Schema({
         required: [true, 'E-posta alanı zorunludur'],
         unique: true,
         lowercase: true,
-        trim: true
+        trim: true,
+        match: [
+            /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+            'Lütfen geçerli bir email adresi girin'
+        ]
     },
     password: {
         type: String,
@@ -41,17 +46,25 @@ const userSchema = new mongoose.Schema({
     gender: {
         type: String,
         required: [true, 'Cinsiyet alanı zorunludur'],
-        enum: ['erkek', 'kadın']
+        enum: ['erkek', 'kadın', 'diger']
     },
     activityLevel: {
         type: String,
         required: [true, 'Aktivite seviyesi alanı zorunludur'],
-        enum: ['sedanter', 'hafif_aktif', 'orta_aktif', 'cok_aktif']
+        enum: ['sedanter', 'hafif_aktif', 'orta_aktif', 'aktif', 'cok_aktif']
     },
-    goal: {
+    goals: {
         type: String,
         required: [true, 'Hedef alanı zorunludur'],
         enum: ['form_koruma', 'kilo_verme', 'kilo_alma', 'kas_kazanma']
+    },
+    dietaryRestrictions: {
+        type: String,
+        default: ''
+    },
+    healthConditions: {
+        type: String,
+        default: ''
     },
     createdAt: {
         type: Date,
@@ -89,6 +102,15 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
         console.error('Şifre karşılaştırma hatası:', error);
         throw new Error('Şifre karşılaştırma işlemi başarısız oldu');
     }
+};
+
+// JWT token oluştur
+userSchema.methods.getSignedJwtToken = function() {
+    return jwt.sign(
+        { id: this._id },
+        process.env.JWT_SECRET,
+        { expiresIn: '30d' }
+    );
 };
 
 const User = mongoose.model('User', userSchema);

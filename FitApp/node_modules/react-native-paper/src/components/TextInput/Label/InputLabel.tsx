@@ -56,6 +56,8 @@ const InputLabel = (props: InputLabelProps) => {
   const { INPUT_PADDING_HORIZONTAL } = getConstants(isV3);
   const { width } = useWindowDimensions();
 
+  const isWeb = Platform.OS === 'web';
+
   const paddingOffset =
     paddingLeft && paddingRight ? { paddingLeft, paddingRight } : {};
 
@@ -144,7 +146,7 @@ const InputLabel = (props: InputLabelProps) => {
         pointerEvents="none"
         style={[
           StyleSheet.absoluteFill,
-          Platform.OS !== 'web' && { width },
+          !isWeb && { width },
           { opacity },
           labelTranslationX,
         ]}

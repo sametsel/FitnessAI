@@ -3,221 +3,396 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil - FitWeb</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/dashboard.css">
-    <link rel="stylesheet" href="../assets/css/profile.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.css">
+    <title>FitApp - Profil</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+    .profile-stats {
+        display: flex;
+        flex-direction: row;
+        gap: 2.5rem;
+        justify-content: center;
+        align-items: stretch;
+        margin: 2.5rem 0 2rem 0;
+    }
+    .stat-item {
+        flex: 1 1 0;
+        min-width: 220px;
+        max-width: 350px;
+        background: #f8fafc;
+        border-radius: 18px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2.2rem 1.2rem 2.2rem 1.2rem;
+        margin: 0;
+        text-align: center;
+        font-size: 1.15rem;
+        font-weight: 600;
+        position: relative;
+        transition: box-shadow 0.3s, transform 0.3s;
+    }
+    .stat-item h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 0.7rem;
+    }
+    .stat-item i {
+        font-size: 2.2rem;
+        margin-bottom: 1.1rem;
+    }
+    .stat-item-green {
+        background: linear-gradient(90deg, #e6fbe8 60%, #fff 100%);
+        border-left: 8px solid #34C759;
+    }
+    .stat-item-yellow {
+        background: linear-gradient(90deg, #fffbe6 60%, #fff 100%);
+        border-left: 8px solid #FFD600;
+    }
+    @media (max-width: 900px) {
+        .profile-stats {
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+        .stat-item {
+            min-width: 0;
+            width: 100%;
+            max-width: 98vw;
+        }
+    }
+    .edit-profile-section {
+        max-width: 500px;
+        margin: 2rem auto 0 auto;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+        padding: 2rem 2rem 1.5rem 2rem;
+        display: none;
+        flex-direction: column;
+        gap: 1.2rem;
+        transition: all 0.3s;
+    }
+    .edit-profile-section.active {
+        display: flex;
+    }
+    .edit-profile-section h2 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #007AFF;
+    }
+    .edit-profile-section .form-group {
+        margin-bottom: 1.1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+    .edit-profile-section label {
+        font-weight: 600;
+        color: #333;
+    }
+    .edit-profile-section input {
+        padding: 0.6rem 1rem;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        font-size: 1rem;
+    }
+    .edit-profile-section .button-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 0.5rem;
+    }
+    .edit-profile-section .btn {
+        padding: 0.6rem 1.5rem;
+        border-radius: 8px;
+        border: none;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        background: #007AFF;
+        color: #fff;
+        transition: background 0.2s;
+    }
+    .edit-profile-section .btn.cancel {
+        background: #e0e0e0;
+        color: #333;
+    }
+    </style>
 </head>
 <body>
-    <div class="dashboard-container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <img src="../assets/images/logo.png" alt="FitWeb Logo">
-            </div>
-            <nav class="sidebar-nav">
-                <a href="dashboard.html"><i class="fas fa-home"></i> Ana Sayfa</a>
-                <a href="workout.html"><i class="fas fa-dumbbell"></i> Antrenmanlar</a>
-                <a href="nutrition.html"><i class="fas fa-apple-alt"></i> Beslenme</a>
-                <a href="profile.html" class="active"><i class="fas fa-user"></i> Profil</a>
+    <div id="app">
+        <header>
+            <nav>
+                <div class="logo">FitApp</div>
+                <ul>
+                    <li><a href="home.html"><i class="fas fa-home"></i> Ana Sayfa</a></li>
+                    <li><a href="nutrition.html"><i class="fas fa-utensils"></i> Beslenme</a></li>
+                    <li><a href="workout.html"><i class="fas fa-dumbbell"></i> Spor</a></li>
+                    <li><a href="profile.html" class="active"><i class="fas fa-user"></i> Profil</a></li>
+                </ul>
             </nav>
-            <div class="sidebar-footer">
-                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
-            </div>
-        </aside>
+        </header>
 
-        <main class="main-content">
-            <header class="dashboard-header">
-                <button class="menu-toggle"><i class="fas fa-bars"></i></button>
-                <div class="user-menu">
-                    <span class="notification-bell">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-count">3</span>
-                    </span>
-                    <div class="user-profile">
-                        <img src="../assets/images/avatar.png" alt="Kullanıcı">
-                        <span id="userGreeting">Hoşgeldin, Kullanıcı</span>
+        <main>
+           
+
+            <div class="content">
+                <!-- ProfileHeader Bileşeni -->
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="profile-info">
+                        <h1 id="userName">Yükleniyor...</h1>
+                        <p class="profile-email" id="userEmail">Yükleniyor...</p>
+                        <p class="profile-join-date" id="userJoinDate">Yükleniyor...</p>
                     </div>
                 </div>
-            </header>
 
-            <div class="dashboard-content">
-                <div class="profile-container">
-                    <!-- Profil Özeti Kartı -->
-                    <div class="profile-summary-card">
-                        <div class="profile-header">
-                            <div class="profile-avatar-container">
-                                <div class="profile-avatar">
-                                    <img src="../assets/images/avatar.png" alt="Profil Fotoğrafı">
-                                    <button class="change-avatar">
-                                        <i class="fas fa-camera"></i>
-                                    </button>
-                                </div>
-                                <div class="profile-badges">
-                                    <span class="badge premium-badge">
-                                        <i class="fas fa-crown"></i>
-                                        Premium Üye
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="profile-info">
-                                <h1>Kullanıcı Adı</h1>
-                                <p class="membership-date">
-                                    <i class="fas fa-calendar-alt"></i>
-                                    Üyelik Tarihi: 01.01.2024
-                                </p>
-                                <div class="profile-stats">
-                                    <div class="stat-card">
-                                        <i class="fas fa-dumbbell"></i>
-                                        <div class="stat-info">
-                                            <span class="stat-value">45</span>
-                                            <span class="stat-label">Antrenman</span>
-                                        </div>
-                                    </div>
-                                    <div class="stat-card">
-                                        <i class="fas fa-fire"></i>
-                                        <div class="stat-info">
-                                            <span class="stat-value">12,500</span>
-                                            <span class="stat-label">Kalori</span>
-                                        </div>
-                                    </div>
-                                    <div class="stat-card">
-                                        <i class="fas fa-trophy"></i>
-                                        <div class="stat-info">
-                                            <span class="stat-value">8</span>
-                                            <span class="stat-label">Hedef</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <!-- Vücut Kitle İndeksi (BMI) Kartı -->
+                <div id="bmiCard" class="stat-item stat-item-green" style="margin-bottom: 2rem; display: flex; flex-direction: row; align-items: center; justify-content: flex-start; padding: 2rem 1.5rem; width: 100%; max-width: 350px; min-width: 220px; box-sizing: border-box;">
+                    <div id="bmiCircle" style="width: 80px; height: 80px; border-radius: 40px; background: #e6fbe8; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-right: 32px;">
+                        <span id="bmiValue" style="font-size: 2rem; font-weight: bold; color: #34C759;">--</span>
+                        <span id="bmiCategory" style="font-size: 1rem; color: #34C759;">--</span>
                     </div>
-
-                    <!-- Ana İçerik Grid -->
-                    <div class="profile-grid">
-                        <!-- Kişisel Bilgiler Kartı -->
-                        <div class="profile-card">
-                            <div class="card-header">
-                                <h2><i class="fas fa-user-circle"></i> Kişisel Bilgiler</h2>
-                                <button class="btn-edit">
-                                    <i class="fas fa-edit"></i>
-                                    Düzenle
-                                </button>
-                            </div>
-                            <div class="card-content">
-                                <form class="profile-form">
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label><i class="fas fa-user"></i> Ad Soyad</label>
-                                            <input type="text" name="name" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><i class="fas fa-envelope"></i> E-posta</label>
-                                            <input type="email" name="email" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label><i class="fas fa-birthday-cake"></i> Yaş</label>
-                                            <input type="number" name="age" min="15" max="100" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><i class="fas fa-venus-mars"></i> Cinsiyet</label>
-                                            <select name="gender" required>
-                                                <option value="male">Erkek</option>
-                                                <option value="female">Kadın</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label><i class="fas fa-ruler-vertical"></i> Boy (cm)</label>
-                                            <input type="number" name="height" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><i class="fas fa-weight"></i> Kilo (kg)</label>
-                                            <input type="number" name="weight" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label><i class="fas fa-running"></i> Aktivite Seviyesi</label>
-                                        <select name="activityLevel">
-                                            <option value="sedentary">Hareketsiz</option>
-                                            <option value="light">Az Hareketli</option>
-                                            <option value="moderate">Orta Derece Aktif</option>
-                                            <option value="very">Çok Aktif</option>
-                                        </select>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-save"></i>
-                                        Değişiklikleri Kaydet
-                                    </button>
-                                </form>
-                            </div>
+                    <div style="flex: 1; min-width: 120px;">
+                        <div style="height: 12px; border-radius: 6px; background: #e0e0e0; width: 100%; margin-bottom: 8px; position: relative;">
+                            <div id="bmiBar" style="height: 100%; border-radius: 6px; background: linear-gradient(90deg, #3498db 0% 37%, #2ecc71 37% 60%, #f39c12 60% 75%, #e74c3c 75% 100%); width: 100%; position: absolute; top: 0; left: 0;"></div>
+                            <div id="bmiPointer" style="position: absolute; top: -6px; left: 0; width: 0; height: 24px; border-left: 4px solid #34C759;"></div>
                         </div>
-
-                        <!-- Hedefler Kartı -->
-                        <div class="profile-card">
-                            <div class="card-header">
-                                <h2><i class="fas fa-bullseye"></i> Hedefler</h2>
-                                <button class="btn-add">
-                                    <i class="fas fa-plus"></i>
-                                    Yeni Hedef
-                                </button>
-                            </div>
-                            <div class="card-content">
-                                <div class="goals-grid">
-                                    <div class="goal-card">
-                                        <div class="goal-icon">
-                                            <i class="fas fa-weight"></i>
-                                        </div>
-                                        <div class="goal-info">
-                                            <h3>Kilo Hedefi</h3>
-                                            <div class="goal-progress">
-                                                <div class="progress-bar">
-                                                    <div class="progress" style="width: 75%"></div>
-                                                </div>
-                                                <span class="progress-text">75%</span>
-                                            </div>
-                                            <p class="goal-details">
-                                                <span>Başlangıç: 75kg</span>
-                                                <span>Hedef: 65kg</span>
-                                            </p>
-                                            <span class="goal-status">5 kg kaldı</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="goal-card">
-                                        <div class="goal-icon">
-                                            <i class="fas fa-dumbbell"></i>
-                                        </div>
-                                        <div class="goal-info">
-                                            <h3>Antrenman Hedefi</h3>
-                                            <div class="goal-progress">
-                                                <div class="progress-bar">
-                                                    <div class="progress" style="width: 50%"></div>
-                                                </div>
-                                                <span class="progress-text">50%</span>
-                                            </div>
-                                            <p class="goal-details">
-                                                <span>Haftalık: 4 antrenman</span>
-                                                <span>Tamamlanan: 2</span>
-                                            </p>
-                                            <span class="goal-status">2 antrenman kaldı</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.95rem; color: #666;">
+                            <span>Zayıf</span>
+                            <span>Normal</span>
+                            <span>Kilolu</span>
+                            <span>Obez</span>
                         </div>
                     </div>
                 </div>
+
+                <!-- ProfileStats Bileşeni -->
+                <div class="profile-stats">
+                    <div class="stat-item stat-item-green">
+                        <i class="fas fa-weight"></i>
+                        <h3>Kilo</h3>
+                        <p id="userWeight">Yükleniyor...</p>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-item stat-item-yellow">
+                        <i class="fas fa-ruler-vertical"></i>
+                        <h3>Boy</h3>
+                        <p id="userHeight">Yükleniyor...</p>
+                    </div>
+                    
+                </div>
+
+                <!-- ProfileSettings Bileşeni -->
+                <div class="profile-settings">
+                    <h2>Ayarlar</h2>
+                    <div class="settings-list">
+                        <div class="setting-item" id="editProfileBtn">
+                            <i class="fas fa-user-edit"></i>
+                            <span>Profil Bilgilerini Düzenle</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <div class="setting-item">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Çıkış Yap</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="edit-profile-section" id="editProfileSection">
+                    <h2>Profil Bilgilerini Düzenle</h2>
+                    <form id="editProfileForm">
+                        <div class="form-group">
+                            <label for="editName">Ad Soyad</label>
+                            <input type="text" id="editName" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editEmail">E-posta</label>
+                            <input type="email" id="editEmail" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editWeight">Kilo (kg)</label>
+                            <input type="number" id="editWeight" name="weight" min="30" max="300" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editHeight">Boy (cm)</label>
+                            <input type="number" id="editHeight" name="height" min="100" max="250" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editAge">Yaş</label>
+                            <input type="number" id="editAge" name="age" min="15" max="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editActivityLevel">Aktivite Seviyesi</label>
+                            <select id="editActivityLevel" name="activityLevel" required>
+                                <option value="sedanter">Sedanter</option>
+                                <option value="hafif_aktif">Hafif Aktif</option>
+                                <option value="orta_aktif">Orta Aktif</option>
+                                <option value="aktif">Aktif</option>
+                                <option value="cok_aktif">Çok Aktif</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editGoals">Hedef</label>
+                            <select id="editGoals" name="goals" required>
+                                <option value="form_koruma">Form Koruma</option>
+                                <option value="kilo_verme">Kilo Verme</option>
+                                <option value="kilo_alma">Kilo Alma</option>
+                                <option value="kas_kazanma">Kas Kazanma</option>
+                            </select>
+                        </div>
+                        <div class="button-group">
+                            <button type="submit" class="btn">Kaydet</button>
+                            <button type="button" class="btn cancel" id="cancelEditProfile">İptal</button>
+                        </div>
+                    </form>
+                </div>
+
+               
             </div>
         </main>
+
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
-    <script type="module" src="../assets/js/profile.js"></script>
+    <script type="module">
+        import { authAPI } from '../js/api.js';
+
+        let profileDetails = null;
+
+        // BMI hesaplama fonksiyonu
+        function calculateBMI(weight, height) {
+            if (!weight || !height) return null;
+            const heightM = height / 100;
+            return +(weight / (heightM * heightM)).toFixed(1);
+        }
+        function getBMICategory(bmi) {
+            if (bmi < 18.5) return { text: 'Zayıf', color: '#3498db' };
+            if (bmi < 25) return { text: 'Normal', color: '#2ecc71' };
+            if (bmi < 30) return { text: 'Kilolu', color: '#f39c12' };
+            return { text: 'Obez', color: '#e74c3c' };
+        }
+        function getBMIPointerLeft(bmi) {
+            // 0-18.5: 0-37%, 18.5-25: 37-60%, 25-30: 60-75%, 30-40: 75-100%
+            if (bmi < 18.5) return (bmi / 18.5) * 37;
+            if (bmi < 25) return 37 + ((bmi - 18.5) / (25 - 18.5)) * (60 - 37);
+            if (bmi < 30) return 60 + ((bmi - 25) / (30 - 25)) * (75 - 60);
+            if (bmi < 40) return 75 + ((bmi - 30) / (40 - 30)) * (100 - 75);
+            return 100;
+        }
+
+        // Sayfa yüklendiğinde auth kontrolü ve veri çekme
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                console.log('Token bulundu, veriler çekiliyor...');
+                // Kullanıcı profilini çek
+                const userData = await authAPI.getProfile();
+                console.log('Kullanıcı verileri:', userData);
+                profileDetails = userData;
+                // Profil bilgilerini güncelle
+                const user = profileDetails && profileDetails.data;
+                if (user) {
+                    document.getElementById('userName').textContent = user.name || 'İsimsiz Kullanıcı';
+                    document.getElementById('userEmail').textContent = user.email || 'E-posta yok';
+                    document.getElementById('userJoinDate').textContent = `Üyelik: ${new Date(user.createdAt).toLocaleDateString('tr-TR')}`;
+                    document.getElementById('userWeight').textContent = `${user.weight || 0} kg`;
+                    document.getElementById('userHeight').textContent = `${user.height || 0} cm`;
+                    if(document.getElementById('userCalorie')) document.getElementById('userCalorie').textContent = `${user.calorieTarget || 0} kcal`;
+                    // BMI hesapla ve göster
+                    const bmi = calculateBMI(user.weight, user.height);
+                    const bmiCat = bmi ? getBMICategory(bmi) : { text: '--', color: '#34C759' };
+                    document.getElementById('bmiValue').textContent = bmi || '--';
+                    document.getElementById('bmiCategory').textContent = bmiCat.text;
+                    document.getElementById('bmiValue').style.color = bmiCat.color;
+                    document.getElementById('bmiCategory').style.color = bmiCat.color;
+                    document.getElementById('bmiCircle').style.background = bmiCat.color + '22';
+                    // Pointer
+                    const left = getBMIPointerLeft(bmi || 0);
+                    document.getElementById('bmiPointer').style.left = `calc(${left}% - 2px)`;
+                    document.getElementById('bmiPointer').style.borderLeft = `4px solid ${bmiCat.color}`;
+                } else {
+                    console.error('Kullanıcı verileri bulunamadı');
+                }
+            } catch (error) {
+                console.error('Veri çekme hatası:', error);
+                if (error.message && error.message.includes('401')) {
+                    console.log('Oturum süresi dolmuş, login sayfasına yönlendiriliyor...');
+                    localStorage.removeItem('token');
+                    window.location.href = 'login.html';
+                } else {
+                    document.getElementById('userName').textContent = 'Veri yüklenirken hata oluştu';
+                    document.getElementById('userEmail').textContent = 'Lütfen sayfayı yenileyin';
+                    document.getElementById('userJoinDate').textContent = 'Hata: ' + error.message;
+                }
+            }
+        });
+
+        // Profil düzenle aç/kapat
+        document.getElementById('editProfileBtn').addEventListener('click', () => {
+            const section = document.getElementById('editProfileSection');
+            section.classList.toggle('active');
+            const user = profileDetails && profileDetails.data;
+            if (user) {
+                document.getElementById('editName').value = user.name || '';
+                document.getElementById('editEmail').value = user.email || '';
+                document.getElementById('editWeight').value = user.weight || '';
+                document.getElementById('editHeight').value = user.height || '';
+                document.getElementById('editAge').value = user.age || '';
+                document.getElementById('editActivityLevel').value = user.activityLevel || '';
+                document.getElementById('editGoals').value = user.goals || '';
+            }
+        });
+        document.getElementById('cancelEditProfile').addEventListener('click', () => {
+            document.getElementById('editProfileSection').classList.remove('active');
+        });
+        // Profil güncelleme işlemi
+        document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const updatedData = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                weight: formData.get('weight'),
+                height: formData.get('height'),
+                age: formData.get('age'),
+                activityLevel: formData.get('activityLevel'),
+                goals: formData.get('goals')
+            };
+            try {
+                if(authAPI.updateProfile) {
+                    await authAPI.updateProfile(updatedData);
+                    alert('Profil başarıyla güncellendi!');
+                    window.location.reload();
+                } else {
+                    alert('Profil güncelleme fonksiyonu tanımlı değil.');
+                }
+            } catch (error) {
+                alert('Profil güncellenirken hata oluştu: ' + (error.message || error));
+            }
+        });
+
+        // Çıkış işlemi
+        document.querySelectorAll('.setting-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const action = item.querySelector('span').textContent;
+                if (action === 'Çıkış Yap') {
+                    authAPI.logout();
+                }
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
 </body>
 </html> 

@@ -3,6 +3,7 @@ import { UserWithoutPassword } from '../types/index';
 import { api } from '../services/api';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import userService from '../services/user.service';
 
 const TOKEN_KEY = '@fitapp_token';
 
@@ -31,12 +32,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         // Önce token'ı kontrol et
         const savedToken = await AsyncStorage.getItem(TOKEN_KEY);
-        console.log('Başlangıçta token kontrolü:', savedToken ? `${savedToken.substring(0, 15)}...` : 'Kayıtlı token yok');
         
         // Otomatik giriş devre dışı bırakıldı
-        console.log('Otomatik giriş devre dışı bırakıldı. Lütfen manuel olarak giriş yapın.');
+        
         // Token varsa bile kullanıcı bilgilerini çekme işlemi yapılmıyor
         setLoading(false);
+        // Token varsa userService'e set et
+        if (savedToken) userService.setAuthToken(savedToken);
         
         /* Otomatik giriş kodu geçici olarak devre dışı bırakıldı
         if (savedToken) {
@@ -93,6 +95,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     loadSavedData();
   }, []);
+
+  // Token değiştiğinde userService'e set et
+  useEffect(() => {
+    if (token) userService.setAuthToken(token);
+  }, [token]);
 
   const login = async (email: string, password: string) => {
     setLoading(true);

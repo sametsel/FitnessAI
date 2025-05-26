@@ -22,9 +22,7 @@ export const defaultThemesByVersion = {
     dark: MD3DarkTheme
   }
 };
-export const getTheme = function () {
-  let isDark = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-  let isV3 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+export const getTheme = (isDark = false, isV3 = true) => {
   const themeVersion = isV3 ? 3 : 2;
   const scheme = isDark ? 'dark' : 'light';
   return defaultThemesByVersion[themeVersion][scheme];

@@ -16,6 +16,7 @@ import { INutrition } from '../models/Nutrition';
 
 const TOKEN_KEY = '@fitapp_token';
 
+
 const setToken = async (token: string) => {
   try {
     console.log('TOKEN KAYDETME BAŞLADI, token:', token ? `${token.substring(0, 15)}...` : 'boş');
@@ -33,20 +34,18 @@ const setToken = async (token: string) => {
 const getToken = async () => {
   try {
     const token = await AsyncStorage.getItem(TOKEN_KEY);
-    console.log('TOKEN OKUMA, mevcut token:', token ? `${token.substring(0, 15)}...` : 'boş');
     return token;
   } catch (error) {
-    console.error('TOKEN ALMA HATASI:', error);
+    console.error('TOKEN OKUMA HATASI:', error);
     return null;
   }
 };
 
 const clearStorage = async () => {
   try {
-    await AsyncStorage.clear();
-    console.log('AsyncStorage başarıyla temizlendi');
+    await AsyncStorage.removeItem(TOKEN_KEY);
   } catch (error) {
-    console.error('AsyncStorage temizlenirken hata oluştu:', error);
+    console.error('STORAGE TEMİZLEME HATASI:', error);
   }
 };
 
@@ -56,7 +55,6 @@ class ApiService {
     headers: {
       'Content-Type': 'application/json',
     },
-    timeout: 15000,
   });
 
   constructor() {
@@ -66,19 +64,13 @@ class ApiService {
   private setupInterceptors() {
     this.api.interceptors.request.use(
       async (config) => {
-        try {
-          const token = await getToken();
-          if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-          }
-          return config;
-        } catch (error) {
-          console.error('Request interceptor hatası:', error);
-          return config;
+        const token = await getToken();
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
         }
+        return config;
       },
       (error) => {
-        console.error('Request interceptor hatası:', error);
         return Promise.reject(error);
       }
     );
@@ -86,28 +78,10 @@ class ApiService {
     this.api.interceptors.response.use(
       (response) => response,
       async (error) => {
-        console.error('API Hatası:', error);
-        
-        if (error.response) {
-          console.error('Sunucu hatası:', error.response.data);
-          if (error.response.status === 401) {
-            await clearStorage();
-          }
-          throw new Error(error.response.data.message || 'Sunucu hatası oluştu');
-        } else if (error.request) {
-          console.error('Sunucuya ulaşılamadı:', error.request);
-          console.error('Hedef URL:', error.config?.url);
-          console.error('Timeout ayarı:', error.config?.timeout);
-          
-          if (error.code === 'ECONNABORTED') {
-            throw new Error('İstek zaman aşımına uğradı. Sunucu yanıt vermiyor.');
-          } else {
-            throw new Error('Sunucuya ulaşılamıyor. Lütfen internet bağlantınızı kontrol edin.');
-          }
-        } else {
-          console.error('İstek hatası:', error.message);
-          throw new Error('Bir hata oluştu. Lütfen tekrar deneyin.');
+        if (error.response?.status === 401) {
+          await clearStorage();
         }
+        return Promise.reject(error);
       }
     );
   }
@@ -122,7 +96,10 @@ class ApiService {
       });
       console.log('Login yanıtı alındı:', response.data);
       
-      // Sunucu yanıtı ile doğrudan çalış
+      if (!response.data.success) {
+        throw new Error(response.data.message || 'Giriş başarısız');
+      }
+      
       if (!response.data.token) {
         throw new Error('Token alınamadı');
       }
@@ -132,20 +109,12 @@ class ApiService {
       // Kullanıcı nesnesinde id ve _id alanlarını kontrol et ve düzelt
       if (response.data.user) {
         if (response.data.user._id && !response.data.user.id) {
-          console.log('Login: _id mevcut ama id yok, id alanını ekliyorum');
           response.data.user.id = response.data.user._id;
         } else if (response.data.user.id && !response.data.user._id) {
-          console.log('Login: id mevcut ama _id yok, _id alanını ekliyorum');
           response.data.user._id = response.data.user.id;
         }
-        
-        console.log('Login işlemi başarılı, kullanıcı bilgileri:', 
-          response.data.user.id ? `id: ${response.data.user.id.substring(0, 8)}...` : 'id yok',
-          response.data.user._id ? `_id: ${response.data.user._id.substring(0, 8)}...` : '_id yok',
-          response.data.user.name);
       }
       
-      // Doğrudan response.data'daki user ve token değerlerini döndür
       return {
         token: response.data.token,
         user: response.data.user
@@ -157,14 +126,13 @@ class ApiService {
     }
   }
 
-  async register(userData: Omit<UserWithoutPassword, '_id' | 'createdAt' | 'updatedAt'>): Promise<RegisterResponse> {
+  async register(userData: any): Promise<RegisterResponse> {
     try {
       await clearStorage();
       console.log('Kayıt isteği gönderiliyor:', userData);
       const response = await this.api.post('/auth/register', userData);
       console.log('Kayıt yanıtı alındı:', response.data);
       
-      // Sunucu yanıtını kontrol et - response.data.data yerine direkt response.data içeriğine bakalım
       if (!response.data.success) {
         throw new Error(response.data.message || 'Kayıt işlemi başarısız');
       }
@@ -182,19 +150,11 @@ class ApiService {
       // Kullanıcı nesnesinde id ve _id alanlarını kontrol et ve düzelt
       const user = response.data.user;
       if (user._id && !user.id) {
-        console.log('Register: _id mevcut ama id yok, id alanını ekliyorum');
         user.id = user._id;
       } else if (user.id && !user._id) {
-        console.log('Register: id mevcut ama _id yok, _id alanını ekliyorum');
         user._id = user.id;
       }
       
-      console.log('Kayıt işlemi başarılı, kullanıcı bilgileri:', 
-        user.id ? `id: ${user.id.substring(0, 8)}...` : 'id yok',
-        user._id ? `_id: ${user._id.substring(0, 8)}...` : '_id yok',
-        user.name);
-      
-      // RegisterResponse tipinde dönüş oluştur
       return {
         user: user,
         token: response.data.token
@@ -258,111 +218,81 @@ class ApiService {
   }
 
   // Antrenman işlemleri
-  async getWorkouts(userId: string, startDate?: Date, endDate?: Date): Promise<Workout[]> {
-    try {
-      const params: any = { userId };
-      if (startDate) params.startDate = startDate;
-      if (endDate) params.endDate = endDate;
-
-      const response = await this.api.get<ApiResponse<WorkoutListResponse>>('/workouts', { params });
-      
-      if (!response.data.data) {
-        throw new Error('Sunucudan geçersiz yanıt alındı');
-      }
-      
-      return response.data.data.workouts;
-    } catch (error) {
-      console.error('Antrenman listesi alınamadı:', error);
-      throw error;
+  async getWorkouts(userId: string): Promise<Workout[]> {
+    const response = await this.api.get('/workout-plans', { params: { userId } });
+    if (Array.isArray(response.data)) {
+      return response.data;
     }
+    if (response.data.data) {
+      if (Array.isArray(response.data.data)) {
+        return response.data.data;
+      }
+      if (response.data.data.workouts) {
+      return response.data.data.workouts;
+      }
+    }
+    throw new Error('Sunucudan geçersiz yanıt alındı');
   }
 
   async createWorkout(workoutData: Omit<Workout, 'id'>): Promise<Workout> {
-    try {
-      const response = await this.api.post<ApiResponse<WorkoutDetailResponse>>('/workouts', workoutData);
-      
+    const response = await this.api.post<ApiResponse<WorkoutDetailResponse>>('/workout-plans', workoutData);
       if (!response.data.data) {
         throw new Error('Sunucudan geçersiz yanıt alındı');
       }
-      
       return response.data.data.workout;
-    } catch (error) {
-      console.error('Antrenman oluşturulamadı:', error);
-      throw error;
-    }
   }
 
   async updateWorkout(id: string, workoutData: Partial<Workout>): Promise<Workout> {
-    try {
-      const response = await this.api.put<ApiResponse<WorkoutDetailResponse>>(`/workouts/${id}`, workoutData);
-      
+    const response = await this.api.put<ApiResponse<WorkoutDetailResponse>>(`/workout-plans/${id}`, workoutData);
       if (!response.data.data) {
         throw new Error('Sunucudan geçersiz yanıt alındı');
       }
-      
       return response.data.data.workout;
-    } catch (error) {
-      console.error('Antrenman güncellenemedi:', error);
-      throw error;
-    }
   }
 
   async deleteWorkout(id: string): Promise<void> {
-    try {
-      await this.api.delete<ApiResponse<void>>(`/workouts/${id}`);
-    } catch (error) {
-      console.error('Antrenman silinemedi:', error);
-      throw error;
-    }
+    await this.api.delete<ApiResponse<void>>(`/workout-plans/${id}`);
   }
 
   async completeWorkout(id: string): Promise<Workout> {
-    try {
-      const response = await this.api.put<ApiResponse<WorkoutDetailResponse>>(`/workouts/${id}/complete`);
-      
+    const response = await this.api.put<ApiResponse<WorkoutDetailResponse>>(`/workout-plans/${id}/complete`);
       if (!response.data.data) {
         throw new Error('Sunucudan geçersiz yanıt alındı');
       }
-      
       return response.data.data.workout;
-    } catch (error) {
-      console.error('Antrenman tamamlanamadı:', error);
-      throw error;
-    }
   }
 
   async getTodayWorkout(userId: string): Promise<Workout> {
-    const response = await this.api.get<ApiResponse<WorkoutDetailResponse>>('/workouts/today', {
+    const response = await this.api.get<ApiResponse<WorkoutDetailResponse>>('/workout-plans/today', {
       params: { userId }
     });
     return response.data.data.workout;
   }
 
   async getNextWorkout(userId: string): Promise<Workout> {
-    const response = await this.api.get<ApiResponse<WorkoutDetailResponse>>('/workouts/next', {
+    const response = await this.api.get<ApiResponse<WorkoutDetailResponse>>('/workout-plans/next', {
       params: { userId }
     });
     return response.data.data.workout;
   }
 
   // Beslenme işlemleri
-  async getNutrition(userId: string, date: Date): Promise<INutrition> {
-    const response = await this.api.get<ApiResponse<INutrition>>('/nutrition', {
-      params: { userId, date }
+  async getNutrition(userId: string): Promise<any[]> {
+    const response = await this.api.get('/nutrition-plans', {
+      params: { userId }
     });
-    return response.data.data;
+    return response.data;
+  }
+
+  async getDailyNutritionPlan(date: string, userId: string): Promise<any> {
+    const response = await this.api.get('/nutrition-plans/plan', {
+      params: { date, userId }
+    });
+    return response.data;
   }
 
   async getTodayNutrition(userId: string): Promise<INutrition> {
     const response = await this.api.get<ApiResponse<INutrition>>('/nutrition/today', {
-      params: { userId }
-    });
-    return response.data.data;
-  }
-
-  // İstatistikler
-  async getWorkoutStats(userId: string): Promise<any> {
-    const response = await this.api.get<ApiResponse<any>>('/stats/workouts', {
       params: { userId }
     });
     return response.data.data;
@@ -375,25 +305,11 @@ class ApiService {
     return response.data.data;
   }
 
-  // Yapay Zeka Beslenme Önerileri
-  async getNutritionRecommendation(userId: string, date?: Date): Promise<any> {
-    const params: any = { userId };
-    if (date) params.date = date.toISOString().split('T')[0];
-    
-    try {
-      const response = await this.api.get<ApiResponse<any>>('/nutrition/recommendations', {
-        params
-      });
-      
-      if (!response.data.data) {
-        throw new Error('Beslenme önerileri alınamadı');
-      }
-      
-      return response.data.data;
-    } catch (error) {
-      console.error('Beslenme önerileri alınamadı:', error);
-      throw error;
-    }
+  async getNutritionDays(userId: string): Promise<any[]> {
+    const response = await this.api.get('/nutrition-plans/days', {
+      params: { userId }
+    });
+    return response.data;
   }
 }
 
